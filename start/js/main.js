@@ -158,7 +158,7 @@ function updateLocalStorage() {
 
 function goToTemplate(filename) {
   updateLocalStorage();
-  window.location.href = `/templates/templates-design/${filename}`;
+  window.location.href = `../templates/templates-design/${filename}`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
