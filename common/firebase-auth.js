@@ -69,7 +69,7 @@ window.signInWithGoogle = function () {
 window.logout = function () {
   signOut(auth).then(() => {
     resetUIAfterLogout();
-    window.location.href = "/index.html";
+    window.location.href = "index.html";
   });
 }
 
@@ -104,7 +104,7 @@ window.closeModal = function () {
 // 템플릿 상세 페이지 이동 전 로그인 확인
 window.goToTemplate = function (templateUrl) {
   if (currentUser) {
-    window.location.href = "/templates/templates-design/" + templateUrl;
+    window.location.href = "templates/templates-design/" + templateUrl;
   } else {
     const modal = document.getElementById("login-required-modal");
     if (modal) modal.style.display = "flex";
@@ -114,7 +114,7 @@ window.goToTemplate = function (templateUrl) {
 // 마이페이지 접근 전 로그인 확인
 window.goToMypage = function () {
   if (currentUser) {
-    window.location.href = "/mypage/mypage-index.html";
+    window.location.href = "mypage/mypage-index.html";
   } else {
     alert("로그인이 필요한 서비스입니다.");
   }
@@ -123,7 +123,7 @@ window.goToMypage = function () {
 // 로그인 유도 후 모달 열기
 window.openLoginFromRedirect = function () {
   closeModal();
-  fetch("/common/login-modal.html")
+  fetch("common/login-modal.html")
     .then(res => res.text())
     .then(html => {
       const placeholder = document.getElementById("modal-placeholder");

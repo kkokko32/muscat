@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [
   {
     "brand": "카페 모모",
@@ -8,3 +9,15 @@
     "timestamp": 1712838349000
   }
 ]
+=======
+[
+  {
+    "brand": "카페 모모",
+    "slogan": "따뜻한 하루 한 잔",
+    "logo": "data:image/png;base64,...",
+    "main": "data:image/png;base64,...",
+    "templateHTML": "<div class='template-frame' style='...'>...</div>",
+    "timestamp": 1712838349000
+  }
+]
+>>>>>>> 4792f82 (초기 커밋)
