@@ -4,13 +4,8 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Muscat</title>
-<<<<<<< HEAD
   <link rel="stylesheet" href="/common.css" />
   <link rel="stylesheet" href="/index.css" />
-=======
-  <link rel="stylesheet" href="common.css" />
-  <link rel="stylesheet" href="index.css" />
->>>>>>> 4792f82 (초기 커밋)
 
   <style>
     body {
@@ -52,7 +47,7 @@
 
   <main class="main-hero">
     <h1 class="main-heading">소상공인을 위한<br/>마케팅 디자인 서비스<br/>Muscat</h1>
-    <a href="./start/select-recommend.html">
+    <a href="/start/select-recommend.html">
       <button class="start-btn">디자인 제작하기</button>
     </a>
   </main>
@@ -60,25 +55,19 @@
   <div id="footer-placeholder"></div>
 
   <!-- Firebase 연결 -->
-<<<<<<< HEAD
   <script type="module" src="/common/firebase-init.js"></script>
   <!-- ✅ 공통 auth + 보호 기능 포함 -->
   <script type="module" src="/common/utils-auth.js"></script>
-=======
-  <script type="module" src="common/firebase-init.js"></script>
-  <!-- ✅ 공통 auth + 보호 기능 포함 -->
-  <script type="module" src="common/utils-auth.js"></script>
->>>>>>> 4792f82 (초기 커밋)
 
   <!-- 헤더 / 푸터 포함 -->
   <script>
-    fetch("./components/header.html")
+    fetch("/components/header.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("header-placeholder").innerHTML = html;
       });
 
-    fetch("./components/footer.html")
+    fetch("/components/footer.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("footer-placeholder").innerHTML = html;
