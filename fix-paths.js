@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 const TARGET_EXTENSIONS = [".html", ".js"];
-const TARGET_PREFIXES = ["common/", "components/", "start/", "mypage/", "save-templates/", "templates/", "portfolio/", "index.css", "common.css"];
+const TARGET_PREFIXES = ["/common/", "/components/", "/templates/", "/start/", "/mypage/", "/save-templates/", "/portfolio/"];
 
 function walkDir(dir, callback) {
   fs.readdirSync(dir).forEach(file => {
@@ -20,13 +20,21 @@ function fixFile(filePath) {
   const ext = path.extname(filePath);
   if (!TARGET_EXTENSIONS.includes(ext)) return;
 
+  const relativeDepth = path.relative(".", path.dirname(filePath)).split(path.sep).length;
+  const prefix = "../".repeat(relativeDepth === 1 ? 0 : relativeDepth - 1);
+
   let content = fs.readFileSync(filePath, "utf8");
   let original = content;
 
-  TARGET_PREFIXES.forEach(prefix => {
-    // /로 시작하는 경로만 찾아서 상대 경로로 수정
-    const regex = new RegExp(`(["'\(= ])${prefix}`, "g"); // 괄호, 따옴표 등 뒤에 붙는 형태
-    content = content.replace(regex, `$1${prefix.slice(1)}`);
+  TARGET_PREFIXES.forEach(target => {
+    const regex1 = new RegExp(`(src|href)=["']${target}`, "g");
+    content = content.replace(regex1, `$1="${prefix}${target.slice(1)}`);
+
+    const regex2 = new RegExp(`fetch\\(["']${target}`, "g");
+    content = content.replace(regex2, `fetch("${prefix}${target.slice(1)}`);
+
+    const regex3 = new RegExp(`from ["']${target.slice(1)}`, "g");
+    content = content.replace(regex3, `from "${prefix}${target.slice(1)}`);
   });
 
   if (content !== original) {
@@ -36,6 +44,4 @@ function fixFile(filePath) {
 }
 
 // 실행
-console.log("📁 전체 경로 수정 중...");
 walkDir(".", fixFile);
-console.log("✅ 완료됨!");

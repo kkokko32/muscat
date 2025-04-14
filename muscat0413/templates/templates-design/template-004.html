@@ -25,7 +25,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script type="module">
-    import { db, auth } from "common/firebase-init.js";
+    import { db, auth } from "../../common/firebase-init.js";
     import { doc, getDoc, addDoc, collection, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const params = new URLSearchParams(window.location.search);
