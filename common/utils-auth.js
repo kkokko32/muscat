@@ -31,7 +31,7 @@ onAuthStateChanged(auth, (user) => {
     resetUIAfterLogout();
 
     // 마이페이지 접근 차단
-    if (window.location.pathname.includes("/mypage/")) {
+    if (window.location.pathname.includes("mypage/")) {
       openLoginFromRedirect();
     }
   }
@@ -111,7 +111,7 @@ window.closeModal = function () {
 
 window.goToTemplate = function (templateUrl) {
   if (currentUser) {
-    window.location.href = "/templates/templates-design/" + templateUrl;
+    window.location.href = "templates/templates-design/" + templateUrl;
   } else {
     openLoginFromRedirect();
   }
@@ -119,7 +119,7 @@ window.goToTemplate = function (templateUrl) {
 
 window.goToMypage = function () {
   if (currentUser) {
-    window.location.href = "/mypage/mypage-index.html";
+    window.location.href = "mypage/mypage-index.html";
   } else {
     openLoginFromRedirect();
   }
@@ -128,7 +128,7 @@ window.goToMypage = function () {
 // ✅ 추가: 내브랜딩페이지 (my-save.html)로 이동
 window.goToMypageSave = function () {
   if (currentUser) {
-    window.location.href = "/save-templates/my-save.html";
+    window.location.href = "save-templates/my-save.html";
   } else {
     openLoginFromRedirect();
   }
@@ -136,7 +136,7 @@ window.goToMypageSave = function () {
 
 window.openLoginFromRedirect = function () {
   closeModal();
-  fetch("/common/login-modal.html")
+  fetch("common/login-modal.html")
     .then(res => res.text())
     .then(html => {
       const placeholder = document.getElementById("modal-placeholder");
@@ -150,7 +150,7 @@ window.openLoginFromRedirect = function () {
 
 window.openLoginModal = function () {
   closeModal();
-  fetch("/common/login-modal.html")
+  fetch("common/login-modal.html")
     .then(res => res.text())
     .then(html => {
       const placeholder = document.getElementById("modal-placeholder");
@@ -162,7 +162,7 @@ window.openLoginModal = function () {
 
 window.openSignupModal = function () {
   closeModal();
-  fetch("/common/signup-modal.html")
+  fetch("common/signup-modal.html")
     .then(res => res.text())
     .then(html => {
       const placeholder = document.getElementById("modal-placeholder");

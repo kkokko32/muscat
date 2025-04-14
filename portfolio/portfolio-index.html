@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>전체 포트폴리오</title>
   <link rel="stylesheet" href="/style.css" />
-  <link rel="stylesheet" href="/common.css" />
+  <link rel="stylesheet" href="common.css" />
 </head>
 <body>
 
@@ -28,15 +28,15 @@
 </main>
 <div id="footer-placeholder"></div>
 <script>
-  fetch("/components/header.html").then(res => res.text()).then(html => {
+  fetch("components/header.html").then(res => res.text()).then(html => {
     document.getElementById("header-placeholder").innerHTML = html;
   });
-  fetch("/components/footer.html").then(res => res.text()).then(html => {
+  fetch("components/footer.html").then(res => res.text()).then(html => {
     document.getElementById("footer-placeholder").innerHTML = html;
   });
 </script>
-<script type="module" src="/common/firebase-init.js"></script>
-<script type="module" src="/common/utils-auth.js"></script>
+<script type="module" src="common/firebase-init.js"></script>
+<script type="module" src="common/utils-auth.js"></script>
 <div id="modal-placeholder"></div>
 
 </body>

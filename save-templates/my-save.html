@@ -4,8 +4,8 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>저장한 템플릿</title>
-  <link href="/common.css" rel="stylesheet"/>
-  <link href="/save-templates/my-save.css" rel="stylesheet"/>
+  <link href="common.css" rel="stylesheet"/>
+  <link href="save-templates/my-save.css" rel="stylesheet"/>
 </head>
 <body class="mypage">
 
@@ -45,22 +45,22 @@
   <div id="footer-placeholder"></div>
 
   <script>
-    fetch("/components/header.html")
+    fetch("components/header.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("header-placeholder").innerHTML = html;
       });
 
-    fetch("/components/footer.html")
+    fetch("components/footer.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("footer-placeholder").innerHTML = html;
       });
   </script>
 
-  <script type="module" src="/common/firebase-init.js"></script>
-  <script type="module" src="/common/utils-auth.js"></script>
-  <script type="module" src="/templates/templates-data/load-my-templates.js"></script>
+  <script type="module" src="common/firebase-init.js"></script>
+  <script type="module" src="common/utils-auth.js"></script>
+  <script type="module" src="templates/templates-data/load-my-templates.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <div id="modal-placeholder"></div>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Template</title>
-  <link href="/templates/templates-css/template.css" rel="stylesheet" />
+  <link href="templates/templates-css/template.css" rel="stylesheet" />
 </head>
 <body class="template-page">
 
@@ -25,7 +25,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script type="module">
-    import { db, auth } from "/common/firebase-init.js";
+    import { db, auth } from "common/firebase-init.js";
     import { doc, getDoc, addDoc, collection, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const params = new URLSearchParams(window.location.search);
@@ -92,7 +92,7 @@
           if (!confirmDel) return;
           await deleteDoc(doc(db, "savedTemplates", currentDocId));
           alert("삭제 완료되었습니다.");
-          window.location.href = "/mypage/my-save.html";
+          window.location.href = "mypage/my-save.html";
           return;
         }
 
