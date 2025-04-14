@@ -1,0 +1,19 @@
+<header class="global-header">
+  <a href="../index.html" class="logo">Muscat</a>
+  <nav>
+    <a href="../portfolio/portfolio-index.html">포트폴리오</a>
+    <!-- ✅ 수정: 내브랜딩페이지 → 저장한 템플릿 페이지로 이동 -->
+    <a href="#" onclick="goToMypageSave()">내브랜딩페이지</a>
+
+    <!-- 회원가입 버튼 (로그아웃 상태에서만 보임) -->
+    <a href="#" class="underline" id="btn-signup" onclick="openSignupModal(); return false;" style="display: none;">회원가입</a>
+
+    <!-- 로그인 버튼 (로그아웃 상태에서만 보임) -->
+    <button class="login-btn" id="btn-login" onclick="openLoginModal()" style="display: none;">로그인</button>
+
+    <!-- 마이페이지 버튼 (로그인 상태에서만 보임) -->
+    <a href="../mypage/mypage-index.html" id="btn-mypage" style="display: none;">
+      <img src="/assets/profile-icon.svg" alt="마이페이지" style="width:28px; height:28px; border-radius:50%;" />
+    </a>
+  </nav>
+</header>
