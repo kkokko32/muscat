@@ -211,11 +211,12 @@ body.mypage .info-sidebar .card-header h4 {
 .template-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  padding: 20px 100px;
+  justify-content: center;     /* 가운데 정렬 */
+  gap: 12px;
   max-width: 1720px;
-  margin: 0 auto;
+  margin: 0 auto;               /* 좌우 여백 제거하고 가운데로 */
+  padding: 0;                   /* 불필요한 여백 제거 */
+  width: 100%;
 }
 
 .template-card {
