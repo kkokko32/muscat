@@ -122,7 +122,7 @@
   <!-- <div id="footer-placeholder"></div> -->
 
   <script>
-    fetch("../components/header.html")
+    fetch("/muscat/components/header.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("header-placeholder").innerHTML = html;
@@ -132,18 +132,18 @@
         }
       });
 
-    fetch("../components/footer.html")
+    fetch("/muscat/components/footer.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("footer-placeholder").innerHTML = html;
       });
   </script>
 
-  <script src="./js/main.js"></script>
+  <script src="/muscat/start/js/main.js"></script>
 
   <!-- Firebase 및 공통 유틸 -->
-  <script type="module" src="../common/firebase-init.js"></script>
-  <script type="module" src="../common/utils-auth.js"></script>
+  <script type="module" src="/muscat/common/firebase-init.js"></script>
+  <script type="module" src="/muscat/common/utils-auth.js"></script>
 
   <!-- 모달 위치 -->
   <div id="modal-placeholder"></div>
