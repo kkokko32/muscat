@@ -9,8 +9,8 @@ body {
   flex-direction: column;
   background-color: hsl(0, 0%, 99%);
   font-family: sans-serif;
-  overflow-y: scroll;
   min-height: 100vh;
+  overflow-y: auto;
 }
 
 main {
@@ -183,4 +183,9 @@ main.page-wrapper {
 .save-btn.active {
   background: #b81e1e;
   color: #fff;
+}
+
+.main-footer {
+  margin-top: 0;
+  padding-top: 0;
 }
