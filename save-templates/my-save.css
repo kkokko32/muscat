@@ -12,6 +12,12 @@ body {
   overflow-y: scroll;
 }
 
+body.mypage {
+  background-color: #292929 !important;
+  color: #ffffff !important;
+}
+
+
 main {
   flex: 1;
   display: flex;
@@ -34,7 +40,7 @@ main.page-wrapper {
 .portfolio-header h1 {
   font-size: 42px;
   margin-bottom: 8px;
-  color: #222;
+  color: #ffffff !important;
 }
 
 .template-count-text {
