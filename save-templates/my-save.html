@@ -20,13 +20,17 @@
 
     <!-- 템플릿 리스트 전체를 감싸는 회색 박스 영역 -->
     <section class="template-wrapper">
-      <div class="template-list-header">
-        <p id="template-count">총 0개</p>
-        <div>
-          <button id="deleteSelectedBtn" class="btn btn-line" style="display:none;">삭제</button>
-          <button id="manageModeBtn" class="btn btn-line">관리</button>
-        </div>
-      </div>
+     <h2 class="template-title"> 총 <span id="template-count" style="color:#aafc3e;">0</span>개의 디자인을 저장했어요
+    </h2>
+
+   <!-- 버튼만 남김 -->
+    <div class="template-list-header">
+     <div>
+        <button id="deleteSelectedBtn" class="btn btn-line" style="display:none;">삭제</button>
+       <button id="manageModeBtn" class="btn btn-line">관리</button>
+     </div>
+  </div>
+
 
       <!-- 🔽 JS로 채워질 템플릿 목록 -->
       <div id="saved-template-list" class="template-list">

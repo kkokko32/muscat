@@ -31,7 +31,7 @@ main.page-wrapper {
 }
 
 .portfolio-header h1 {
-  font-size: 40px;
+  font-size: 42px;
   margin-bottom: 8px;
   color: #222;
 }
@@ -124,7 +124,6 @@ main.page-wrapper {
   width: 278px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
   display: flex;

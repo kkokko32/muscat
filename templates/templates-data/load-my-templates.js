@@ -24,17 +24,18 @@ async function loadMyTemplates() {
   const q = query(collection(db, "savedTemplates"), where("uid", "==", user.uid));
   const snapshot = await getDocs(q);
 
-  const container = document.getElementById("saved-template-list") || document.getElementById("templateList");
+  const container = document.getElementById("templateList") || document.getElementById("saved-template-list");
   const countText = document.getElementById("template-count");
   const deleteBtn = document.getElementById("deleteSelectedBtn");
-
-  if (!container) return;
-  container.innerHTML = "";
 
   // 템플릿 개수 문구 표시 (HTML 형식으로 숫자 강조)
   if (countText) {
     countText.innerHTML = `총 <span class="highlight-number">${snapshot.size}</span>개의 디자인을 저장했어요`;
   }
+
+  if (!container) return;
+  container.innerHTML = "";
+
 
   // 템플릿 없을 경우 문구
   if (snapshot.empty) {
