@@ -43,7 +43,14 @@ function resizeSingleIframe(iframe) {
 function loadTemplatesToIframes() {
   const iframes = document.querySelectorAll('.template-card iframe');
   iframes.forEach(iframe => {
-    iframe.src = iframe.dataset.template;
+    let templatePath = iframe.dataset.template;
+
+    // 상대경로인 경우 앞에 /muscat/ 붙여서 절대경로로 수정
+    if (!templatePath.startsWith('/')) {
+      templatePath = `/muscat/${templatePath}`;
+    }
+
+    iframe.src = templatePath;
     iframe.onload = () => resizeSingleIframe(iframe);
   });
 }
