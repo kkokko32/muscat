@@ -4,8 +4,8 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>홍길동님, 반갑습니다</title>
-  <link rel="stylesheet" href="../common/common.css"/>
-  <link rel="stylesheet" href="../mypage/mypage.css"/>
+  <link rel="stylesheet" href="/muscat/common/common.css"/>
+  <link rel="stylesheet" href="/muscat/mypage/mypage.css"/>
   <style>
     /* 썸네일 비율 유지용 공통 스타일 */
     .thumbnail-wrapper {
@@ -56,7 +56,7 @@
       <div class="mypage-card card-design">
         <div class="card-header">
           <h4 class="h4">저장한 디자인</h4>
-          <a href="../save-templates/my-save.html" class="btn">바로가기</a>
+          <a href="/muscat/save-templates/my-save.html" class="btn">바로가기</a>
         </div>
         <p id="template-count">총 0개</p>
         <div id="templateList" style="margin-top:16px; display:flex; flex-wrap:wrap; gap:12px;">
@@ -77,7 +77,7 @@
       <div class="mypage-card">
         <div class="card-header">
           <h4 class="h4">내 포트폴리오</h4>
-          <a href="../portfolio/portfolio-index.html" class="btn">바로가기</a>
+          <a href="/muscat/portfolio/portfolio-index.html" class="btn">바로가기</a>
         </div>
         <p>공개 디자인 1개</p>
       </div>
@@ -88,22 +88,22 @@
 <div id="footer-placeholder"></div>
 
 <script>
-  fetch("../components/header.html")
+  fetch("/muscat/components/header.html")
     .then(res => res.text())
     .then(html => {
       document.getElementById("header-placeholder").innerHTML = html;
     });
 
-  fetch("../components/footer.html")
+  fetch("/muscat/components/footer.html")
     .then(res => res.text())
     .then(html => {
       document.getElementById("footer-placeholder").innerHTML = html;
     });
 </script>
 
-<script type="module" src="../common/firebase-init.js"></script>
-<script type="module" src="../common/utils-auth.js"></script>
-<script type="module" src="../templates/templates-data/load-my-templates.js"></script>
+<script type="module" src="/muscat/common/firebase-init.js"></script>
+<script type="module" src="/muscat/common/utils-auth.js"></script>
+<script type="module" src="/muscat/templates/templates-data/load-my-templates.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <div id="modal-placeholder"></div>

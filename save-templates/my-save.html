@@ -45,22 +45,22 @@
   <div id="footer-placeholder"></div>
 
   <script>
-    fetch("components/header.html")
+    fetch("/muscat/components/header.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("header-placeholder").innerHTML = html;
       });
 
-    fetch("components/footer.html")
+    fetch("/muscat/components/footer.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("footer-placeholder").innerHTML = html;
       });
   </script>
 
-  <script type="module" src="../common/firebase-init.js"></script>
-  <script type="module" src="../common/utils-auth.js"></script>
-  <script type="module" src="../templates/templates-data/load-my-templates.js"></script>
+  <script type="module" src="/muscat/common/firebase-init.js"></script>
+  <script type="module" src="/muscat/common/utils-auth.js"></script>
+  <script type="module" src="/muscat/templates/templates-data/load-my-templates.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <div id="modal-placeholder"></div>
