@@ -162,7 +162,7 @@ window.openLoginModal = function () {
 
 window.openSignupModal = function () {
   closeModal();
-  fetch("common/signup-modal.html")
+  fetch("/muscat/common/signup-modal.html")
     .then(res => res.text())
     .then(html => {
       const placeholder = document.getElementById("modal-placeholder");
