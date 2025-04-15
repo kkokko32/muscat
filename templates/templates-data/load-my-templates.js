@@ -1,4 +1,4 @@
-import { db, auth } from "../common/firebase-init.js";
+import { db, auth } from "/muscat/common/firebase-init.js";
 import {
   collection,
   query,
@@ -85,7 +85,7 @@ async function loadMyTemplates() {
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
-      window.location.href = `/templates/templates-design/template-001.html?docId=${docId}`;
+      window.location.href = `/muscat/templates/templates-design/template-001.html?docId=${docId}`;
     };
 
     container.appendChild(wrapper);
