@@ -9,8 +9,7 @@ body {
   flex-direction: column;
   background-color: hsl(0, 0%, 99%);
   font-family: sans-serif;
-  min-height: 100vh;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 main {
@@ -29,7 +28,7 @@ main.page-wrapper {
 
 /* 상단 제목 영역 */
 .portfolio-header {
-  padding: 0;
+  padding: 0 80px 20px;
 }
 
 .portfolio-header h1 {
@@ -40,21 +39,20 @@ main.page-wrapper {
 
 /* 템플릿 리스트 박스 */
 .template-wrapper {
+  /* flex: 1; */
   display: flex;
   flex-direction: column;
   background: #eee;
-  padding: 20px 100px 0; /* ✅ padding-bottom 제거 */
+  padding: 20px 100px 30px;
   margin: 0;
   box-sizing: border-box;
   width: 100%;
-  min-height: calc(100vh - 200px);
 }
 
 /* 템플릿 개수 + 버튼 정렬 */
 .template-list-header {
   display: flex;
-  width: 100%;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -105,7 +103,7 @@ main.page-wrapper {
 .thumbnail {
   width: 100%;
   height: auto;
-  object-fit: contain;  /* 이미지 전체를 보여줌 */
+  object-fit: contain;  /* or 'cover' if 필요시 변경 */
   display: block;
 }
 
@@ -173,7 +171,7 @@ main.page-wrapper {
   font-size: 15px;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background 0.2s ease;
   margin-left: 10px;
 }
 
@@ -184,9 +182,4 @@ main.page-wrapper {
 .save-btn.active {
   background: #b81e1e;
   color: #fff;
-}
-
-.main-footer {
-  margin-top: 0;
-  padding-top: 0;
 }
