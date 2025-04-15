@@ -1,255 +1,63 @@
-/* 전체 레이아웃 */
-html, body, main {
-  height: auto;
-  min-height: 100%;
+/* ✅ mypage.css (썸네일 리스트 가운데 정렬 + 여백 제거 반영) */
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: hsl(0, 0%, 99%);
+  margin: 0;
+  font-family: sans-serif;
 }
 
-body.mypage main {
-  padding-bottom: 40px;
-}
-
-body.mypage .info-layout {
+main.page-wrapper {
+  flex: 1;
   width: 100%;
-  max-width: none;
-  padding: 0 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mypage-section {
+  padding: 60px 100px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   box-sizing: border-box;
-  display: grid;
-  grid-template-columns: 360px 1fr;
-  grid-template-rows: 1fr auto;
-  gap: 24px;
-  min-height: 600px;
 }
 
 .mypage-title {
-  margin-top: 120px;
-  margin-left: 28px;
-  margin-bottom: 40px;
-  text-align: left;
-  padding: 0 100px;
+  font-size: 36px;
+  margin-bottom: 24px;
+  color: #222;
 }
 
-.mypage-title h1 {
-  font-size: 42px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: #292929;
-}
-
-.mypage-title p {
-  font-size: 16px;
-  color: #666;
-}
-
-/* 좌측: 계정 정보 (고정 너비) */
-body.mypage .info-sidebar {
-  grid-row: 1 / 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-body.mypage .info-sidebar .mypage-card {
-  height: 100%;
-  justify-content: flex-start;
-  padding: 24px 30px;
-  display: flex;
-  flex-direction: column;
-}
-
-body.mypage .info-sidebar .mypage-card p {
-  font-size: 14px;
-  color: #333;
-}
-
-body.mypage .info-sidebar .btn-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: auto;
-  margin-bottom: 8px;
-}
-
-body.mypage .info-sidebar .btn-group .btn {
-  width: 100%;
-  max-width: 358px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-
-/* 우측: 템플릿 정보 (유동 너비) */
-.info-main {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  min-height: 100%;
-  justify-content: flex-start;
-  grid-column: 2 / 3;
-  grid-row: 1 / 2;
-}
-
-.h4 {
-  font-size: 16pt;
-  margin: 0;
-}
-
-/* 마이페이지 전용 카드 스타일 */
-.mypage-card {
-  background: #fff;
-  border-radius: 16px;
-  box-sizing: border-box;
-  padding: 24px 30px;
-  min-height: 280px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  flex: 1;
-}
-
-/* 저장한 디자인 카드: 높이 계정정보와 동일하게 */
-.card-design {
-  height: 100%;
-  flex: 1;
-}
-
-/* 내 포트폴리오 카드: 계정+저장한 디자인과 같은 가로, 얇은 높이 */
-.card-portfolio {
-  min-height: 160px;
-  grid-column: 1 / span 2;
-  grid-row: 2 / 3;
-}
-
-/* 계정 카드만 다른 배경색 */
-.account-card {
-  background-color: #292929;
-  color: white;
-}
-
-.account-card p,
-.account-card h4,
-.account-card .btn-line {
-  color: #eee;
-  border-color: #666;
-}
-
-.account-card .btn-line:hover {
-  color: #aafc3e;
-  border-color: #aafc3e;
-}
-
-.account-card p {
-  color: #999 !important;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0 0 0;
-  margin: -24px -20px 0;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-}
-
-.card-header h4 {
-  margin: 0;
-  margin-left: 20px;
-}
-
-.card-header .btn {
-  width: auto;
-  margin-left: auto;
-  margin-right: 20px;
-}
-
-body.mypage .info-sidebar .card-header h4 {
-  font-size: 16pt;
-  padding: 12px 0 12px 0;
-}
-
-.mypage-card .btn-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.mypage-card p {
-  margin: 0 0 20px 0;
-  font-size: 14px;
-  color: #666;
-}
-
-/* 버튼 공통 스타일 */
-.btn {
-  width: 100px;
-  margin-right: 0;
-  text-align: center;
-  display: inline-block;
-  padding: 10px 24px;
-  background: #aafc3e;
-  border-radius: 6px;
-  font-weight: bold;
-  color: #000;
-  text-decoration: none;
-}
-
-/* 회색 라인 버튼 스타일 */
-.btn-line {
-  background: none;
-  border: 1px solid #999;
-  color: #444;
-  transition: 0.2s ease;
-}
-
-/* 마이페이지 전용 버튼 그룹 내부 버튼은 block + 100% width */
-.mypage-card .btn-group .btn {
-  width: 100%;
-  text-align: center;
-}
-
+/* ✅ 썸네일 카드 리스트 영역 */
 .template-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  padding: 20px 100px;
-  max-width: 1720px;
-  margin: 0 auto;
+  justify-content: center;  /* ✅ 가운데 정렬 */
+  gap: 12px;
+  max-width: 1200px;
+  margin: 0 auto;  /* ✅ 여백 없이 중앙 정렬 */
+  padding: 0;
+  width: 100%;
 }
 
 .template-card {
   width: 278px;
   background: white;
   border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0;
+  flex-shrink: 0;
 }
-
-.template-preview {
-  transform: scale(0.3);
-  transform-origin: top left;
-  width: 1200px;
-  height: 1600px;
-  pointer-events: none;
-}
-
-/* 필요 시 텍스트 아래 정렬 */
-.template-card p {
-  font-size: 13px;
-  color: #666;
-  margin-top: 8px;
-  text-align: center;
-}
-
 
 .thumbnail-wrapper {
   width: 100%;
-  height: auto;
   background: #f0f0f0;
   display: flex;
   justify-content: center;
@@ -261,20 +69,23 @@ body.mypage .info-sidebar .card-header h4 {
 .thumbnail {
   width: 100%;
   height: auto;
-  object-fit: contain;  /* 이미지 전체를 보여줌 */
+  object-fit: contain;
   display: block;
 }
 
-
-.select-checkbox {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  transform: scale(1.4);
-  display: none;
+.template-card p {
+  font-size: 13px;
+  color: #666;
+  margin: 8px 0;
+  text-align: center;
 }
 
+.main-footer {
+  margin-top: 0;
+  padding-top: 0;
+}
 
-.manage-mode .select-checkbox {
-  display: block;
+.main-footer * {
+  margin: 0;
+  padding: 0;
 }
