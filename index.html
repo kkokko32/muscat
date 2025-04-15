@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Muscat</title>
-  <link rel="stylesheet" href="common/common.css" />
+  <link rel="stylesheet" href="/muscat/common/common.css" />
   <link rel="stylesheet" href="common/index.css" />
 
   <style>
@@ -55,19 +55,19 @@
   <div id="footer-placeholder"></div>
 
   <!-- Firebase 연결 -->
-  <script type="module" src="common/firebase-init.js"></script>
+  <script type="module" src="/muscat/common/firebase-init.js"></script>
   <!-- ✅ 공통 auth + 보호 기능 포함 -->
   <script type="module" src="common/utils-auth.js"></script>
 
   <!-- 헤더 / 푸터 포함 -->
   <script>
-    fetch("components/header.html")
+    fetch("/muscat/components/header.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("header-placeholder").innerHTML = html;
       });
 
-      fetch("components/footer.html")
+      fetch("/muscat/components/footer.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("footer-placeholder").innerHTML = html;
