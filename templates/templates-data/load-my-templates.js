@@ -31,9 +31,9 @@ async function loadMyTemplates() {
   if (!container) return;
   container.innerHTML = "";
 
-  // 템플릿 개수 표시
+  // 템플릿 개수 문구 표시 (HTML 형식으로 숫자 강조)
   if (countText) {
-    countText.innerText = `총 ${snapshot.size}개`;
+    countText.innerHTML = `총 <span class="highlight-number">${snapshot.size}</span>개의 디자인을 저장했어요`;
   }
 
   // 템플릿 없을 경우 문구
@@ -91,7 +91,7 @@ async function loadMyTemplates() {
     container.appendChild(wrapper);
   });
 
-      adjustTemplateCardHeights();
+  adjustTemplateCardHeights();
 
   // 삭제 버튼 상태 반영
   if (deleteBtn) {
