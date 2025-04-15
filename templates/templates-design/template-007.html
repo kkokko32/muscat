@@ -56,7 +56,9 @@
           if (snapshot.exists()) {
             const data = snapshot.data();
             const container = document.getElementById("templateFrame");
-            container.innerHTML = data.html;
+            if (container) {
+            container.outerHTML = data.html; // ✅ 기존 껍데기 프레임 제거하고 사용자 템플릿만 남김
+            }
             setTimeout(() => {
               const btn = document.getElementById("saveTemplateBtn");
               if (btn) {
