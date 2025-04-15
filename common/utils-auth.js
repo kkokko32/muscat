@@ -133,11 +133,12 @@ window.goToMypage = function () {
 // ✅ 추가: 내브랜딩페이지 (my-save.html)로 이동
 window.goToMypageSave = function () {
   if (currentUser) {
-    window.location.href = "save-templates/my-save.html";
+    window.location.href = "/muscat/save-templates/my-save.html";  // ✅ 수정
   } else {
     openLoginFromRedirect();
   }
 }
+
 
 window.openLoginFromRedirect = function () {
   closeModal();
