@@ -119,7 +119,7 @@ window.goToTemplate = function (templateUrl) {
 
 window.goToMypage = function () {
   if (currentUser) {
-    window.location.href = "mypage/mypage-index.html";
+    window.location.href = "/muscat/mypage/mypage-index.html";
   } else {
     openLoginFromRedirect();
   }
@@ -136,7 +136,7 @@ window.goToMypageSave = function () {
 
 window.openLoginFromRedirect = function () {
   closeModal();
-  fetch("common/login-modal.html")
+  fetch("/muscat/common/login-modal.html")
     .then(res => res.text())
     .then(html => {
       const placeholder = document.getElementById("modal-placeholder");
@@ -150,7 +150,7 @@ window.openLoginFromRedirect = function () {
 
 window.openLoginModal = function () {
   closeModal();
-  fetch("common/login-modal.html")
+  fetch("/muscat/common/login-modal.html")
     .then(res => res.text())
     .then(html => {
       const placeholder = document.getElementById("modal-placeholder");
