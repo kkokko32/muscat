@@ -81,7 +81,10 @@ function updateTemplateInfoText() {
   const concept = document.getElementById("selectedConcept")?.innerText;
   const infoText = document.getElementById("templateInfoText");
 
-  if (!infoText) return;
+  if (!infoText) {
+    console.warn("#templateInfoText 요소가 없습니다");
+    return;
+  }
 
   if (industry === "전체" && concept === "전체") {
     infoText.innerText = "우측 템플릿은 선택에 따라 자동 추천됩니다";
@@ -125,7 +128,7 @@ function syncInputToIframe(id, value) {
 
 function syncImageToIframe(id, file) {
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     const dataUrl = e.target.result;
 
     const iframes = document.querySelectorAll(".template-card.visible iframe");
@@ -158,7 +161,7 @@ function updateLocalStorage() {
 
 function goToTemplate(filename) {
   updateLocalStorage();
-  window.location.href = `../templates/templates-design/${filename}`;
+  window.location.href = `/muscat/templates/templates-design/${filename}`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -199,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (file) syncImageToIframe("brandLogo", file);
     });
   }
+
   if (mainImageInput) {
     mainImageInput.addEventListener("change", e => {
       const file = e.target.files[0];
