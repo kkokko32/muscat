@@ -1,16 +1,18 @@
 <header class="global-header">
   <a href="/muscat/index.html" class="logo">Muscat</a>
   <nav>
+    <!-- 전체 사용자 접근 가능 메뉴 -->
     <a href="/muscat/portfolio/portfolio-index.html">포트폴리오</a>
-    <a href="#" onclick="goToMypageSave()">내브랜딩페이지</a>
+    <a href="/muscat/select-recommend.html">디자인 목록</a>
 
-    <!-- 회원가입 버튼 (로그아웃 상태에서만 보임) -->
+    <!-- 로그인 상태에서만 보이는 메뉴 -->
+    <a href="#" onclick="goToMypageSave()" id="btn-mybranding" style="display: none;">내브랜딩페이지</a>
+
+    <!-- 로그아웃 상태에서만 보이는 버튼 -->
     <a href="#" class="underline" id="btn-signup" onclick="openSignupModal(); return false;" style="display: none;">회원가입</a>
-
-    <!-- 로그인 버튼 (로그아웃 상태에서만 보임) -->
     <button class="login-btn" id="btn-login" onclick="openLoginModal()" style="display: none;">로그인</button>
 
-    <!-- 마이페이지 버튼 (로그인 상태에서만 보임) -->
+    <!-- 로그인 상태에서만 보이는 마이페이지 아이콘 -->
     <a href="/muscat/mypage/mypage-index.html" id="btn-mypage" style="display: none;">
       <img src="/muscat/assets/profile-icon.svg" alt="마이페이지" style="width:28px; height:28px; border-radius:50%;" />
     </a>

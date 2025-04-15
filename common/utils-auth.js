@@ -87,18 +87,23 @@ window.logout = function () {
 window.updateUIAfterLogin = function (user) {
   const loginBtn = document.getElementById("btn-login") || document.getElementById("login-btn");
   const mypageBtn = document.getElementById("btn-mypage") || document.getElementById("mypage-btn");
+  const brandingBtn = document.getElementById("btn-mybranding"); // ✅ 내브랜딩페이지 버튼
 
   if (loginBtn) loginBtn.style.display = "none";
   if (mypageBtn) mypageBtn.style.display = "inline-block";
+  if (brandingBtn) brandingBtn.style.display = "inline-block"; // ✅ 로그인 시 노출
 }
 
 window.resetUIAfterLogout = function () {
   const loginBtn = document.getElementById("btn-login") || document.getElementById("login-btn");
   const mypageBtn = document.getElementById("btn-mypage") || document.getElementById("mypage-btn");
+  const brandingBtn = document.getElementById("btn-mybranding"); // ✅ 내브랜딩페이지 버튼
 
   if (loginBtn) loginBtn.style.display = "inline-block";
   if (mypageBtn) mypageBtn.style.display = "none";
+  if (brandingBtn) brandingBtn.style.display = "none"; // ✅ 로그아웃 시 숨김
 }
+
 
 window.closeModal = function () {
   const loginModal = document.getElementById("login-modal");
