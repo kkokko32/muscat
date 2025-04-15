@@ -122,7 +122,6 @@ main.page-wrapper {
 /* 템플릿 카드 */
 .template-card {
   width: 278px;
-  background: white;
   border-radius: 12px;
   overflow: hidden;
   position: relative;
