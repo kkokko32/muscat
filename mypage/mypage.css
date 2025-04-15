@@ -250,20 +250,18 @@ body.mypage .info-sidebar .card-header h4 {
 .thumbnail-wrapper {
   width: 100%;
   height: auto;
-  max-height: 450px; /* 부모 요소의 세로 크기를 명시적으로 설정 */
   background: #f0f0f0;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 12px;
   overflow: hidden;
- 
 }
 
 .thumbnail {
   width: 100%;
   height: auto;
-  object-fit: contain; /* 비율 유지하면서 크기 맞추기 */
+  object-fit: contain;  /* or 'cover' if 필요시 변경 */
   display: block;
 }
 

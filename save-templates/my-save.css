@@ -104,8 +104,8 @@ main.page-wrapper {
 .thumbnail {
   width: 100%;
   height: auto;
+  object-fit: contain;  /* or 'cover' if 필요시 변경 */
   display: block;
-  object-fit: cover; /* 이미지 비율에 맞게 조정 */
 }
 
 /* 템플릿 카드 */
