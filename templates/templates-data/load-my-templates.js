@@ -91,6 +91,8 @@ async function loadMyTemplates() {
     container.appendChild(wrapper);
   });
 
+      adjustTemplateCardHeights();
+
   // 삭제 버튼 상태 반영
   if (deleteBtn) {
     deleteBtn.style.display = isManaging ? "inline-block" : "none";
