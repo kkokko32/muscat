@@ -57,20 +57,20 @@
     </aside>
 
     <section class="content">
-      <div class="concept-filter">
-        <button type="button" onclick="selectStyle(this)">전체</button>
-        <button type="button" onclick="selectStyle(this)">모던,심플</button>
-        <button type="button" onclick="selectStyle(this)">에코,자연</button>
-        <button type="button" onclick="selectStyle(this)">전통</button>
-        <button type="button" onclick="selectStyle(this)">럭셔리</button>
-        <button type="button" onclick="selectStyle(this)">기타</button>
-      </div>
-
       <div class="template-wrapper">
         <div class="template-area">
-          <p id="templateInfoText" class="template-info-fixed">
-            선택한 디자인 대상이 여기에 표시됩니다
-          </p>
+          <div id="templateInfoText" class="template-info-fixed">
+            <p style="margin-bottom: 10px;">우측 템플릿은 선택에 따라 자동 추천됩니다</p>
+            <div class="inline-concept-filter">
+              <button type="button" onclick="selectStyle(this)">전체</button>
+              <button type="button" onclick="selectStyle(this)">모던,심플</button>
+              <button type="button" onclick="selectStyle(this)">에코,자연</button>
+              <button type="button" onclick="selectStyle(this)">전통</button>
+              <button type="button" onclick="selectStyle(this)">럭셔리</button>
+              <button type="button" onclick="selectStyle(this)">기타</button>
+            </div>
+          </div>
+
           <div class="template-scroll">
             <div class="template-preview">
               <!-- 템플릿 카드 예시 -->

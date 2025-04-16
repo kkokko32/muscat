@@ -1,4 +1,3 @@
-
 body {
   overflow: auto;
 }
@@ -117,38 +116,6 @@ input[disabled] {
   cursor: pointer;
 }
 
-/* 컬러칩 필터 */
-.color-filter {
-  position: fixed;
-  top: 60px;
-  right: 22px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  z-index: 1000;
-}
-
-.color-filter span {
-  font-size: 14px;
-  color: #292929;
-}
-
-.chips {
-  display: flex;
-  align-items: center;
-}
-
-.chips .chip {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  cursor: pointer;
-  margin-right: 6px;
-}
-
 /* 템플릿 고정 안내 문구 */
 .template-info-fixed {
   position: absolute;
@@ -161,6 +128,9 @@ input[disabled] {
   font-size: 16px;
   font-weight: 300;
   color: #292929;
+  background-color: #fcfcfc;
+  padding: 10px 0 12px;
+  box-sizing: border-box;
 }
 
 /* 템플릿 영역 */
@@ -177,7 +147,6 @@ input[disabled] {
 .template-area {
   width: 100%;
   height: 100%;
-  /* height: calc(100vh - 80px); */
   padding-top: 80px;
   box-sizing: border-box;
   overflow: hidden;
@@ -241,12 +210,13 @@ input[disabled] {
   text-decoration: underline;
 }
 
+/* 기존 concept-filter (현재는 사용하지 않음, 유지할 경우) */
 .concept-filter {
   display: flex;
   justify-content: center;
   gap: 12px;
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: -20px;
   position: relative;
   z-index: 902;
 }
@@ -263,6 +233,31 @@ input[disabled] {
 }
 
 .concept-filter button.active {
+  border-bottom: 2px solid #292929;
+  font-weight: bold;
+}
+
+/* ✅ 새로 추가된 inline concept filter 버튼 */
+.inline-concept-filter {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.inline-concept-filter button {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #292929;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-bottom: 2px solid transparent;
+  transition: border 0.2s;
+}
+
+.inline-concept-filter button.active {
   border-bottom: 2px solid #292929;
   font-weight: bold;
 }

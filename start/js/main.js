@@ -81,7 +81,7 @@ function selectConcept(button) {
 }
 
 function selectStyle(button) {
-  document.querySelectorAll(".concept-filter button").forEach(btn => btn.classList.remove("active"));
+  document.querySelectorAll(".inline-concept-filter button").forEach(btn => btn.classList.remove("active"));
   button.classList.add("active");
 
   const selected = button.innerText;
