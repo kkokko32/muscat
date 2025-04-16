@@ -92,19 +92,8 @@ function selectStyle(button) {
 }
 
 function updateTemplateInfoText() {
-  const industry = document.getElementById("selectedIndustry")?.innerText;
-  const concept = document.getElementById("selectedConcept")?.innerText;
-  const infoText = document.getElementById("templateInfoText");
+  // 필터 버튼이 포함된 #templateInfoText 영역을 건드리지 않음
 
-  if (!infoText) return;
-
-  if (industry === "전체" && concept === "전체") {
-    infoText.innerText = "우측 템플릿은 선택에 따라 자동 추천됩니다";
-    infoText.style.fontWeight = "300";
-  } else {
-    infoText.innerHTML = `<strong>${industry} / ${concept}</strong>`;
-    infoText.style.fontWeight = "700";
-  }
 }
 
 function filterTemplates() {
