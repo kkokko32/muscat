@@ -28,23 +28,20 @@ async function loadMyTemplates() {
   const countText = document.getElementById("template-count");
   const deleteBtn = document.getElementById("deleteSelectedBtn");
 
-  // 템플릿 개수 문구 표시 (HTML 형식으로 숫자 강조)
   if (countText) {
-    countText.innerHTML = `총 <span class="highlight-number">${snapshot.size}</span>개의 디자인을 저장했어요`;
+    const count = snapshot.docs.length;
+    countText.innerHTML = `총 <span class="highlight-number">${count}</span>개의 디자인을 저장했어요`;
   }
 
   if (!container) return;
   container.innerHTML = "";
 
-
-  // 템플릿 없을 경우 문구
   if (snapshot.empty) {
     container.innerHTML = `<p class="no-template">저장된 템플릿이 없습니다.</p>`;
     if (deleteBtn) deleteBtn.style.display = "none";
     return;
   }
 
-  // 템플릿 렌더링
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
     const docId = docSnap.id;
@@ -52,7 +49,6 @@ async function loadMyTemplates() {
     const wrapper = document.createElement("div");
     wrapper.className = "template-card";
 
-    // 체크박스
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.className = "select-checkbox";
@@ -60,7 +56,6 @@ async function loadMyTemplates() {
     checkbox.style.display = isManaging ? "block" : "none";
     wrapper.appendChild(checkbox);
 
-    // 썸네일 이미지
     if (data.thumbnail) {
       const thumbnailWrapper = document.createElement("div");
       thumbnailWrapper.className = "thumbnail-wrapper";
@@ -74,7 +69,6 @@ async function loadMyTemplates() {
       wrapper.appendChild(thumbnailWrapper);
     }
 
-    // 브랜드명 텍스트
     const brandP = document.createElement("p");
     brandP.style.textAlign = "center";
     brandP.style.fontWeight = "bold";
@@ -82,7 +76,6 @@ async function loadMyTemplates() {
     brandP.innerText = data.brand || "브랜드명 없음";
     wrapper.appendChild(brandP);
 
-    // 클릭 시 상세페이지 이동 (체크박스 클릭 제외)
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
@@ -94,14 +87,28 @@ async function loadMyTemplates() {
 
   adjustTemplateCardHeights();
 
-  // 삭제 버튼 상태 반영
   if (deleteBtn) {
     deleteBtn.style.display = isManaging ? "inline-block" : "none";
     deleteBtn.onclick = handleDelete;
   }
 }
 
-// 관리 모드 토글
+// 카드 높이를 Masonry 스타일에 맞게 맞춰줌
+function adjustTemplateCardHeights() {
+  const cards = document.querySelectorAll(".template-card");
+  let maxHeight = 0;
+
+  cards.forEach(card => {
+    card.style.height = "auto";
+    maxHeight = Math.max(maxHeight, card.offsetHeight);
+  });
+
+  cards.forEach(card => {
+    card.style.height = `${maxHeight}px`;
+  });
+}
+
+// 관리 모드
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
