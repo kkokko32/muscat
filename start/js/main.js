@@ -44,12 +44,9 @@ function loadTemplatesToIframes() {
   const iframes = document.querySelectorAll('.template-card iframe');
   iframes.forEach(iframe => {
     let templatePath = iframe.dataset.template;
-
-    // 상대경로인 경우 앞에 /muscat/ 붙여서 절대경로로 수정
     if (!templatePath.startsWith('/')) {
       templatePath = `/muscat/${templatePath}`;
     }
-
     iframe.src = templatePath;
     iframe.onload = () => resizeSingleIframe(iframe);
   });
@@ -83,15 +80,23 @@ function selectConcept(button) {
   filterTemplates();
 }
 
+function selectStyle(button) {
+  document.querySelectorAll(".concept-filter button").forEach(btn => btn.classList.remove("active"));
+  button.classList.add("active");
+
+  const selected = button.innerText;
+  const target = document.getElementById("selectedStyle");
+  if (target) target.innerText = selected;
+
+  filterTemplates();
+}
+
 function updateTemplateInfoText() {
   const industry = document.getElementById("selectedIndustry")?.innerText;
   const concept = document.getElementById("selectedConcept")?.innerText;
   const infoText = document.getElementById("templateInfoText");
 
-  if (!infoText) {
-    console.warn("#templateInfoText 요소가 없습니다");
-    return;
-  }
+  if (!infoText) return;
 
   if (industry === "전체" && concept === "전체") {
     infoText.innerText = "우측 템플릿은 선택에 따라 자동 추천됩니다";
@@ -105,11 +110,14 @@ function updateTemplateInfoText() {
 function filterTemplates() {
   const industry = document.getElementById("selectedIndustry")?.innerText;
   const concept = document.getElementById("selectedConcept")?.innerText;
+  const style = document.querySelector(".concept-filter .active")?.innerText;
 
   document.querySelectorAll(".template-card").forEach(card => {
-    const matchesIndustry = industry === "전체" || card.dataset.industry === industry;
-    const matchesConcept = concept === "전체" || card.dataset.concept === concept;
-    if (matchesIndustry && matchesConcept) {
+    const matchIndustry = !industry || industry === "전체" || card.dataset.industry === industry;
+    const matchConcept = !concept || concept === "전체" || card.dataset.concept === concept;
+    const matchStyle = !style || style === "전체" || (card.dataset.style || "").includes(style);
+
+    if (matchIndustry && matchConcept && matchStyle) {
       card.classList.add("visible");
     } else {
       card.classList.remove("visible");
@@ -120,17 +128,6 @@ function filterTemplates() {
     window.msnry.layout();
   }
 }
-
-function selectStyle(button) {
-  document.querySelectorAll(".concept-filter button").forEach(btn => btn.classList.remove("active"));
-  button.classList.add("active");
-
-  const selectedStyle = button.innerText;
-
-  // 필터링 로직 연결 시 필요하면 여기에 추가
-  console.log("선택된 컨셉 필터:", selectedStyle);
-}
-
 
 // 실시간 입력 반영
 function syncInputToIframe(id, value) {
@@ -233,4 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const firstConcept = document.querySelector('#step2 .button-grid button');
   if (firstConcept) firstConcept.click();
+
+  const firstStyle = document.querySelector('.concept-filter button');
+  if (firstStyle) firstStyle.click();
 });

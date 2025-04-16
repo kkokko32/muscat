@@ -18,23 +18,23 @@
       <div class="step active" id="step1">
         <p class="step-title">업종</p>
         <div class="button-grid">
-          <button onclick="selectIndustry(this)">전체</button>
-          <button onclick="selectIndustry(this)">카페</button>
-          <button onclick="selectIndustry(this)">식당</button>
-          <button onclick="selectIndustry(this)">뷰티샵</button>
-          <button onclick="selectIndustry(this)">비즈니스</button>
-          <button onclick="selectIndustry(this)">기타</button>
+          <button type="button" onclick="selectIndustry(this)">전체</button>
+          <button type="button" onclick="selectIndustry(this)">카페</button>
+          <button type="button" onclick="selectIndustry(this)">식당</button>
+          <button type="button" onclick="selectIndustry(this)">뷰티샵</button>
+          <button type="button" onclick="selectIndustry(this)">비즈니스</button>
+          <button type="button" onclick="selectIndustry(this)">기타</button>
         </div>
       </div>
 
       <div class="step disabled" id="step2">
         <p class="step-title">디자인 대상</p>
         <div class="button-grid">
-          <button onclick="selectConcept(this)">전체</button>
-          <button onclick="selectConcept(this)">메뉴판</button>
-          <button onclick="selectConcept(this)">명함</button>
-          <button onclick="selectConcept(this)">SNS 이미지</button>
-          <button onclick="selectConcept(this)">포장지</button>
+          <button type="button" onclick="selectConcept(this)">전체</button>
+          <button type="button" onclick="selectConcept(this)">메뉴판</button>
+          <button type="button" onclick="selectConcept(this)">명함</button>
+          <button type="button" onclick="selectConcept(this)">SNS 이미지</button>
+          <button type="button" onclick="selectConcept(this)">포장지</button>
         </div>
       </div>
 
@@ -48,9 +48,9 @@
           <input id="brandName" placeholder="브랜드 명을 입력하세요" type="text" />
           <input id="brandDesc" placeholder="브랜드 문구 / 슬로건" type="text" />
           <p class="upload-label">이미지를 업로드해주세요</p>
-          <button class="upload-btn" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
+          <button class="upload-btn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
           <input accept="image/*" id="logoInput" style="display: none" type="file" />
-          <button class="upload-btn" onclick="document.getElementById('mainImageInput').click()">메인 이미지 업로드</button>
+          <button class="upload-btn" type="button" onclick="document.getElementById('mainImageInput').click()">메인 이미지 업로드</button>
           <input accept="image/*" id="mainImageInput" style="display: none" type="file" />
         </div>
       </div>
@@ -58,12 +58,12 @@
 
     <section class="content">
       <div class="concept-filter">
-        <button onclick="selectStyle(this)">전체</button>
-        <button onclick="selectStyle(this)">모던,심플</button>
-        <button onclick="selectStyle(this)">에코,자연</button>
-        <button onclick="selectStyle(this)">전통</button>
-        <button onclick="selectStyle(this)">럭셔리</button>
-        <button onclick="selectStyle(this)">기타</button>
+        <button type="button" onclick="selectStyle(this)">전체</button>
+        <button type="button" onclick="selectStyle(this)">모던,심플</button>
+        <button type="button" onclick="selectStyle(this)">에코,자연</button>
+        <button type="button" onclick="selectStyle(this)">전통</button>
+        <button type="button" onclick="selectStyle(this)">럭셔리</button>
+        <button type="button" onclick="selectStyle(this)">기타</button>
       </div>
 
       <div class="template-wrapper">
@@ -73,21 +73,21 @@
           </p>
           <div class="template-scroll">
             <div class="template-preview">
-              <!-- 템플릿 카드 -->
-              <div class="template-card visible" data-concept="메뉴판" data-industry="카페" onclick="goToTemplate('template-001.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-001.html"></iframe>
+              <!-- 템플릿 카드 예시 -->
+              <div class="template-card visible" data-concept="메뉴판" data-industry="카페" data-style="모던,심플" onclick="goToTemplate('template-001.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-001.html" title="템플릿 미리보기 1"></iframe>
               </div>
-              <div class="template-card visible" data-concept="명함" data-industry="식당" onclick="goToTemplate('template-002.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-002.html"></iframe>
+              <div class="template-card visible" data-concept="명함" data-industry="식당" data-style="전통" onclick="goToTemplate('template-002.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-002.html" title="템플릿 미리보기 2"></iframe>
               </div>
-              <div class="template-card visible" data-concept="SNS 이미지" data-industry="뷰티샵" onclick="goToTemplate('template-003.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-003.html"></iframe>
+              <div class="template-card visible" data-concept="SNS 이미지" data-industry="뷰티샵" data-style="럭셔리" onclick="goToTemplate('template-003.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-003.html" title="템플릿 미리보기 3"></iframe>
               </div>
-              <div class="template-card visible" data-concept="포장지" data-industry="비즈니스" onclick="goToTemplate('template-004.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-004.html"></iframe>
+              <div class="template-card visible" data-concept="포장지" data-industry="비즈니스" data-style="에코,자연" onclick="goToTemplate('template-004.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-004.html" title="템플릿 미리보기 4"></iframe>
               </div>
-              <div class="template-card visible" data-concept="메뉴판" data-industry="기타" onclick="goToTemplate('template-005.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-005.html"></iframe>
+              <div class="template-card visible" data-concept="메뉴판" data-industry="기타" data-style="기타" onclick="goToTemplate('template-005.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-005.html" title="템플릿 미리보기 5"></iframe>
               </div>
             </div>
           </div>

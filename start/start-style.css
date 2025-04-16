@@ -170,7 +170,7 @@ input[disabled] {
   display: flex;
   justify-content: center;
   position: relative;
-  margin-left: 100px;
+  margin-left: 0;
   padding-left: 0;
 }
 
@@ -242,17 +242,13 @@ input[disabled] {
 }
 
 .concept-filter {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 901;
-  background: #ffffff;
-  padding: 10px 20px;
-  border-radius: 10px;
   display: flex;
+  justify-content: center;
   gap: 12px;
-  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 902;
 }
 
 .concept-filter button {
