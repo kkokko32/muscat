@@ -58,7 +58,7 @@ body.mypage .global-header .logo {
 }
 
 .template-count-text {
-  font-size: 24px;
+  font-size: 42px;
   font-weight: 600;
   text-align: center;
   margin-top: 20px;
@@ -89,13 +89,6 @@ body.mypage .global-header .logo {
   justify-content: flex-end; 
   align-items: center;
   margin-bottom: 20px;
-}
-
-/* '총 3개' 위치 설정 */
-#template-count {
-  font-size: 16px;
-  color: #444;
-  margin: 0;
 }
 
 /* 관리 모드 버튼 위치 조정 */

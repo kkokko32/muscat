@@ -125,11 +125,8 @@ input[disabled] {
   z-index: 900;
   width: 600px;
   text-align: center;
-  font-size: 16px;
-  font-weight: 300;
-  color: #292929;
   background-color: #fcfcfc;
-  padding: 10px 0 12px;
+  padding: 0; /* 패딩 제거로 높이 최소화 */
   box-sizing: border-box;
 }
 
