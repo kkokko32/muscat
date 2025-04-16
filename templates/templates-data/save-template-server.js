@@ -9,28 +9,24 @@ import {
   doc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// html2canvas 라이브러리 로딩 필요
 import html2canvas from "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
 
 const saveBtn = document.getElementById("saveTemplateBtn");
 let savedDocId = null;
 
-// ✅ 이미지 로드 확인 함수
 function waitForImageLoad(imageElement) {
   return new Promise(resolve => {
     if (!imageElement || !imageElement.src) {
-      resolve(); // 이미지 없으면 바로 처리
+      resolve();
     } else if (imageElement.complete && imageElement.naturalHeight !== 0) {
-      resolve(); // 이미 로드된 상태
+      resolve();
     } else {
-      imageElement.onload = () => resolve(); // 로드 완료 시 처리
-      imageElement.onerror = () => resolve(); // 오류 시에도 강제 완료
+      imageElement.onload = () => resolve();
+      imageElement.onerror = () => resolve();
     }
   });
 }
 
-// 저장 또는 삭제 토글
 async function handleSaveOrDelete() {
   const user = auth.currentUser;
   if (!user) {
@@ -39,20 +35,18 @@ async function handleSaveOrDelete() {
   }
 
   if (savedDocId) {
-    // ✅ 삭제 처리
     try {
       await deleteDoc(doc(db, "savedTemplates", savedDocId));
       savedDocId = null;
       alert("저장이 해제되었습니다.");
       updateButtonState("저장", false);
     } catch (e) {
-      console.error("삭제 실패:", e);
-      alert("삭제 중 오류가 발생했습니다.");
+      console.error("삭제 실패:", e.message || e);
+      alert("삭제 중 오류가 발생했습니다.\n" + (e.message || e));
     }
     return;
   }
 
-  // ✅ 저장 처리
   const brand = document.querySelector(".brand-name")?.innerText || "";
   const slogan = document.querySelector(".brand-slogan")?.innerText || "";
   const logoImg = document.querySelector(".logo-preview");
@@ -68,19 +62,25 @@ async function handleSaveOrDelete() {
   }
 
   try {
-    // ✅ 이미지 로딩이 끝날 때까지 대기
     await Promise.all([
       waitForImageLoad(logoImg),
       waitForImageLoad(imageImg)
     ]);
 
-    // ✅ 캡처 실행
     const canvas = await html2canvas(frame, {
       backgroundColor: null,
       useCORS: true
     });
 
-    const thumbnail = canvas.toDataURL("image/png");
+    // ✅ 썸네일 리사이징
+    const resizedCanvas = document.createElement("canvas");
+    const ctx = resizedCanvas.getContext("2d");
+    const maxWidth = 400;
+    const scaleRatio = maxWidth / canvas.width;
+    resizedCanvas.width = maxWidth;
+    resizedCanvas.height = canvas.height * scaleRatio;
+    ctx.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
+    const thumbnail = resizedCanvas.toDataURL("image/png");
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
@@ -98,12 +98,11 @@ async function handleSaveOrDelete() {
     updateButtonState("삭제", true);
 
   } catch (e) {
-    console.error("저장 실패:", e);
-    alert("저장 중 오류가 발생했습니다.");
+    console.error("저장 실패:", e.message || e);
+    alert("저장 중 오류가 발생했습니다.\n" + (e.message || e));
   }
 }
 
-// 버튼 텍스트 및 스타일 업데이트
 function updateButtonState(text, isActive) {
   if (!saveBtn) return;
   saveBtn.innerText = text;
@@ -114,15 +113,11 @@ function updateButtonState(text, isActive) {
   }
 }
 
-// 기존 저장 상태 확인
 async function checkExistingSavedTemplate() {
   const user = auth.currentUser;
   if (!user) return;
 
-  const q = query(
-    collection(db, "savedTemplates"),
-    where("uid", "==", user.uid)
-  );
+  const q = query(collection(db, "savedTemplates"), where("uid", "==", user.uid));
   const snapshot = await getDocs(q);
   if (snapshot.empty) return;
 
@@ -136,7 +131,6 @@ async function checkExistingSavedTemplate() {
   });
 }
 
-// 로그인 완료 후 실행
 auth.onAuthStateChanged(user => {
   if (user) {
     checkExistingSavedTemplate();
