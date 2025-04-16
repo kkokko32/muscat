@@ -220,6 +220,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const firstConcept = document.querySelector('#step2 .button-grid button');
   if (firstConcept) firstConcept.click();
 
-  const firstStyle = document.querySelector('.concept-filter button');
+  const firstStyle = document.querySelector('.inline-concept-filter button');
   if (firstStyle) firstStyle.click();
 });

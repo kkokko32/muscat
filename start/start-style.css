@@ -128,6 +128,7 @@ input[disabled] {
   background-color: #fcfcfc;
   padding: 0; /* 패딩 제거로 높이 최소화 */
   box-sizing: border-box;
+  font-size: 16pt;
 }
 
 /* 템플릿 영역 */
