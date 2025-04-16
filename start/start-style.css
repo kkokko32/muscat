@@ -240,3 +240,33 @@ input[disabled] {
   font-weight: bold;
   text-decoration: underline;
 }
+
+.concept-filter {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 901;
+  background: #ffffff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.concept-filter button {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #292929;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-bottom: 2px solid transparent;
+  transition: border 0.2s;
+}
+
+.concept-filter button.active {
+  border-bottom: 2px solid #292929;
+  font-weight: bold;
+}

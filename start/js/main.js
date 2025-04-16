@@ -121,6 +121,17 @@ function filterTemplates() {
   }
 }
 
+function selectStyle(button) {
+  document.querySelectorAll(".concept-filter button").forEach(btn => btn.classList.remove("active"));
+  button.classList.add("active");
+
+  const selectedStyle = button.innerText;
+
+  // 필터링 로직 연결 시 필요하면 여기에 추가
+  console.log("선택된 컨셉 필터:", selectedStyle);
+}
+
+
 // 실시간 입력 반영
 function syncInputToIframe(id, value) {
   const iframes = document.querySelectorAll(".template-card.visible iframe");
