@@ -80,7 +80,7 @@ async function handleSaveOrDelete() {
     resizedCanvas.width = maxWidth;
     resizedCanvas.height = canvas.height * scaleRatio;
     ctx.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
-    const thumbnail = resizedCanvas.toDataURL("image/png");
+    const thumbnail = canvas.toDataURL("image/jpeg", 0.6);
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
