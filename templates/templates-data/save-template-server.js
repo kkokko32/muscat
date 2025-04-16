@@ -47,19 +47,23 @@ async function handleSaveOrDelete() {
     return;
   }
 
-  const brand = document.querySelector(".brand-name")?.innerText || "";
-  const slogan = document.querySelector(".brand-slogan")?.innerText || "";
-  const logoImg = document.querySelector(".logo-preview");
-  const imageImg = document.querySelector(".main-preview");
-  const logo = logoImg?.src || "";
-  const image = imageImg?.src || "";
+  
   const frame = document.querySelector(".template-frame");
-  const frameHTML = frame?.outerHTML || "";
+const frameHTML = frame?.outerHTML || "";
 
-  if (!frame) {
-    alert("템플릿이 존재하지 않습니다.");
-    return;
-  }
+if (!frame) {
+  alert("템플릿이 존재하지 않습니다.");
+  return;
+}
+
+const brand = frame.querySelector(".brand-name")?.innerText || "";
+const slogan = frame.querySelector(".brand-slogan")?.innerText || "";
+const logoImg = frame.querySelector(".logo-preview");
+const imageImg = frame.querySelector(".main-preview");
+
+const logo = logoImg?.src || "";
+const image = imageImg?.src || "";
+
 
   try {
     await Promise.all([
@@ -80,8 +84,7 @@ async function handleSaveOrDelete() {
     resizedCanvas.width = maxWidth;
     resizedCanvas.height = canvas.height * scaleRatio;
     ctx.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
-    const thumbnail = canvas.toDataURL("image/jpeg", 0.6);
-
+    const thumbnail = resizedCanvas.toDataURL("image/jpeg", 0.6); 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
       brand,
