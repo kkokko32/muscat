@@ -99,7 +99,7 @@ function updateTemplateInfoText() {
 function filterTemplates() {
   const industry = document.getElementById("selectedIndustry")?.innerText;
   const concept = document.getElementById("selectedConcept")?.innerText;
-  const style = document.querySelector(".concept-filter .active")?.innerText;
+  const style = document.querySelector(".inline-concept-filter .active")?.innerText;
 
   document.querySelectorAll(".template-card").forEach(card => {
     const matchIndustry = !industry || industry === "전체" || card.dataset.industry === industry;
