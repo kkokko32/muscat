@@ -1,4 +1,6 @@
-import { db, auth } from "/muscat/common/firebase-init.js";
+// 실배포용 저장 스크립트: Storage 사용 + Firestore에 URL 저장
+
+import { db, auth, storage } from "/muscat/common/firebase-init.js";
 import {
   collection,
   addDoc,
@@ -9,6 +11,11 @@ import {
   doc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import {
+  ref,
+  uploadString,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 import html2canvas from "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
 
 const saveBtn = document.getElementById("saveTemplateBtn");
@@ -25,6 +32,12 @@ function waitForImageLoad(imageElement) {
       imageElement.onerror = () => resolve();
     }
   });
+}
+
+async function uploadImageToStorage(base64Data, path) {
+  const storageRef = ref(storage, path);
+  await uploadString(storageRef, base64Data, 'data_url');
+  return await getDownloadURL(storageRef);
 }
 
 async function handleSaveOrDelete() {
@@ -47,23 +60,17 @@ async function handleSaveOrDelete() {
     return;
   }
 
-  
   const frame = document.querySelector(".template-frame");
-const frameHTML = frame?.outerHTML || "";
+  const frameHTML = frame?.outerHTML || "";
+  if (!frame) {
+    alert("템플릿이 존재하지 않습니다.");
+    return;
+  }
 
-if (!frame) {
-  alert("템플릿이 존재하지 않습니다.");
-  return;
-}
-
-const brand = frame.querySelector(".brand-name")?.innerText || "";
-const slogan = frame.querySelector(".brand-slogan")?.innerText || "";
-const logoImg = frame.querySelector(".logo-preview");
-const imageImg = frame.querySelector(".main-preview");
-
-const logo = logoImg?.src || "";
-const image = imageImg?.src || "";
-
+  const brand = frame.querySelector(".brand-name")?.innerText || "";
+  const slogan = frame.querySelector(".brand-slogan")?.innerText || "";
+  const logoImg = frame.querySelector(".logo-preview");
+  const imageImg = frame.querySelector(".main-preview");
 
   try {
     await Promise.all([
@@ -71,12 +78,11 @@ const image = imageImg?.src || "";
       waitForImageLoad(imageImg)
     ]);
 
+    // 썸네일 생성
     const canvas = await html2canvas(frame, {
       backgroundColor: null,
       useCORS: true
     });
-
-    // ✅ 썸네일 리사이징
     const resizedCanvas = document.createElement("canvas");
     const ctx = resizedCanvas.getContext("2d");
     const maxWidth = 400;
@@ -84,15 +90,24 @@ const image = imageImg?.src || "";
     resizedCanvas.width = maxWidth;
     resizedCanvas.height = canvas.height * scaleRatio;
     ctx.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
-    const thumbnail = resizedCanvas.toDataURL("image/jpeg", 0.6); 
+    const thumbnailDataUrl = resizedCanvas.toDataURL("image/jpeg", 0.4);
+
+    // Storage에 이미지 저장
+    const timestamp = Date.now();
+    const basePath = `users/${user.uid}/${timestamp}`;
+    const logoUrl = logoImg?.src ? await uploadImageToStorage(logoImg.src, `${basePath}/logo.jpg`) : "";
+    const imageUrl = imageImg?.src ? await uploadImageToStorage(imageImg.src, `${basePath}/main.jpg`) : "";
+    const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
+
+    // Firestore 저장
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
       brand,
       slogan,
-      logo,
-      image,
+      logoUrl,
+      imageUrl,
       html: frameHTML,
-      thumbnail,
+      thumbnailUrl,
       createdAt: serverTimestamp()
     });
 

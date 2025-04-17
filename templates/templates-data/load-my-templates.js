@@ -1,3 +1,5 @@
+// 실배포용 구조: Storage에서 썸네일 불러오기 (thumbnail → thumbnailUrl)
+
 import { db, auth } from "/muscat/common/firebase-init.js";
 import {
   collection,
@@ -10,7 +12,6 @@ import {
 
 let isManaging = false;
 
-// 로그인 완료 후 실행
 auth.onAuthStateChanged(user => {
   if (user) {
     loadMyTemplates();
@@ -56,12 +57,12 @@ async function loadMyTemplates() {
     checkbox.style.display = isManaging ? "block" : "none";
     wrapper.appendChild(checkbox);
 
-    if (data.thumbnail) {
+    if (data.thumbnailUrl) {
       const thumbnailWrapper = document.createElement("div");
       thumbnailWrapper.className = "thumbnail-wrapper";
 
       const previewImg = document.createElement("img");
-      previewImg.src = data.thumbnail;
+      previewImg.src = data.thumbnailUrl;
       previewImg.alt = "저장된 템플릿 미리보기";
       previewImg.className = "thumbnail";
 
@@ -93,7 +94,6 @@ async function loadMyTemplates() {
   }
 }
 
-// 카드 높이를 Masonry 스타일에 맞게 맞춰줌
 function adjustTemplateCardHeights() {
   const cards = document.querySelectorAll(".template-card");
   let maxHeight = 0;
@@ -108,7 +108,6 @@ function adjustTemplateCardHeights() {
   });
 }
 
-// 관리 모드
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
@@ -120,7 +119,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// 삭제 기능
 async function handleDelete() {
   const confirmDelete = confirm("선택한 템플릿을 삭제하시겠습니까?");
   if (!confirmDelete) return;

@@ -8,7 +8,7 @@
 </head>
 <body class="template-page">
 
-  <div class="template-frame" id="templateFrame" style="margin: 0 auto; position: relative; width: 1200px; height: 1000px; background-color: #888;">
+  <div class="template-frame" id="templateFrame" style="margin: 0 auto; position: relative; width: 1200px; height: 1600px;">
     <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
     <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
     <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
@@ -17,11 +17,10 @@
     <div class="template-buttons">
       <div class="template-close" onclick="window.history.back()">&times;</div>
       <button id="saveTemplateBtn" class="save-btn">저장</button>
-      <button onclick="downloadTemplate()" class="download-btn">다운로드</button>
+      <button id="downloadBtn" class="download-btn">다운로드</button>
     </div>
   </div>
 
-  <!-- html2canvas 외부 로딩 (window에 등록됨) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script type="module">
@@ -57,9 +56,16 @@
             const data = snapshot.data();
             const container = document.getElementById("templateFrame");
             if (container) {
-            container.outerHTML = data.html; // ✅ 기존 껍데기 프레임 제거하고 사용자 템플릿만 남김
+              container.outerHTML = data.html;
             }
+
             setTimeout(() => {
+              const logoFromFirestore = document.querySelector(".logo-preview");
+              const mainFromFirestore = document.querySelector(".main-preview");
+
+              if (data.logoUrl) logoFromFirestore.src = data.logoUrl;
+              if (data.imageUrl) mainFromFirestore.src = data.imageUrl;
+
               const btn = document.getElementById("saveTemplateBtn");
               if (btn) {
                 btn.innerText = "삭제";
@@ -71,63 +77,8 @@
           const data = JSON.parse(localStorage.getItem("templateData") || "{}");
           if (data.brand) brandEl.innerText = data.brand;
           if (data.slogan) sloganEl.innerText = data.slogan;
-          if (data.logo) logoEl.src = data.logo;
-          if (data.main) imageEl.src = data.main;
-        }
-      }
-
-      async function saveTemplate() {
-        const user = auth.currentUser;
-        if (!user) {
-          alert("로그인이 필요합니다.");
-          return;
-        }
-
-        const brand = brandEl?.innerText || '';
-        const slogan = sloganEl?.innerText || '';
-        const logo = logoEl?.src || '';
-        const image = imageEl?.src || '';
-        const frameHTML = frameEl?.outerHTML || '';
-
-        if (currentDocId) {
-          const confirmDel = confirm("저장된 템플릿을 삭제하시겠습니까?");
-          if (!confirmDel) return;
-          await deleteDoc(doc(db, "savedTemplates", currentDocId));
-          alert("삭제 완료되었습니다.");
-          window.location.href = "/muscat/save-templates/my-save.html";
-          return;
-        }
-
-        try {
-          await Promise.all([
-            waitForImageLoad(logoEl),
-            waitForImageLoad(imageEl)
-          ]);
-          await new Promise(resolve => setTimeout(resolve, 100));
-
-          const canvas = await window.html2canvas(frameEl);
-          const thumbnail = canvas.toDataURL("image/png");
-
-          const templateData = {
-            uid: user.uid,
-            brand,
-            slogan,
-            logo,
-            image,
-            html: frameHTML,
-            thumbnail,
-            createdAt: serverTimestamp()
-          };
-
-          const docRef = await addDoc(collection(db, "savedTemplates"), templateData);
-          currentDocId = docRef.id;
-
-          saveBtn.innerText = "삭제";
-          saveBtn.classList.add("active");
-          alert("템플릿이 저장되었습니다.");
-        } catch (e) {
-          console.error("저장 실패:", e);
-          alert("저장 중 오류가 발생했습니다.");
+          if (data.logoUrl) logoEl.src = data.logoUrl;
+          if (data.imageUrl) imageEl.src = data.imageUrl;
         }
       }
 
@@ -152,7 +103,6 @@
       }
 
       loadTemplate();
-      saveBtn?.addEventListener("click", saveTemplate);
       downloadBtn?.addEventListener("click", downloadTemplate);
     });
   </script>
