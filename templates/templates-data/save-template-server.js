@@ -91,6 +91,7 @@ async function handleSaveOrDelete() {
       return;
     }
 
+    // ✅ 복제 후 저장용 HTML 생성
     const clonedFrame = frame.cloneNode(true);
     clonedFrame.querySelector(".brand-name").innerText = brand;
     clonedFrame.querySelector(".brand-slogan").innerText = slogan;
@@ -98,6 +99,7 @@ async function handleSaveOrDelete() {
     clonedFrame.querySelector(".main-preview").src = imageImg?.src || "";
     const frameHTML = clonedFrame.outerHTML;
 
+    // 썸네일 생성
     const canvas = await html2canvas(frame, {
       backgroundColor: null,
       useCORS: true
@@ -112,11 +114,12 @@ async function handleSaveOrDelete() {
     ctx.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
     const thumbnailDataUrl = resizedCanvas.toDataURL("image/jpeg", 0.4);
 
+    // 이미지 업로드
     const timestamp = Date.now();
     const basePath = `users/${user.uid}/${timestamp}`;
 
-    const logoExt = logoImg?.src ? getImageExtension(logoImg.src) : "jpg";
-    const imageExt = imageImg?.src ? getImageExtension(imageImg.src) : "jpg";
+    const logoExt = getImageExtension(logoImg?.src || "");
+    const imageExt = getImageExtension(imageImg?.src || "");
 
     const logoUrl = logoImg?.src ? await uploadImageToStorage(logoImg.src, `${basePath}/logo.${logoExt}`) : "";
     const imageUrl = imageImg?.src ? await uploadImageToStorage(imageImg.src, `${basePath}/main.${imageExt}`) : "";
