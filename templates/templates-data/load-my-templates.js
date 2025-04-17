@@ -1,5 +1,3 @@
-// 실배포용 구조: Storage에서 썸네일 불러오기 (thumbnail → thumbnailUrl)
-
 import { db, auth } from "/muscat/common/firebase-init.js";
 import {
   collection,
@@ -79,6 +77,25 @@ async function loadMyTemplates() {
     brandP.innerText = data.brand || "브랜드명 없음";
     wrapper.appendChild(brandP);
 
+    // 저장 날짜 (Firestore timestamp → JS Date 변환)
+    if (data.createdAt?.toDate) {
+      const createdDate = data.createdAt.toDate();
+      const dateP = document.createElement("p");
+      dateP.style.textAlign = "center";
+      dateP.style.fontSize = "13px";
+      dateP.style.color = "#666";
+      dateP.style.margin = "0";
+
+      const year = createdDate.getFullYear();
+      const month = createdDate.getMonth() + 1;
+      const day = createdDate.getDate();
+      const hour = createdDate.getHours();
+      const minute = createdDate.getMinutes();
+
+      dateP.innerText = `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
+      wrapper.appendChild(dateP);
+    }
+
     // 템플릿 클릭 시 상세 보기
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
@@ -112,7 +129,7 @@ function adjustTemplateCardHeights() {
   });
 }
 
-// 페이지 로딩 시에도 강제로 실행
+// 페이지 로딩 시 강제 템플릿 로드
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
@@ -123,7 +140,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ 이미 로그인된 상태에서도 강제로 호출
   if (auth.currentUser) {
     loadMyTemplates();
   }
