@@ -10,27 +10,9 @@ import {
 
 let isManaging = false;
 
-function setupManageButton() {
-  const manageBtn = document.getElementById("manageModeBtn");
-  if (manageBtn) {
-    manageBtn.addEventListener("click", () => {
-      isManaging = !isManaging;
-      manageBtn.innerText = isManaging ? "완료" : "관리";
-      loadMyTemplates();
-    });
-  }
-}
-
 auth.onAuthStateChanged(user => {
-  if (!user) return;
-  if (document.readyState === "complete" || document.readyState === "interactive") {
+  if (user) {
     loadMyTemplates();
-    setupManageButton();
-  } else {
-    window.addEventListener("DOMContentLoaded", () => {
-      loadMyTemplates();
-      setupManageButton();
-    });
   }
 });
 
@@ -45,13 +27,13 @@ async function loadMyTemplates() {
   const countText = document.getElementById("template-count");
   const deleteBtn = document.getElementById("deleteSelectedBtn");
 
-  if (!container) return;
-  container.innerHTML = "";
-
   if (countText) {
     const count = snapshot.docs.length;
     countText.innerHTML = `총 <span class="highlight-number">${count}</span>개의 디자인을 저장했어요`;
   }
+
+  if (!container) return;
+  container.innerHTML = "";
 
   if (snapshot.empty) {
     container.innerHTML = `<p class="no-template">저장된 템플릿이 없습니다.</p>`;
@@ -73,7 +55,7 @@ async function loadMyTemplates() {
     checkbox.style.display = isManaging ? "block" : "none";
     wrapper.appendChild(checkbox);
 
-    // ✅ 썸네일 이미지
+    // 썸네일 이미지
     if (data.thumbnailUrl) {
       const thumbnailWrapper = document.createElement("div");
       thumbnailWrapper.className = "thumbnail-wrapper";
@@ -83,11 +65,16 @@ async function loadMyTemplates() {
       previewImg.alt = "저장된 템플릿 미리보기";
       previewImg.className = "thumbnail";
 
+      previewImg.onload = () => {
+        // Masonry 효과가 적용되게 강제로 렌더링 후 위치 계산되도록 보장
+        wrapper.classList.add("ready");
+      };
+
       thumbnailWrapper.appendChild(previewImg);
       wrapper.appendChild(thumbnailWrapper);
     }
 
-    // ✅ 브랜드명
+    // 브랜드명
     const brandP = document.createElement("p");
     brandP.style.textAlign = "center";
     brandP.style.fontWeight = "bold";
@@ -95,7 +82,7 @@ async function loadMyTemplates() {
     brandP.innerText = data.brand || "브랜드명 없음";
     wrapper.appendChild(brandP);
 
-    // ✅ 저장 날짜
+    // 저장 날짜
     if (data.createdAt?.toDate) {
       const createdDate = data.createdAt.toDate();
       const dateP = document.createElement("p");
@@ -114,6 +101,7 @@ async function loadMyTemplates() {
       wrapper.appendChild(dateP);
     }
 
+    // 템플릿 클릭 시 상세 보기
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
@@ -123,28 +111,14 @@ async function loadMyTemplates() {
     container.appendChild(wrapper);
   });
 
-  adjustTemplateCardHeights();
-
+  // 관리 버튼 관련 처리
   if (deleteBtn) {
     deleteBtn.style.display = isManaging ? "inline-block" : "none";
     deleteBtn.onclick = handleDelete;
   }
 }
 
-function adjustTemplateCardHeights() {
-  const cards = document.querySelectorAll(".template-card");
-  let maxHeight = 0;
-
-  cards.forEach(card => {
-    card.style.height = "auto";
-    maxHeight = Math.max(maxHeight, card.offsetHeight);
-  });
-
-  cards.forEach(card => {
-    card.style.height = `${maxHeight}px`;
-  });
-}
-
+// 삭제 기능
 async function handleDelete() {
   const confirmDelete = confirm("선택한 템플릿을 삭제하시겠습니까?");
   if (!confirmDelete) return;
@@ -160,3 +134,20 @@ async function handleDelete() {
   alert("삭제가 완료되었습니다.");
   loadMyTemplates();
 }
+
+// 초기 로딩 시 실행
+window.addEventListener("DOMContentLoaded", () => {
+  const manageBtn = document.getElementById("manageModeBtn");
+  if (manageBtn) {
+    manageBtn.addEventListener("click", () => {
+      isManaging = !isManaging;
+      manageBtn.innerText = isManaging ? "완료" : "관리";
+      loadMyTemplates();
+    });
+  }
+
+  // auth.currentUser가 이미 있는 경우에도 강제 호출
+  if (auth.currentUser) {
+    loadMyTemplates();
+  }
+});
