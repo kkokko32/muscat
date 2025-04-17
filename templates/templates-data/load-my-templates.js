@@ -57,6 +57,7 @@ async function loadMyTemplates() {
     checkbox.style.display = isManaging ? "block" : "none";
     wrapper.appendChild(checkbox);
 
+    // 썸네일 이미지
     if (data.thumbnailUrl) {
       const thumbnailWrapper = document.createElement("div");
       thumbnailWrapper.className = "thumbnail-wrapper";
@@ -70,6 +71,7 @@ async function loadMyTemplates() {
       wrapper.appendChild(thumbnailWrapper);
     }
 
+    // 브랜드명
     const brandP = document.createElement("p");
     brandP.style.textAlign = "center";
     brandP.style.fontWeight = "bold";
@@ -77,6 +79,7 @@ async function loadMyTemplates() {
     brandP.innerText = data.brand || "브랜드명 없음";
     wrapper.appendChild(brandP);
 
+    // 템플릿 클릭 시 상세 보기
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
@@ -94,6 +97,7 @@ async function loadMyTemplates() {
   }
 }
 
+// 템플릿 카드 높이 정렬
 function adjustTemplateCardHeights() {
   const cards = document.querySelectorAll(".template-card");
   let maxHeight = 0;
@@ -108,6 +112,7 @@ function adjustTemplateCardHeights() {
   });
 }
 
+// 페이지 로딩 시에도 강제로 실행
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
@@ -117,8 +122,14 @@ window.addEventListener("DOMContentLoaded", () => {
       loadMyTemplates();
     });
   }
+
+  // ✅ 이미 로그인된 상태에서도 강제로 호출
+  if (auth.currentUser) {
+    loadMyTemplates();
+  }
 });
 
+// 삭제 핸들러
 async function handleDelete() {
   const confirmDelete = confirm("선택한 템플릿을 삭제하시겠습니까?");
   if (!confirmDelete) return;
