@@ -5,8 +5,6 @@ html, body {
 }
 
 body {
-  display: flex;
-  flex-direction: column;
   background-color: #292929;
   overflow-y: scroll;
 }
@@ -16,18 +14,14 @@ body.mypage {
   color: #ffffff !important;
 }
 
+/* 상단 구조 유지하되 flex 제거 */
 main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  width: 100%;
 }
 
 main.page-wrapper {
   width: 100%;
   max-width: none;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
 }
 
 /* 헤더 배경 및 텍스트 반전 */
@@ -53,23 +47,36 @@ body.mypage .global-header .logo {
   color: #aafc3e;
 }
 
-/* 템플릿 목록 상단 관리 버튼 영역 */
+/* 템플릿 영역: flex 제거 */
 .template-wrapper {
-  flex: 1; 
-  display: flex;
-  flex-direction: column;
   padding: 20px 100px 30px;
   box-sizing: border-box;
   width: 100%;
 }
 
-/* ✅ Masonry 레이아웃 + 가운데 정렬 유지 */
+/* 관리 버튼 영역 */
+.template-list-header {
+  max-width: 1600px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+#manageModeBtn,
+#deleteSelectedBtn {
+  width: auto;
+  min-width: 80px;
+  padding: 8px 16px;
+  margin-left: 8px;
+}
+
+/* ✅ Masonry + 가운데 정렬 */
 .template-list {
   column-count: 5;
   column-gap: 20px;
   max-width: 1800px;
   margin: 0 auto;
-  text-align: center; /* ✅ 카드들을 가운데로 보이게 */
+  text-align: center;
 }
 
 @media (max-width: 1600px) {
@@ -111,7 +118,6 @@ body.mypage .global-header .logo {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 0;
   overflow: hidden;
 }
 .thumbnail {
@@ -147,7 +153,6 @@ body.mypage .global-header .logo {
 
 /* 템플릿 없는 경우 안내 문구 */
 .no-template {
-  flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;
