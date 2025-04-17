@@ -69,7 +69,16 @@ async function handleSaveOrDelete() {
   }
 
   const frame = document.querySelector(".template-frame");
-  const frameHTML = frame?.outerHTML || "";
+
+  const clonedFrame = frame.cloneNode(true);
+  clonedFrame.querySelector(".brand-name").innerText = brand;
+  clonedFrame.querySelector(".brand-slogan").innerText = slogan;
+  clonedFrame.querySelector(".logo-preview").src = logoImg?.src || "";
+  clonedFrame.querySelector(".main-preview").src = imageImg?.src || "";
+
+const frameHTML = clonedFrame.outerHTML;
+
+
   if (!frame) {
     alert("템플릿이 존재하지 않습니다.");
     return;
