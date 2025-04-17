@@ -3,22 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Template 001</title>
+  <title>Template</title>
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 </head>
 <body class="template-page">
 
-  <!-- 템플릿 영역 -->
-  <div class="template-frame" id="templateFrame" style="margin: 0 auto; width: 600px; height: 1600px; background-color: #eee;">
-    <p style="text-align: center; padding: 200px;">템플릿을 불러오는 중입니다...</p>
+  <div class="template-frame" id="templateFrame" style="margin: 0 auto; position: relative; width: 1200px; height: 1200px; background-color: beige;">
+    <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
+    <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
+    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
+    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
+
+    <div class="template-buttons">
+      <div class="template-close" onclick="window.history.back()">&times;</div>
+      <button id="saveTemplateBtn" class="save-btn">저장</button>
+      <button id="downloadBtn" class="download-btn">다운로드</button>
+    </div>
   </div>
 
-  <!-- 버튼 영역 -->
-  <div class="template-buttons">
-    <div class="template-close" onclick="window.history.back()">&times;</div>
-    <button id="saveTemplateBtn" class="save-btn">저장</button>
-    <button id="downloadBtn" class="download-btn">다운로드</button>
-  </div>
 
   <!-- html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
