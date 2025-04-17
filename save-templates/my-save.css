@@ -62,12 +62,13 @@ body.mypage .global-header .logo {
   box-sizing: border-box;
   width: 100%;
 }
-.template-list-header {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-bottom: 20px;
+.template-list {
+  column-count: 5;
+  column-gap: 20px;
+  max-width: 1800px;
+  margin: 0 auto;
 }
+
 #manageModeBtn,
 #deleteSelectedBtn {
   width: auto;
@@ -110,17 +111,14 @@ body.mypage .global-header .logo {
 
 /* 템플릿 카드 */
 .template-card {
-  break-inside: avoid;
+  display: inline-block;
   width: 270px;
   margin-bottom: 20px;
+  break-inside: avoid;
   border-radius: 12px;
   overflow: hidden;
-  position: relative;
-  background: #ffffff;
+  background: #fff;
   color: #000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding-bottom: 14px;
 }
 
