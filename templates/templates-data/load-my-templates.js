@@ -10,10 +10,27 @@ import {
 
 let isManaging = false;
 
+function setupManageButton() {
+  const manageBtn = document.getElementById("manageModeBtn");
+  if (manageBtn) {
+    manageBtn.addEventListener("click", () => {
+      isManaging = !isManaging;
+      manageBtn.innerText = isManaging ? "완료" : "관리";
+      loadMyTemplates();
+    });
+  }
+}
+
 auth.onAuthStateChanged(user => {
-  if (user) {
+  if (!user) return;
+  if (document.readyState === "complete" || document.readyState === "interactive") {
     loadMyTemplates();
-    setupManageButton(); // auth 인증 후 버튼 이벤트 등록
+    setupManageButton();
+  } else {
+    window.addEventListener("DOMContentLoaded", () => {
+      loadMyTemplates();
+      setupManageButton();
+    });
   }
 });
 
@@ -28,13 +45,13 @@ async function loadMyTemplates() {
   const countText = document.getElementById("template-count");
   const deleteBtn = document.getElementById("deleteSelectedBtn");
 
+  if (!container) return;
+  container.innerHTML = "";
+
   if (countText) {
     const count = snapshot.docs.length;
     countText.innerHTML = `총 <span class="highlight-number">${count}</span>개의 디자인을 저장했어요`;
   }
-
-  if (!container) return;
-  container.innerHTML = "";
 
   if (snapshot.empty) {
     container.innerHTML = `<p class="no-template">저장된 템플릿이 없습니다.</p>`;
@@ -56,7 +73,7 @@ async function loadMyTemplates() {
     checkbox.style.display = isManaging ? "block" : "none";
     wrapper.appendChild(checkbox);
 
-    // 썸네일 이미지
+    // ✅ 썸네일 이미지
     if (data.thumbnailUrl) {
       const thumbnailWrapper = document.createElement("div");
       thumbnailWrapper.className = "thumbnail-wrapper";
@@ -70,7 +87,7 @@ async function loadMyTemplates() {
       wrapper.appendChild(thumbnailWrapper);
     }
 
-    // 브랜드명
+    // ✅ 브랜드명
     const brandP = document.createElement("p");
     brandP.style.textAlign = "center";
     brandP.style.fontWeight = "bold";
@@ -78,7 +95,7 @@ async function loadMyTemplates() {
     brandP.innerText = data.brand || "브랜드명 없음";
     wrapper.appendChild(brandP);
 
-    // 저장 날짜
+    // ✅ 저장 날짜
     if (data.createdAt?.toDate) {
       const createdDate = data.createdAt.toDate();
       const dateP = document.createElement("p");
@@ -126,17 +143,6 @@ function adjustTemplateCardHeights() {
   cards.forEach(card => {
     card.style.height = `${maxHeight}px`;
   });
-}
-
-function setupManageButton() {
-  const manageBtn = document.getElementById("manageModeBtn");
-  if (manageBtn) {
-    manageBtn.addEventListener("click", () => {
-      isManaging = !isManaging;
-      manageBtn.innerText = isManaging ? "완료" : "관리";
-      loadMyTemplates();
-    });
-  }
 }
 
 async function handleDelete() {
