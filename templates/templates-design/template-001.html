@@ -15,14 +15,12 @@
     <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
 
     <div class="template-buttons">
-      <div class="template-close" onclick="window.history.back()">&times;</div>
+      <div class="template-close" onclick="window.location.href='/muscat/select-recommend.html'">&times;</div>
       <button id="saveTemplateBtn" class="save-btn">저장</button>
       <button id="downloadBtn" class="download-btn">다운로드</button>
     </div>
   </div>
 
-
-  <!-- html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script type="module">
@@ -31,11 +29,29 @@
 
     const params = new URLSearchParams(window.location.search);
     const docId = params.get("docId");
-
     const frameContainer = document.getElementById("templateFrame");
 
     async function loadTemplate() {
-      if (!docId) return;
+      if (!docId) {
+        // localStorage에서 데이터 불러오기
+        const data = JSON.parse(localStorage.getItem("templateData") || "{}");
+        const brandEl = document.getElementById("brandName");
+        const sloganEl = document.getElementById("brandDesc");
+        const logoEl = document.getElementById("brandLogo");
+        const imageEl = document.getElementById("mainImage");
+
+        if (data.brand) brandEl.innerText = data.brand;
+        if (data.slogan) sloganEl.innerText = data.slogan;
+        if (data.logoUrl || localStorage.getItem("brandLogo")) {
+          logoEl.src = data.logoUrl || localStorage.getItem("brandLogo");
+        }
+        if (data.imageUrl || localStorage.getItem("mainImage")) {
+          imageEl.src = data.imageUrl || localStorage.getItem("mainImage");
+        }
+
+        setupDownload();
+        return;
+      }
 
       try {
         const ref = doc(db, "savedTemplates", docId);
@@ -47,13 +63,10 @@
         }
 
         const data = snapshot.data();
-
-        // 템플릿 디자인 불러오기
         const response = await fetch(data.htmlUrl);
         const htmlText = await response.text();
         frameContainer.outerHTML = htmlText;
 
-        // 0.5초 후에 사용자 입력 반영
         setTimeout(() => {
           const brandEl = document.querySelector(".brand-name");
           const sloganEl = document.querySelector(".brand-slogan");
