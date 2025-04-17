@@ -1,22 +1,14 @@
-/* 전체 레이아웃 고정 */
 html, body {
   height: 100%;
   margin: 0;
 }
-
 body {
   background-color: #292929;
   overflow-y: scroll;
 }
-
 body.mypage {
   background-color: #292929 !important;
   color: #ffffff !important;
-}
-
-/* 상단 구조 유지하되 flex 제거 */
-main {
-  width: 100%;
 }
 
 main.page-wrapper {
@@ -24,7 +16,7 @@ main.page-wrapper {
   max-width: none;
 }
 
-/* 헤더 배경 및 텍스트 반전 */
+/* 헤더 */
 body.mypage .global-header {
   background-color: #292929;
 }
@@ -33,7 +25,7 @@ body.mypage .global-header .logo {
   color: #ffffff !important;
 }
 
-/* 상단 제목 영역 */
+/* 제목 */
 .portfolio-header {
   padding: 0 80px 20px;
 }
@@ -47,16 +39,16 @@ body.mypage .global-header .logo {
   color: #aafc3e;
 }
 
-/* 템플릿 영역: flex 제거 */
+/* 템플릿 영역 */
 .template-wrapper {
+  width: 100%;
   padding: 20px 100px 30px;
   box-sizing: border-box;
-  width: 100%;
 }
 
-/* 관리 버튼 영역 */
+/* 버튼 */
 .template-list-header {
-  max-width: 1600px;
+  max-width: 1800px;
   margin: 0 auto 20px;
   display: flex;
   justify-content: flex-end;
@@ -64,13 +56,12 @@ body.mypage .global-header .logo {
 }
 #manageModeBtn,
 #deleteSelectedBtn {
-  width: auto;
   min-width: 80px;
   padding: 8px 16px;
   margin-left: 8px;
 }
 
-/* ✅ Masonry + 가운데 정렬 */
+/* Masonry 레이아웃 */
 .template-list {
   column-count: 5;
   column-gap: 20px;
@@ -78,7 +69,6 @@ body.mypage .global-header .logo {
   margin: 0 auto;
   text-align: center;
 }
-
 @media (max-width: 1600px) {
   .template-list { column-count: 4; }
 }
@@ -92,33 +82,26 @@ body.mypage .global-header .logo {
   .template-list { column-count: 1; }
 }
 
-.template-list:empty::after {
-  content: "";
-  display: block;
-}
-
-/* 템플릿 카드 */
+/* 카드 */
 .template-card {
   display: inline-block;
   width: 270px;
   margin-bottom: 20px;
   break-inside: avoid;
   border-radius: 12px;
-  overflow: hidden;
   background: #fff;
   color: #000;
-  padding-bottom: 14px;
+  overflow: hidden;
   text-align: center;
 }
 
-/* 썸네일 영역 */
+/* 썸네일 */
 .thumbnail-wrapper {
   width: 100%;
   background: #f0f0f0;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
 }
 .thumbnail {
   width: 100%;
@@ -127,7 +110,7 @@ body.mypage .global-header .logo {
   display: block;
 }
 
-/* 텍스트 스타일 */
+/* 텍스트 */
 .template-card h3 {
   font-size: 18px;
   font-weight: 600;
@@ -151,7 +134,7 @@ body.mypage .global-header .logo {
   display: block;
 }
 
-/* 템플릿 없는 경우 안내 문구 */
+/* 저장안내 */
 .no-template {
   display: flex;
   align-items: center;
