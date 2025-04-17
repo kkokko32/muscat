@@ -7,7 +7,7 @@ html, body {
 body {
   display: flex;
   flex-direction: column;
-  background-color:#292929;
+  background-color: #292929;
   overflow-y: scroll;
 }
 
@@ -55,7 +55,7 @@ body.mypage .global-header .logo {
 
 /* 템플릿 목록 상단 관리 버튼 영역 */
 .template-wrapper {
-  flex: 1; 
+  flex: 1;
   display: flex;
   flex-direction: column;
   padding: 20px 100px 30px;
@@ -76,19 +76,29 @@ body.mypage .global-header .logo {
   margin-left: 8px;
 }
 
-/* Masonry 스타일 레이아웃 적용 */
+/* ✅ Masonry 스타일 + 카드 가로 고정 270px */
 .template-list {
-  column-count: 3;
-  column-gap: 24px;
-  max-width: 1600px;
+  column-count: 5;
+  column-gap: 20px;
+  max-width: 1800px;
   margin: 0 auto;
 }
+@media (max-width: 1600px) {
+  .template-list {
+    column-count: 4;
+  }
+}
 @media (max-width: 1200px) {
+  .template-list {
+    column-count: 3;
+  }
+}
+@media (max-width: 768px) {
   .template-list {
     column-count: 2;
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .template-list {
     column-count: 1;
   }
@@ -101,8 +111,8 @@ body.mypage .global-header .logo {
 /* 템플릿 카드 */
 .template-card {
   break-inside: avoid;
+  width: 270px;
   margin-bottom: 20px;
-  width: 100%;
   border-radius: 12px;
   overflow: hidden;
   position: relative;
