@@ -20,6 +20,8 @@ import {
 const saveBtn = document.getElementById("saveTemplateBtn");
 let savedDocId = null;
 
+console.log("✅ save-template-server.js 연결됨"); 
+
 function waitForImageLoad(imageElement) {
   return new Promise(resolve => {
     if (!imageElement || !imageElement.src) {

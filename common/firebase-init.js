@@ -1,28 +1,22 @@
-// common/firebase-init.js
+// /muscat/common/firebase-init.js
 
-// Firebase 모듈 불러오기
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"; // ✅ storage import
 
-// Firebase 프로젝트 설정 정보
 const firebaseConfig = {
-  apiKey: "AIzaSyAZ8jWpCo1ZeS3VrOQh8m5pCJRVi1wJRNY",
-  authDomain: "muscat-86007.firebaseapp.com",
-  projectId: "muscat-86007",
-  storageBucket: "muscat-86007.appspot.com",  // ← `.app` → `.appspot.com`으로 수정됨
-  messagingSenderId: "741157244877",
-  appId: "1:741157244877:web:3bba4655292e2e19cdbe84",
-  measurementId: "G-VSBCZ125J2"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
-// Firebase 초기화
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const storage = getStorage(app); // ✅ storage 초기화
 
-// Firebase Auth 모듈 추출해서 외부에서 쓸 수 있게 export
-export const auth = getAuth(app);
-
-
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// Firestore 모듈도 export
-export const db = getFirestore(app);
+export { db, auth, storage }; // ✅ storage export 포함!
