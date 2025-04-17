@@ -8,19 +8,21 @@
 </head>
 <body class="template-page">
 
-  <!-- 템플릿 영역: 이곳이 htmlUrl로 교체될 대상 -->
+  <!-- 템플릿 영역 -->
   <div class="template-frame" id="templateFrame" style="margin: 0 auto; width: 600px; height: 1600px; background-color: #eee;">
     <p style="text-align: center; padding: 200px;">템플릿을 불러오는 중입니다...</p>
   </div>
 
-  <!-- 저장 및 다운로드 버튼 -->
+  <!-- 버튼 영역 -->
   <div class="template-buttons">
     <div class="template-close" onclick="window.history.back()">&times;</div>
     <button id="saveTemplateBtn" class="save-btn">저장</button>
     <button id="downloadBtn" class="download-btn">다운로드</button>
   </div>
 
+  <!-- html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
   <script type="module">
     import { db } from "/muscat/common/firebase-init.js";
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -30,65 +32,72 @@
 
     const frameContainer = document.getElementById("templateFrame");
 
-    async function loadTemplateFromStorage() {
+    async function loadTemplate() {
       if (!docId) return;
 
       try {
         const ref = doc(db, "savedTemplates", docId);
         const snapshot = await getDoc(ref);
+
         if (!snapshot.exists()) {
           frameContainer.innerHTML = "<p style='text-align:center;padding:100px;'>템플릿 정보를 찾을 수 없습니다.</p>";
           return;
         }
 
         const data = snapshot.data();
+
+        // 템플릿 디자인 불러오기
         const response = await fetch(data.htmlUrl);
         const htmlText = await response.text();
-
-        // 기존 templateFrame 전체 교체
         frameContainer.outerHTML = htmlText;
 
-        // 이후에 저장/다운로드 버튼 유지
-        setupDownloadButton();
+        // 0.5초 후에 사용자 입력 반영
+        setTimeout(() => {
+          const brandEl = document.querySelector(".brand-name");
+          const sloganEl = document.querySelector(".brand-slogan");
+          const logoEl = document.querySelector(".logo-preview");
+          const imageEl = document.querySelector(".main-preview");
 
-      } catch (err) {
-        console.error("템플릿 불러오기 오류:", err);
-        frameContainer.innerHTML = "<p style='text-align:center;padding:100px;'>불러오는 중 오류가 발생했습니다.</p>";
+          if (data.brand) brandEl.innerText = data.brand;
+          if (data.slogan) sloganEl.innerText = data.slogan;
+          if (data.logoUrl) logoEl.src = data.logoUrl;
+          if (data.imageUrl) imageEl.src = data.imageUrl;
+        }, 500);
+
+        setupDownload();
+
+      } catch (e) {
+        console.error("템플릿 불러오기 실패:", e);
+        frameContainer.innerHTML = "<p style='text-align:center;padding:100px;'>오류가 발생했습니다.</p>";
       }
     }
 
-    async function setupDownloadButton() {
+    function setupDownload() {
       const downloadBtn = document.getElementById("downloadBtn");
       const frame = document.querySelector(".template-frame");
 
-      function waitForImageLoad(img) {
-        return new Promise(resolve => {
+      downloadBtn?.addEventListener("click", async () => {
+        const logo = frame.querySelector(".logo-preview");
+        const image = frame.querySelector(".main-preview");
+
+        const waitForImageLoad = (img) => new Promise(resolve => {
           if (!img || !img.src || img.complete) return resolve();
           img.onload = resolve;
           img.onerror = resolve;
         });
-      }
 
-      async function downloadTemplate() {
-        const logo = frame.querySelector(".logo-preview");
-        const image = frame.querySelector(".main-preview");
         await Promise.all([waitForImageLoad(logo), waitForImageLoad(image)]);
-        await new Promise(resolve => setTimeout(resolve, 100));
-
-        const canvas = await window.html2canvas(frame);
+        const canvas = await html2canvas(frame);
         const link = document.createElement("a");
         link.download = "template.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
-      }
-
-      downloadBtn?.addEventListener("click", downloadTemplate);
+      });
     }
 
-    loadTemplateFromStorage();
+    loadTemplate();
   </script>
 
-  <!-- 저장 기능 유지 -->
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 </body>
 </html>
