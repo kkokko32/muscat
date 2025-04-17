@@ -16,7 +16,6 @@ import {
   uploadString,
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-import html2canvas from "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
 
 const saveBtn = document.getElementById("saveTemplateBtn");
 let savedDocId = null;
@@ -32,6 +31,13 @@ function waitForImageLoad(imageElement) {
       imageElement.onerror = () => resolve();
     }
   });
+}
+
+function getImageExtension(dataUrl) {
+  if (dataUrl.startsWith("data:image/png")) return "png";
+  if (dataUrl.startsWith("data:image/svg")) return "svg";
+  if (dataUrl.startsWith("data:image/webp")) return "webp";
+  return "jpg"; // fallback
 }
 
 async function uploadImageToStorage(base64Data, path) {
@@ -78,11 +84,18 @@ async function handleSaveOrDelete() {
       waitForImageLoad(imageImg)
     ]);
 
+    // html2canvas가 정상 로드되었는지 확인
+    if (typeof html2canvas !== "function") {
+      alert("html2canvas가 로드되지 않았습니다.");
+      return;
+    }
+
     // 썸네일 생성
     const canvas = await html2canvas(frame, {
       backgroundColor: null,
       useCORS: true
     });
+
     const resizedCanvas = document.createElement("canvas");
     const ctx = resizedCanvas.getContext("2d");
     const maxWidth = 400;
@@ -95,8 +108,12 @@ async function handleSaveOrDelete() {
     // Storage에 이미지 저장
     const timestamp = Date.now();
     const basePath = `users/${user.uid}/${timestamp}`;
-    const logoUrl = logoImg?.src ? await uploadImageToStorage(logoImg.src, `${basePath}/logo.jpg`) : "";
-    const imageUrl = imageImg?.src ? await uploadImageToStorage(imageImg.src, `${basePath}/main.jpg`) : "";
+
+    const logoExt = logoImg?.src ? getImageExtension(logoImg.src) : "jpg";
+    const imageExt = imageImg?.src ? getImageExtension(imageImg.src) : "jpg";
+
+    const logoUrl = logoImg?.src ? await uploadImageToStorage(logoImg.src, `${basePath}/logo.${logoExt}`) : "";
+    const imageUrl = imageImg?.src ? await uploadImageToStorage(imageImg.src, `${basePath}/main.${imageExt}`) : "";
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
 
     // Firestore 저장
