@@ -1,9 +1,8 @@
-// /muscat/common/firebase-init.js
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"; 
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"; // ✅ 이 줄 꼭 있어야 함!
+
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -16,6 +15,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const storage = getStorage(app); 
+const storage = getStorage(app); // ✅ 이 줄도 반드시 있어야 함
 
-export { db, auth, storage }; // storage까지 export
+export { db, auth, storage }; // ✅ storage가 반드시 포함되어야 함
