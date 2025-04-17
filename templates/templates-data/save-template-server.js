@@ -12,6 +12,7 @@ import {
 import {
   ref,
   uploadString,
+  uploadBytes,
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
@@ -47,6 +48,13 @@ async function uploadImageToStorage(base64Data, path) {
   const storageRef = ref(storage, path);
   await uploadString(storageRef, base64Data, 'data_url');
   return await getDownloadURL(storageRef);
+}
+
+async function uploadHTMLToStorage(htmlString, path) {
+  const blob = new Blob([htmlString], { type: 'text/html' });
+  const htmlRef = ref(storage, path);
+  await uploadBytes(htmlRef, blob);
+  return await getDownloadURL(htmlRef);
 }
 
 async function handleSaveOrDelete() {
@@ -91,7 +99,7 @@ async function handleSaveOrDelete() {
       return;
     }
 
-    // ✅ 복제 후 저장용 HTML 생성
+    // HTML 백업용 복제
     const clonedFrame = frame.cloneNode(true);
     clonedFrame.querySelector(".brand-name").innerText = brand;
     clonedFrame.querySelector(".brand-slogan").innerText = slogan;
@@ -114,25 +122,27 @@ async function handleSaveOrDelete() {
     ctx.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
     const thumbnailDataUrl = resizedCanvas.toDataURL("image/jpeg", 0.4);
 
-    // 이미지 업로드
+    // 파일 경로 생성
     const timestamp = Date.now();
     const basePath = `users/${user.uid}/${timestamp}`;
-
     const logoExt = getImageExtension(logoImg?.src || "");
     const imageExt = getImageExtension(imageImg?.src || "");
 
+    // Storage 업로드
     const logoUrl = logoImg?.src ? await uploadImageToStorage(logoImg.src, `${basePath}/logo.${logoExt}`) : "";
     const imageUrl = imageImg?.src ? await uploadImageToStorage(imageImg.src, `${basePath}/main.${imageExt}`) : "";
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
+    const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
 
+    // Firestore 저장
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
       brand,
       slogan,
       logoUrl,
       imageUrl,
-      html: frameHTML,
       thumbnailUrl,
+      htmlUrl, // ✅ Firestore에는 URL만 저장
       createdAt: serverTimestamp()
     });
 

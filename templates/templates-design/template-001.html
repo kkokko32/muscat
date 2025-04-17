@@ -3,42 +3,63 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Template</title>
+  <title>Template 001</title>
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 </head>
 <body class="template-page">
 
-  <div class="template-frame" id="templateFrame" style="margin: 0 auto; position: relative; width: 600px; height: 1600px; background-color: #555;">
-    <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
-    <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
-    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
+  <!-- 템플릿 영역: 이곳이 htmlUrl로 교체될 대상 -->
+  <div class="template-frame" id="templateFrame" style="margin: 0 auto; width: 600px; height: 1600px; background-color: #eee;">
+    <p style="text-align: center; padding: 200px;">템플릿을 불러오는 중입니다...</p>
+  </div>
 
-    <div class="template-buttons">
-      <div class="template-close" onclick="window.history.back()">&times;</div>
-      <button id="saveTemplateBtn" class="save-btn">저장</button>
-      <button id="downloadBtn" class="download-btn">다운로드</button>
-    </div>
+  <!-- 저장 및 다운로드 버튼 -->
+  <div class="template-buttons">
+    <div class="template-close" onclick="window.history.back()">&times;</div>
+    <button id="saveTemplateBtn" class="save-btn">저장</button>
+    <button id="downloadBtn" class="download-btn">다운로드</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
   <script type="module">
-    import { db, auth } from "/muscat/common/firebase-init.js";
+    import { db } from "/muscat/common/firebase-init.js";
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const params = new URLSearchParams(window.location.search);
     const docId = params.get("docId");
-    let currentDocId = docId || null;
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const brandEl = document.getElementById("brandName");
-      const sloganEl = document.getElementById("brandDesc");
-      const logoEl = document.getElementById("brandLogo");
-      const imageEl = document.getElementById("mainImage");
-      const frameEl = document.getElementById("templateFrame");
-      const saveBtn = document.getElementById("saveTemplateBtn");
+    const frameContainer = document.getElementById("templateFrame");
+
+    async function loadTemplateFromStorage() {
+      if (!docId) return;
+
+      try {
+        const ref = doc(db, "savedTemplates", docId);
+        const snapshot = await getDoc(ref);
+        if (!snapshot.exists()) {
+          frameContainer.innerHTML = "<p style='text-align:center;padding:100px;'>템플릿 정보를 찾을 수 없습니다.</p>";
+          return;
+        }
+
+        const data = snapshot.data();
+        const response = await fetch(data.htmlUrl);
+        const htmlText = await response.text();
+
+        // 기존 templateFrame 전체 교체
+        frameContainer.outerHTML = htmlText;
+
+        // 이후에 저장/다운로드 버튼 유지
+        setupDownloadButton();
+
+      } catch (err) {
+        console.error("템플릿 불러오기 오류:", err);
+        frameContainer.innerHTML = "<p style='text-align:center;padding:100px;'>불러오는 중 오류가 발생했습니다.</p>";
+      }
+    }
+
+    async function setupDownloadButton() {
       const downloadBtn = document.getElementById("downloadBtn");
+      const frame = document.querySelector(".template-frame");
 
       function waitForImageLoad(img) {
         return new Promise(resolve => {
@@ -48,64 +69,26 @@
         });
       }
 
-      async function loadTemplate() {
-        if (currentDocId) {
-          const ref = doc(db, "savedTemplates", currentDocId);
-          const snapshot = await getDoc(ref);
-          if (snapshot.exists()) {
-            const data = snapshot.data();
-            const container = document.getElementById("templateFrame");
-            if (container) {
-              container.outerHTML = data.html;
-            }
-
-            setTimeout(() => {
-              const logoFromFirestore = document.querySelector(".logo-preview");
-              const mainFromFirestore = document.querySelector(".main-preview");
-
-              if (data.logoUrl) logoFromFirestore.src = data.logoUrl;
-              if (data.imageUrl) mainFromFirestore.src = data.imageUrl;
-
-              const btn = document.getElementById("saveTemplateBtn");
-              if (btn) {
-                btn.innerText = "삭제";
-                btn.classList.add("active");
-              }
-            }, 100);
-          }
-        } else {
-          const data = JSON.parse(localStorage.getItem("templateData") || "{}");
-          if (data.brand) brandEl.innerText = data.brand;
-          if (data.slogan) sloganEl.innerText = data.slogan;
-          logoEl.src = data.logoUrl || data.logo || localStorage.getItem("brandLogo") || "";
-          imageEl.src = data.image || localStorage.getItem("mainImage") || "";
-        }
-      }
-
       async function downloadTemplate() {
-        const frameEl = document.querySelector(".template-frame");
-        const logoEl = document.querySelector(".logo-preview");
-        const imageEl = document.querySelector(".main-preview");
-
-        if (!frameEl) return;
-
-        await Promise.all([
-          waitForImageLoad(logoEl),
-          waitForImageLoad(imageEl)
-        ]);
+        const logo = frame.querySelector(".logo-preview");
+        const image = frame.querySelector(".main-preview");
+        await Promise.all([waitForImageLoad(logo), waitForImageLoad(image)]);
         await new Promise(resolve => setTimeout(resolve, 100));
 
-        const canvas = await window.html2canvas(frameEl);
+        const canvas = await window.html2canvas(frame);
         const link = document.createElement("a");
         link.download = "template.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
       }
 
-      loadTemplate();
       downloadBtn?.addEventListener("click", downloadTemplate);
-    });
+    }
+
+    loadTemplateFromStorage();
   </script>
-  <script type="module" src="/muscat/templates/templates-data/save-template-server.js"></script>
+
+  <!-- 저장 기능 유지 -->
+  <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 </body>
 </html>
