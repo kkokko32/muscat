@@ -1,210 +1,159 @@
-/* 전체 레이아웃 고정 */
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
+/* 전체 페이지 스타일 */
 body {
-  display: flex;
-  flex-direction: column;
-  background-color:#292929;
-  /* background-color: hsl(0, 0%, 99%); */
-  overflow-y: scroll;
-}
-
-body.mypage {
-  background-color: #292929 !important;
-  color: #ffffff !important;
-}
-
-
-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-main.page-wrapper {
-  width: 100%;
-  max-width: none;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-/* mypage 등: 스크롤이 있는 경우 헤더 배경 필요 */
-body.mypage .global-header {
-  background-color: #292929; /* 또는 원하는 어두운 컬러 */
-}
-
-/* 어두운 배경용: 헤더 내 텍스트 색상 반전 */
-body.mypage .global-header a {
-  color: #ffffff !important;
-}
-
-body.mypage .global-header .logo {
-  color: #ffffff !important;
-}
-
-/* 상단 제목 영역 */
-.portfolio-header {
-  padding: 0 80px 20px;
-}
-
-.portfolio-header h1 {
-  font-size: 42px;
-  margin-bottom: 8px;
-  color: #ffffff !important;
-}
-
-.template-count-text {
-  font-size: 42px;
-  font-weight: 600;
-  text-align: center;
-  margin-top: 20px;
-  color: #fff;
-  /* color: #222; */
-}
-
-.highlight-number {
-  color: #aafc3e;
-}
-
-
-/* 템플릿 리스트 박스 */
-.template-wrapper {
-  flex: 1; 
-  display: flex;
-  flex-direction: column;
-  /* background: #eee; */
-  padding: 20px 100px 30px;
   margin: 0;
-  box-sizing: border-box;
-  width: 100%;
+  padding: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f5faed;
+  color: #333;
 }
 
-/* 템플릿 개수 + 버튼 정렬 */
-.template-list-header {
-  display: flex;
-  justify-content: flex-end; 
-  align-items: center;
-  margin-bottom: 20px;
+/* 상단 영역 */
+header {
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
 }
 
-/* 관리 모드 버튼 위치 조정 */
-#manageModeBtn,
-#deleteSelectedBtn {
-  width: auto;
-  min-width: 80px;
-  padding: 8px 16px;
-  margin-left: 8px;
-}
-
-/* 템플릿 카드 목록 */
+/* 템플릿 목록 영역 */
 .template-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
-  /* padding: 20px 100px; */
+  column-count: 4;
+  column-gap: 16px;
+  padding: 40px 60px;
   max-width: 1720px;
   margin: 0 auto;
 }
-.template-list:empty::after {
-  content: "";
-  flex-grow: 1;
+
+/* 개별 템플릿 카드 */
+.template-card {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 16px;
+  background-color: #333;
+  border-radius: 12px;
+  padding: 12px;
+  color: #fff;
+  break-inside: avoid;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
 }
 
-/* 썸네일 부모 요소 */
+.template-card:hover {
+  transform: translateY(-4px);
+}
+
+/* 썸네일 이미지 감싸는 영역 */
 .thumbnail-wrapper {
   width: 100%;
-  height: auto;
-  background: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
   overflow: hidden;
+  border-radius: 12px;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .thumbnail {
   width: 100%;
   height: auto;
-  object-fit: contain;  /* or 'cover' if 필요시 변경 */
+  object-fit: cover;
   display: block;
+  border-radius: 8px;
 }
 
-/* 템플릿 카드 */
-.template-card {
-  width: 278px;
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0;
-  flex-shrink: 0;
-}
-
-/* 템플릿 텍스트 */
-.template-card h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 8px 0 4px;
-  color: #eee;
-}
-
+/* 브랜드명 */
 .template-card p {
-  font-size: 13px;
-  color: #666;
-  margin-top: 8px;
+  margin: 8px 0 4px;
   text-align: center;
+  font-size: 15px;
+  font-weight: 600;
 }
 
+/* 저장 시간 */
+.template-card .date {
+  font-size: 13px;
+  color: #aaa;
+  text-align: center;
+  margin: 0;
+}
 
 /* 체크박스 */
 .select-checkbox {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  transform: scale(1.4);
-  display: none;
+  margin: 10px;
+  z-index: 10;
 }
 
-.manage-mode .select-checkbox {
-  display: block;
-}
-
-/* 템플릿 없는 경우 안내 문구 */
+/* '저장된 템플릿이 없습니다' 메시지 */
 .no-template {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: #666;
-  min-height: 200px;
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 18px;
+  color: #777;
 }
 
-/* ✅ 저장 버튼 스타일 (상세페이지용) */
-.save-btn {
-  background: #555;
+/* 상단 텍스트 */
+#template-count {
+  text-align: center;
+  margin: 30px 0 0;
+  font-size: 18px;
+}
+
+.highlight-number {
+  font-weight: bold;
+  color: #00a86b;
+}
+
+/* 관리 버튼 */
+#manageModeBtn {
+  display: block;
+  margin: 20px auto 0;
+  background: #00a86b;
   color: #fff;
   border: none;
-  padding: 10px 22px;
-  font-size: 15px;
-  border-radius: 8px;
+  padding: 10px 16px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s ease;
-  margin-left: 10px;
+  font-size: 14px;
 }
 
-.save-btn:hover {
-  background: #333;
+#manageModeBtn:hover {
+  background: #00925e;
 }
 
-.save-btn.active {
-  background: #b81e1e;
+/* 삭제 버튼 */
+#deleteSelectedBtn {
+  display: none;
+  margin: 12px auto;
+  background: #d43f3f;
   color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#deleteSelectedBtn:hover {
+  background: #bd2d2d;
+}
+
+/* 반응형 처리 */
+@media (max-width: 1400px) {
+  .template-list {
+    column-count: 3;
+  }
+}
+@media (max-width: 1000px) {
+  .template-list {
+    column-count: 2;
+  }
+}
+@media (max-width: 600px) {
+  .template-list {
+    column-count: 1;
+    padding: 20px;
+  }
 }
