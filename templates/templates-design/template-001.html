@@ -15,7 +15,7 @@
     <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
 
     <div class="template-buttons">
-      <div class="template-close" onclick="window.location.href='/muscat/select-recommend.html'">&times;</div>
+      <div class="template-close" onclick="window.history.back()">&times;</div>
       <button id="saveTemplateBtn" class="save-btn">저장</button>
       <button id="downloadBtn" class="download-btn">다운로드</button>
     </div>
@@ -33,7 +33,6 @@
 
     async function loadTemplate() {
       if (!docId) {
-        // localStorage에서 데이터 불러오기
         const data = JSON.parse(localStorage.getItem("templateData") || "{}");
         const brandEl = document.getElementById("brandName");
         const sloganEl = document.getElementById("brandDesc");
