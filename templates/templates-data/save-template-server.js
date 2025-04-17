@@ -1,5 +1,3 @@
-// 실배포용 저장 스크립트: Storage 사용 + Firestore에 URL 저장
-
 import { db, auth, storage } from "/muscat/common/firebase-init.js";
 import {
   collection,
@@ -20,7 +18,10 @@ import {
 const saveBtn = document.getElementById("saveTemplateBtn");
 let savedDocId = null;
 
-console.log("✅ save-template-server.js 연결됨"); 
+const params = new URLSearchParams(window.location.search);
+const currentDocId = params.get("docId");
+
+console.log("✅ save-template-server.js 연결됨");
 
 function waitForImageLoad(imageElement) {
   return new Promise(resolve => {
@@ -39,7 +40,7 @@ function getImageExtension(dataUrl) {
   if (dataUrl.startsWith("data:image/png")) return "png";
   if (dataUrl.startsWith("data:image/svg")) return "svg";
   if (dataUrl.startsWith("data:image/webp")) return "webp";
-  return "jpg"; // fallback
+  return "jpg";
 }
 
 async function uploadImageToStorage(base64Data, path) {
@@ -69,16 +70,6 @@ async function handleSaveOrDelete() {
   }
 
   const frame = document.querySelector(".template-frame");
-
-  const clonedFrame = frame.cloneNode(true);
-  clonedFrame.querySelector(".brand-name").innerText = brand;
-  clonedFrame.querySelector(".brand-slogan").innerText = slogan;
-  clonedFrame.querySelector(".logo-preview").src = logoImg?.src || "";
-  clonedFrame.querySelector(".main-preview").src = imageImg?.src || "";
-
-const frameHTML = clonedFrame.outerHTML;
-
-
   if (!frame) {
     alert("템플릿이 존재하지 않습니다.");
     return;
@@ -95,13 +86,18 @@ const frameHTML = clonedFrame.outerHTML;
       waitForImageLoad(imageImg)
     ]);
 
-    // html2canvas가 정상 로드되었는지 확인
     if (typeof html2canvas !== "function") {
       alert("html2canvas가 로드되지 않았습니다.");
       return;
     }
 
-    // 썸네일 생성
+    const clonedFrame = frame.cloneNode(true);
+    clonedFrame.querySelector(".brand-name").innerText = brand;
+    clonedFrame.querySelector(".brand-slogan").innerText = slogan;
+    clonedFrame.querySelector(".logo-preview").src = logoImg?.src || "";
+    clonedFrame.querySelector(".main-preview").src = imageImg?.src || "";
+    const frameHTML = clonedFrame.outerHTML;
+
     const canvas = await html2canvas(frame, {
       backgroundColor: null,
       useCORS: true
@@ -116,7 +112,6 @@ const frameHTML = clonedFrame.outerHTML;
     ctx.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
     const thumbnailDataUrl = resizedCanvas.toDataURL("image/jpeg", 0.4);
 
-    // Storage에 이미지 저장
     const timestamp = Date.now();
     const basePath = `users/${user.uid}/${timestamp}`;
 
@@ -127,7 +122,6 @@ const frameHTML = clonedFrame.outerHTML;
     const imageUrl = imageImg?.src ? await uploadImageToStorage(imageImg.src, `${basePath}/main.${imageExt}`) : "";
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
 
-    // Firestore 저장
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
       brand,
@@ -161,16 +155,14 @@ function updateButtonState(text, isActive) {
 
 async function checkExistingSavedTemplate() {
   const user = auth.currentUser;
-  if (!user) return;
+  if (!user || !currentDocId) return;
 
   const q = query(collection(db, "savedTemplates"), where("uid", "==", user.uid));
   const snapshot = await getDocs(q);
   if (snapshot.empty) return;
 
   snapshot.forEach(docSnap => {
-    const data = docSnap.data();
-    const currentBrand = document.querySelector(".brand-name")?.innerText || "";
-    if (data.brand === currentBrand) {
+    if (docSnap.id === currentDocId) {
       savedDocId = docSnap.id;
       updateButtonState("삭제", true);
     }
