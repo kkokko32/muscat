@@ -71,6 +71,7 @@ body.mypage .global-header .logo {
   overflow-y: auto;
   width: 100%;
   box-sizing: border-box;
+  display: block;
 }
 
 /* ✅ Masonry 열 기준 */
@@ -83,10 +84,11 @@ body.mypage .global-header .logo {
 
 /* ✅ 카드 전체 컨테이너 (Masonry) */
 .template-list {
-  width: auto; 
   max-width: 1800px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
   position: relative;
+  width: fit-content; /* 핵심! 실제 콘텐츠 넓이에 맞게 */
 }
 
 /* ✅ Masonry float fix */
