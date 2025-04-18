@@ -95,20 +95,19 @@ body.mypage .global-header .logo {
   max-width: 1800px;
   margin: 0 auto;
   position: relative;
-  display: block;
+  display: block; 
 }
 
 /* ✅ 카드 */
 .template-card {
   width: 270px;
-  display: block;
+  display: inline-block; /* ✅ 핵심 */
+  vertical-align: top;
   margin-bottom: 20px;
+  break-inside: avoid;
   background: transparent;
   text-align: center;
   position: relative;
-  break-inside: avoid;
-  box-sizing: border-box;
-  /* float 제거함 */
 }
 
 /* ✅ 썸네일 */
