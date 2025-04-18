@@ -52,13 +52,14 @@ body.mypage .global-header .logo {
   color: #B9FB52 !important;
 }
 
-/* ✅ 버튼 정렬 */
+/*  버튼 정렬 */
 .template-list-header {
   display: flex;
   justify-content: flex-end;
   max-width: 1800px;
   margin: 0 auto;
   width: 100%;
+  padding-right: 100px; /* ✅ 오른쪽 간격 */
 }
 
 /* ✅ 템플릿 스크롤 영역 */
@@ -81,6 +82,7 @@ body.mypage .global-header .logo {
   gap: 20px;
   justify-content: flex-start;
   position: relative;
+  padding-bottom: 40px; 
 }
 
 /* ✅ 카드 */
@@ -91,6 +93,8 @@ body.mypage .global-header .logo {
   position: relative;
   display: flex;
   flex-direction: column;
+  margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 /* ✅ 썸네일 */
