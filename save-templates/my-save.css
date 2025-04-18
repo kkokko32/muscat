@@ -36,7 +36,7 @@ body.mypage .global-header .logo {
 
 /* ✅ 고정 상단 영역 */
 .template-header-fixed {
-  padding: 20px 100px 10px;
+  /* padding: 5px 100px 0px; */
   flex-shrink: 0;
   background-color: #292929;
   z-index: 10;
@@ -67,7 +67,7 @@ body.mypage .global-header .logo {
 .template-list-header {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px;
+  margin-bottom: 20px 0;
 }
 
 #manageModeBtn, #deleteSelectedBtn {
@@ -132,7 +132,7 @@ body.mypage .global-header .logo {
 .template-card h3 {
   font-size: 14px;
   color: #888;
-  font-weight: 300;
+  font-weight: 600;
   margin: 8px 0 4px;
 }
 .template-card p {
