@@ -148,7 +148,7 @@ function applyMasonryLayout() {
         itemSelector: ".template-card",
         columnWidth: ".grid-sizer",
         gutter: 20,
-        fitWidth: false // ✅ 핵심 변경
+        fitWidth: true
       });
     } else {
       window.masonryInstance.reloadItems();
