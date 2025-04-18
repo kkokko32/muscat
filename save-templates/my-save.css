@@ -20,9 +20,9 @@ main.page-wrapper {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 100%;              
-  max-width: 100vw;        
-  box-sizing: border-box;   
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
   overflow: hidden;
   background-color: #292929;
 }
@@ -31,12 +31,19 @@ main.page-wrapper {
   padding: 70px 0 0 !important;
 }
 
-/* ✅ grid-sizer (Masonry 기준 열 너비) */
+/* ✅ Masonry 기준 열 너비 */
 .grid-sizer {
   width: 270px;
   height: 1px;
-  float: left; /* ✅ 핵심 */
+  float: left;
   visibility: hidden;
+}
+
+/* ✅ float로 정렬된 요소 height 보존용 */
+.template-list::after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 /* 헤더 색상 유지 */
@@ -63,7 +70,6 @@ body.mypage .global-header .logo {
   margin: 0 auto;
   box-sizing: border-box;
 }
-
 
 /* ✅ 버튼 정렬 */
 .template-list-header {
@@ -108,8 +114,8 @@ body.mypage .global-header .logo {
 /* ✅ 템플릿 카드 전체 컨테이너 */
 .template-list {
   width: auto;
-  margin: 0 auto;
   max-width: 1800px;
+  margin: 0 auto;
   position: relative;
   display: block;
 }
@@ -117,8 +123,7 @@ body.mypage .global-header .logo {
 /* ✅ 카드 */
 .template-card {
   width: 270px;
-  display: inline-block;
-  vertical-align: top;
+  float: left; /* ✅ 핵심 */
   margin-bottom: 20px;
   text-align: center;
   background: transparent;
@@ -141,7 +146,7 @@ body.mypage .global-header .logo {
   display: block;
 }
 
-/* ✅ 템플릿 카드 */
+/* ✅ 텍스트 정렬 */
 .template-card h3,
 .template-card p {
   text-align: center;
@@ -184,6 +189,7 @@ body.mypage .global-header .logo {
   margin-top: 40px;
 }
 
+/* ✅ 반응형 */
 @media (max-width: 600px) {
   .template-scroll-area {
     padding: 0 20px 20px;
@@ -195,5 +201,6 @@ body.mypage .global-header .logo {
 
   .template-card {
     width: 100%;
+    float: none;
   }
 }
