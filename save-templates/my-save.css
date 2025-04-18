@@ -29,8 +29,10 @@ main.page-wrapper {
 /* ✅ grid-sizer (Masonry 기준 열 너비) */
 .grid-sizer {
   width: 270px;
-  height: 0;          /* ✅ 시각적으로 보이지 않게 처리 */
-  float: left;
+  height: 0;
+  visibility: hidden;
+  float: none;
+  display: block;
 }
 
 /* 헤더 색상 유지 */
