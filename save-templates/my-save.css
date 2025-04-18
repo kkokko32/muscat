@@ -85,7 +85,7 @@ body.mypage .global-header .logo {
 
 /* ✅ 카드 전체 컨테이너 (Masonry) */
 .template-list {
-  width: auto;
+  width: 100%;
   max-width: 1800px;
   margin: 0 auto;
   position: relative;
