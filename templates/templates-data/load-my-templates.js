@@ -143,17 +143,19 @@ function applyMasonryLayout() {
   if (!container) return;
 
   imagesLoaded(container, () => {
-    if (!window.masonryInstance) {
-      window.masonryInstance = new Masonry(container, {
-        itemSelector: ".template-card",
-        columnWidth: ".grid-sizer",
-        gutter: 20,
-        fitWidth: false // ✅ 핵심: 전체 너비에 맞춤
-      });
-    } else {
-      window.masonryInstance.reloadItems();
-      window.masonryInstance.layout();
-    }
+    setTimeout(() => {
+      if (!window.masonryInstance) {
+        window.masonryInstance = new Masonry(container, {
+          itemSelector: ".template-card",
+          columnWidth: ".grid-sizer",
+          gutter: 20,
+          fitWidth: true
+        });
+      } else {
+        window.masonryInstance.reloadItems();
+        window.masonryInstance.layout();
+      }
+    }, 50); // ✅ Masonry 적용 안정화
   });
 }
 

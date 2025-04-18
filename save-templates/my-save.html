@@ -7,19 +7,21 @@
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
 
+  <!-- ✅ 공통 스타일 및 페이지 전용 CSS -->
   <link rel="stylesheet" href="/muscat/common/common.css"/>
   <link rel="stylesheet" href="/muscat/save-templates/my-save.css">
+
+  <!-- ✅ Masonry 레이아웃 및 이미지 로딩 감지 -->
   <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
   <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-
 </head>
 
 <body class="mypage">
-
-  <!-- ✅ 헤더 fetch로 불러오기 -->
+  <!-- ✅ 헤더 영역 -->
   <div id="header-placeholder"></div>
 
   <main class="page-wrapper">
+    <!-- ✅ 저장 개수 및 관리 버튼 -->
     <div class="template-header-fixed">
       <h1 class="template-count-text" id="template-count">
         총 <span class="highlight-number">0</span>개의 디자인을 저장했어요
@@ -31,24 +33,28 @@
       </div>
     </div>
 
+    <!-- ✅ 저장된 템플릿 카드 목록 -->
     <div class="template-scroll-area">
       <div class="template-list" id="templateList">
         <div class="grid-sizer"></div>
+        <!-- 카드들은 JS에서 동적으로 추가됨 -->
       </div>
     </div>
   </main>
 
-  <!-- ✅ 푸터 fetch로 불러오기 -->
+  <!-- ✅ 푸터 영역 -->
   <div id="footer-placeholder"></div>
 
-  <!-- 공통 Firebase + 유틸 -->
+  <!-- ✅ Firebase 초기화 및 템플릿 데이터 로딩 -->
   <script type="module" src="/muscat/common/firebase-init.js"></script>
   <script type="module" src="/muscat/common/utils-auth.js"></script>
   <script type="module" src="/muscat/templates/templates-data/load-my-templates.js"></script>
+
+  <!-- ✅ 이미지 처리 유틸 (썸네일용 등) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="/muscat/common/image-fit.js"></script>
 
-  <!-- 헤더/푸터 불러오기 -->
+  <!-- ✅ 헤더/푸터 fetch 삽입 -->
   <script>
     fetch('/muscat/components/header.html')
       .then(res => res.text())
@@ -63,6 +69,7 @@
       });
   </script>
 
+  <!-- ✅ 모달 위치 (필요 시 동적 삽입) -->
   <div id="modal-placeholder"></div>
 </body>
 </html>
