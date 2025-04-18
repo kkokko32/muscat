@@ -15,12 +15,10 @@ main.page-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100vh;
   width: 100%;
-  max-width: 100vw;
-  box-sizing: border-box;
-  overflow: hidden;
   background-color: #292929;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .page-wrapper {
@@ -41,15 +39,17 @@ body.mypage .global-header .logo {
   font-weight: 300;
 }
 
-/* ✅ 상단 고정 영역 */
-.template-header-fixed {
-  padding: 20px 100px 10px;
-  background-color: #292929;
-  width: 100%;
-  max-width: 1800px;
-  margin: 0 auto;
-  box-sizing: border-box;
-  text-align: center; /*
+/* ✅ 제목 영역 */
+.template-count-text {
+  font-size: 42px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.highlight-number {
+  color: #B9FB52 !important;
 }
 
 /* ✅ 버튼 정렬 */
@@ -63,13 +63,13 @@ body.mypage .global-header .logo {
 
 /* ✅ 템플릿 스크롤 영역 */
 .template-scroll-area {
-  overflow-y: auto;
   padding: 0 20px 30px;
   width: 100%;
   box-sizing: border-box;
   background-color: #292929;
   display: flex;
   justify-content: center;
+  overflow-y: auto;
 }
 
 /* ✅ 템플릿 카드 전체 컨테이너 */
@@ -81,18 +81,6 @@ body.mypage .global-header .logo {
   gap: 20px;
   justify-content: flex-start;
   position: relative;
-}
-
-.template-count-text {
-  font-size: 42px;
-  font-weight: 600;
-  color: #ffffff; 
-  margin-bottom: 8px;
-  display: inline-block;
-}
-
-.template-count-text .highlight-number {
-  color: #B9FB52; 
 }
 
 /* ✅ 카드 */
@@ -113,7 +101,6 @@ body.mypage .global-header .logo {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 8px;
 }
 
 .thumbnail {
@@ -130,19 +117,12 @@ body.mypage .global-header .logo {
   font-weight: 600;
   margin: 8px 0 4px;
 }
+
 .template-card p {
   font-size: 12px;
   color: #999;
   margin: 4px 0;
   text-align: center;
-}
-
-/* 날짜 텍스트 스타일 보완 */
-.template-date-text {
-  font-size: 13px;
-  margin: 4px 0 8px;
-  text-align: center;
-  color: #B9FB52;
 }
 
 /* ✅ 체크박스 */
@@ -153,6 +133,7 @@ body.mypage .global-header .logo {
   transform: scale(1.4);
   display: none;
 }
+
 .manage-mode .select-checkbox {
   display: block;
 }
