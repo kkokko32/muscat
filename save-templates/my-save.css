@@ -2,30 +2,28 @@ html, body {
   height: 100%;
   margin: 0;
 }
+
 body {
+  display: flex;
+  flex-direction: column;
   background-color: #292929;
-  overflow-y: scroll;
-}
-body.mypage {
-  background-color: #292929 !important;
-  color: #ffffff !important;
+  color: #ffffff;
 }
 
 main.page-wrapper {
-  width: 100%;
-  max-width: none;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 헤더 */
-body.mypage .global-header {
+.global-header {
+  padding: 20px;
   background-color: #292929;
-}
-body.mypage .global-header a,
-body.mypage .global-header .logo {
-  color: #ffffff !important;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
 }
 
-/* 제목 */
 .portfolio-header {
   padding: 0 80px 20px;
 }
@@ -33,42 +31,40 @@ body.mypage .global-header .logo {
 .template-count-text {
   font-size: 42px;
   margin-bottom: 8px;
-  color: #ffffff !important;
+  color: #ffffff;
+  text-align: center;
 }
+
 .highlight-number {
   color: #aafc3e;
 }
 
-/* 템플릿 영역 */
 .template-wrapper {
-  width: 100%;
   padding: 20px 100px 30px;
   box-sizing: border-box;
+  width: 100%;
+  flex-grow: 1;
 }
 
-/* 버튼 */
 .template-list-header {
-  max-width: 1800px;
-  margin: 0 auto 20px;
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+  margin-bottom: 20px;
 }
-#manageModeBtn,
-#deleteSelectedBtn {
+
+#manageModeBtn, #deleteSelectedBtn {
   min-width: 80px;
   padding: 8px 16px;
   margin-left: 8px;
 }
 
-/* Masonry 레이아웃 */
 .template-list {
   column-count: 5;
   column-gap: 20px;
   max-width: 1800px;
   margin: 0 auto;
-  text-align: center;
 }
+
 @media (max-width: 1600px) {
   .template-list { column-count: 4; }
 }
@@ -82,26 +78,27 @@ body.mypage .global-header .logo {
   .template-list { column-count: 1; }
 }
 
-/* 카드 */
 .template-card {
   display: inline-block;
   width: 270px;
   margin-bottom: 20px;
   break-inside: avoid;
   border-radius: 12px;
+  overflow: hidden;
   background: #fff;
   color: #000;
-  overflow: hidden;
+  padding-bottom: 14px;
   text-align: center;
+  position: relative;
 }
 
-/* 썸네일 */
 .thumbnail-wrapper {
   width: 100%;
   background: #f0f0f0;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 .thumbnail {
   width: 100%;
@@ -110,7 +107,6 @@ body.mypage .global-header .logo {
   display: block;
 }
 
-/* 텍스트 */
 .template-card h3 {
   font-size: 18px;
   font-weight: 600;
@@ -119,10 +115,10 @@ body.mypage .global-header .logo {
 .template-card p {
   font-size: 13px;
   color: #666;
-  margin-top: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
-/* 체크박스 */
 .select-checkbox {
   position: absolute;
   top: 12px;
@@ -134,32 +130,18 @@ body.mypage .global-header .logo {
   display: block;
 }
 
-/* 저장안내 */
 .no-template {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 16px;
   color: #666;
   min-height: 200px;
+  text-align: center;
+  margin-top: 40px;
 }
 
-/* 저장 버튼 */
-.save-btn {
-  background: #555;
-  color: #fff;
-  border: none;
-  padding: 10px 22px;
-  font-size: 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  margin-left: 10px;
-}
-.save-btn:hover {
-  background: #333;
-}
-.save-btn.active {
-  background: #b81e1e;
-  color: #fff;
+.global-footer {
+  background: #1f1f1f;
+  color: #aaa;
+  text-align: center;
+  padding: 16px 0;
+  font-size: 14px;
 }
