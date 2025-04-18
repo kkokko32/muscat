@@ -29,7 +29,7 @@ main.page-wrapper {
 /* ✅ grid-sizer (Masonry 기준 열 너비) */
 .grid-sizer {
   width: 270px;
-  float: left;
+  display: inline-block;
   visibility: hidden;
 }
 
@@ -41,10 +41,9 @@ main.page-wrapper {
 
 /* ✅ 템플릿 리스트 */
 .template-list {
-  width: 100%;
   max-width: 1800px;
-  position: relative;
-  display: block;
+  margin: 0 auto;
+  text-align: center;
 }
 
 /* ✅ Masonry float fix */
@@ -57,8 +56,10 @@ main.page-wrapper {
 /* ✅ 카드 */
 .template-card {
   width: 270px;
+  display: inline-block;
+  vertical-align: top;
   margin-bottom: 20px;
-  float: left;
+  break-inside: avoid;
   background: transparent;
   text-align: center;
   position: relative;
