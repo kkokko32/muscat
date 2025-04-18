@@ -76,7 +76,7 @@ body.mypage .global-header .logo {
 
 /* ✅ 상단 버튼 영역 */
 .template-list-header {
-  display: flex;
+  display: flex; /* ✅ block → flex */
   justify-content: flex-end;
   margin-bottom: 20px;
   max-width: 1800px;

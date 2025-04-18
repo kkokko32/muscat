@@ -32,19 +32,25 @@ async function loadMyTemplates() {
   const countText = document.getElementById("template-count");
   const deleteBtn = document.getElementById("deleteSelectedBtn");
 
+  if (!container) return;
+
+  // ✅ grid-sizer 유지
+  container.innerHTML = '<div class="grid-sizer"></div>';
+
+  // ✅ 총 개수 표시
   if (countText) {
     const count = snapshot.docs.length;
     countText.innerHTML = `총 <span class="highlight-number">${count}</span>개의 디자인을 저장했어요`;
   }
-
-  if (!container) return;
-  container.innerHTML = '<div class="grid-sizer"></div>'; // ✅ grid-sizer 유지
 
   if (snapshot.empty) {
     container.innerHTML += `<p class="no-template">저장된 템플릿이 없습니다.</p>`;
     if (deleteBtn) deleteBtn.style.display = "none";
     return;
   }
+
+  // Masonry가 적용되기 전: fragment에 모아서 한 번에 추가
+  const fragment = document.createDocumentFragment();
 
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
@@ -60,6 +66,7 @@ async function loadMyTemplates() {
     checkbox.style.display = isManaging ? "block" : "none";
     wrapper.appendChild(checkbox);
 
+    // ✅ 썸네일
     if (data.thumbnailUrl) {
       const thumbnailWrapper = document.createElement("div");
       thumbnailWrapper.className = "thumbnail-wrapper";
@@ -78,7 +85,7 @@ async function loadMyTemplates() {
     brandP.innerText = data.brand || "브랜드명 없음";
     wrapper.appendChild(brandP);
 
-    // ✅ 날짜
+    // ✅ 저장 날짜
     const dateP = document.createElement("p");
     dateP.style.fontSize = "13px";
     dateP.style.margin = "0";
@@ -98,14 +105,17 @@ async function loadMyTemplates() {
 
     wrapper.appendChild(dateP);
 
+    // ✅ 클릭 시 상세 페이지 이동
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
       window.location.href = `/muscat/templates/templates-design/template-001.html?docId=${docId}`;
     };
 
-    container.appendChild(wrapper);
+    fragment.appendChild(wrapper);
   });
+
+  container.appendChild(fragment);
 
   if (deleteBtn) {
     deleteBtn.style.display = isManaging ? "inline-block" : "none";
@@ -131,6 +141,7 @@ async function handleDelete() {
   loadMyTemplates();
 }
 
+// ✅ Masonry 레이아웃 적용
 function applyMasonryLayout() {
   const container = document.querySelector(".template-list");
   if (!container) return;
@@ -145,6 +156,7 @@ function applyMasonryLayout() {
   });
 }
 
+// ✅ 초기 로딩 및 관리 버튼
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
