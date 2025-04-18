@@ -19,6 +19,16 @@ body.mypage {
   overflow: auto !important;
 }
 
+/* ✅ 모든 브라우저에서 스크롤바 숨기기 (기능은 유지) */
+body, * {
+  scrollbar-width: none;         /* Firefox */
+  -ms-overflow-style: none;      /* IE/Edge */
+}
+
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;                 /* Chrome, Safari, Opera */
+}
 
 main {
   flex: 1;
