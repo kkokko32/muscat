@@ -148,7 +148,7 @@ function applyMasonryLayout() {
         itemSelector: ".template-card",
         columnWidth: ".grid-sizer",
         gutter: 20,
-        fitWidth: true
+        fitWidth: false // ✅ 핵심: 전체 너비에 맞춤
       });
     } else {
       window.masonryInstance.reloadItems();
