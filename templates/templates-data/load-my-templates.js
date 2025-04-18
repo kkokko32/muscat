@@ -138,7 +138,7 @@ function applyMasonryLayout() {
       itemSelector: ".template-card",
       columnWidth: ".grid-sizer",
       gutter: 20,
-      percentPosition: true
+      fitWidth: true
     });
   });
 }
