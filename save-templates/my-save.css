@@ -12,13 +12,13 @@ body {
 }
 
 main.page-wrapper {
-  fflex: 1;
+  flex: 1; /* 오타 수정: fflex → flex */
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 100%;              
-  max-width: 100vw;        
-  box-sizing: border-box;   
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
   overflow: hidden;
 }
 
@@ -30,89 +30,35 @@ main.page-wrapper {
 .grid-sizer {
   width: 270px;
   float: left;
+  visibility: hidden;
 }
 
-/* 헤더 색상 유지 */
-body.mypage .global-header {
-  background-color: #292929;
-}
-body.mypage .global-header a,
-body.mypage .global-header .logo {
-  color: #ffffff !important;
-}
-
-/* GNB 폰트 얇게 */
-.global-header a,
-.gnb a {
-  font-weight: 300;
-}
-
-/* ✅ 상단 고정 영역 */
-.template-header-fixed {
-  flex-shrink: 0;
-  background-color: #292929;
-  z-index: 10;
-  padding: 20px 100px 10px;
-}
-
+/* ✅ Masonry 컨테이너를 감싸는 가운데 정렬 래퍼 */
 .template-center-wrapper {
   display: flex;
   justify-content: center;
 }
 
-/* ✅ 스크롤 되는 카드 영역 */
-.template-scroll-area {
-  flex: 1;
-  overflow-y: auto;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0 100px 30px;
-}
-
-/* 타이틀 텍스트 */
-.template-count-text {
-  font-size: 42px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #ffffff;
-  text-align: center;
-}
-
-.highlight-number {
-  color: #aafc3e;
-}
-
-/* ✅ 상단 버튼 영역 */
-.template-list-header {
-  display: flex; /* ✅ block → flex */
-  justify-content: flex-end;
-  margin-bottom: 20px;
-  max-width: 1800px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#manageModeBtn, #deleteSelectedBtn {
-  min-width: 80px;
-  padding: 8px 16px;
-  margin-left: 8px;
-}
-
-/* ✅ JS 기반 Masonry 레이아웃 */
+/* ✅ 템플릿 리스트 */
 .template-list {
+  width: 100%;
   max-width: 1800px;
-  margin: 0 auto;
   position: relative;
-  display: block; 
+  display: block;
+}
+
+/* ✅ Masonry float fix */
+.template-list::after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 /* ✅ 카드 */
 .template-card {
   width: 270px;
-  display: inline-block; 
-  vertical-align: top;
   margin-bottom: 20px;
-  break-inside: avoid;
+  float: left;
   background: transparent;
   text-align: center;
   position: relative;
@@ -170,4 +116,81 @@ body.mypage .global-header .logo {
   min-height: 200px;
   text-align: center;
   margin-top: 40px;
+}
+
+/* ✅ 스크롤 되는 카드 영역 */
+.template-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  width: 100%;
+  padding: 0 100px 30px;
+  box-sizing: border-box;
+}
+
+/* ✅ 상단 고정 영역 */
+.template-header-fixed {
+  flex-shrink: 0;
+  background-color: #292929;
+  z-index: 10;
+  padding: 20px 100px 10px;
+}
+
+/* ✅ 타이틀 텍스트 */
+.template-count-text {
+  font-size: 42px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.highlight-number {
+  color: #aafc3e;
+}
+
+/* ✅ 상단 버튼 영역 */
+.template-list-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#manageModeBtn, #deleteSelectedBtn {
+  min-width: 80px;
+  padding: 8px 16px;
+  margin-left: 8px;
+}
+
+/* ✅ 헤더 색상 유지 */
+body.mypage .global-header {
+  background-color: #292929;
+}
+body.mypage .global-header a,
+body.mypage .global-header .logo {
+  color: #ffffff !important;
+}
+
+/* GNB 폰트 얇게 */
+.global-header a,
+.gnb a {
+  font-weight: 300;
+}
+
+/* ✅ 반응형 */
+@media (max-width: 600px) {
+  .template-scroll-area {
+    padding: 0 20px 20px;
+  }
+
+  .template-list {
+    max-width: 100%;
+  }
+
+  .template-card {
+    width: 100%;
+    float: none;
+  }
 }
