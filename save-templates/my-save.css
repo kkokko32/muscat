@@ -99,8 +99,7 @@ body.mypage .global-header .logo {
 }
 
 .thumbnail-wrapper {
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  border-radius: 12px 12px 0 0;
   overflow: hidden;
   background: #f0f0f0;
   display: flex;
@@ -124,6 +123,8 @@ body.mypage .global-header .logo {
   color: #666;
   margin-top: 4px;
   margin-bottom: 4px;
+  border-radius: 12px;
+  overflow: visible;
 }
 
 .select-checkbox {
