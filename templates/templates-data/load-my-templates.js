@@ -5,12 +5,12 @@ import {
   where,
   getDocs,
   deleteDoc,
-  doc
+  doc,
+  orderBy // ✅ 추가
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let isManaging = false;
 
-// 사용자 로그인 상태 확인
 auth.onAuthStateChanged(user => {
   if (user) {
     loadMyTemplates();
@@ -21,7 +21,13 @@ async function loadMyTemplates() {
   const user = auth.currentUser;
   if (!user) return;
 
-  const q = query(collection(db, "savedTemplates"), where("uid", "==", user.uid));
+  // ✅ 최신순 정렬 조건 추가
+  const q = query(
+    collection(db, "savedTemplates"),
+    where("uid", "==", user.uid),
+    orderBy("createdAt", "desc")
+  );
+
   const snapshot = await getDocs(q);
 
   const container = document.getElementById("templateList") || document.getElementById("saved-template-list");
@@ -49,7 +55,6 @@ async function loadMyTemplates() {
     const wrapper = document.createElement("div");
     wrapper.className = "template-card";
 
-    // ✅ 체크박스 (관리모드용)
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.className = "select-checkbox";
@@ -57,7 +62,6 @@ async function loadMyTemplates() {
     checkbox.style.display = isManaging ? "block" : "none";
     wrapper.appendChild(checkbox);
 
-    // ✅ 썸네일 (라운드 상단 전용)
     if (data.thumbnailUrl) {
       const thumbnailWrapper = document.createElement("div");
       thumbnailWrapper.className = "thumbnail-wrapper";
@@ -75,17 +79,14 @@ async function loadMyTemplates() {
       wrapper.appendChild(thumbnailWrapper);
     }
 
-    // ✅ 브랜드명
     const brandP = document.createElement("h3");
     brandP.innerText = data.brand || "브랜드명 없음";
     wrapper.appendChild(brandP);
 
-    // ✅ 저장 날짜
     if (data.createdAt?.toDate) {
       const createdDate = data.createdAt.toDate();
       const dateP = document.createElement("p");
       dateP.style.fontSize = "13px";
-      // dateP.style.color = "#666";
       dateP.style.margin = "0";
 
       const year = createdDate.getFullYear();
@@ -98,7 +99,6 @@ async function loadMyTemplates() {
       wrapper.appendChild(dateP);
     }
 
-    // ✅ 클릭 이동
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
@@ -108,14 +108,12 @@ async function loadMyTemplates() {
     container.appendChild(wrapper);
   });
 
-  // ✅ 삭제 버튼 표시 여부
   if (deleteBtn) {
     deleteBtn.style.display = isManaging ? "inline-block" : "none";
     deleteBtn.onclick = handleDelete;
   }
 }
 
-// ✅ 삭제 처리
 async function handleDelete() {
   const confirmDelete = confirm("선택한 템플릿을 삭제하시겠습니까?");
   if (!confirmDelete) return;
@@ -132,7 +130,6 @@ async function handleDelete() {
   loadMyTemplates();
 }
 
-// ✅ 페이지 로딩 시
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
