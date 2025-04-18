@@ -60,6 +60,7 @@ body.mypage .global-header .logo {
   width: 100%;
 }
 
+/* ✅ 템플릿 스크롤 영역 */
 .template-scroll-area {
   overflow-y: auto;
   padding: 0 20px 30px;
@@ -70,25 +71,7 @@ body.mypage .global-header .logo {
   justify-content: center;
 }
 
-.template-count-text {
-  font-size: 42px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #ffffff;
-  text-align: center;
-}
-
-.highlight-number {
-  color: #aafc3e;
-}
-
-#manageModeBtn, #deleteSelectedBtn {
-  min-width: 80px;
-  padding: 8px 16px;
-  margin-left: 8px;
-}
-
-/* ✅ 템플릿 카드 전체 컨테이너 (flex 적용) */
+/* ✅ 템플릿 카드 전체 컨테이너 */
 .template-list {
   display: flex;
   flex-wrap: wrap;
@@ -105,6 +88,8 @@ body.mypage .global-header .logo {
   background: transparent;
   text-align: center;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ✅ 썸네일 */
@@ -138,6 +123,7 @@ body.mypage .global-header .logo {
   text-align: center;
 }
 
+/* ✅ 체크박스 */
 .select-checkbox {
   position: absolute;
   top: 12px;
@@ -149,6 +135,7 @@ body.mypage .global-header .logo {
   display: block;
 }
 
+/* ✅ 템플릿이 없을 때 */
 .no-template {
   font-size: 16px;
   color: #666;
