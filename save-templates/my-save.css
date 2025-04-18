@@ -35,9 +35,8 @@ main.page-wrapper {
 .grid-sizer {
   width: 270px;
   height: 1px;
+  float: left; /* ✅ 핵심 */
   visibility: hidden;
-  float: left;
-  display: block;
 }
 
 /* 헤더 색상 유지 */
@@ -70,6 +69,8 @@ body.mypage .global-header .logo {
 .template-list-header {
   display: flex;
   justify-content: flex-end;
+  max-width: 1800px;
+  margin: 0 auto;
   width: 100%;
 }
 
@@ -77,9 +78,10 @@ body.mypage .global-header .logo {
 .template-scroll-area {
   flex: 1;
   overflow-y: auto;
+  padding: 0 100px 30px;
   width: 100%;
   box-sizing: border-box;
-  padding: 0 100px 30px;
+  background-color: #292929;
 }
 
 /* 타이틀 텍스트 */
@@ -103,23 +105,21 @@ body.mypage .global-header .logo {
 
 /* ✅ 템플릿 카드 전체 컨테이너 */
 .template-list {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
+  width: 100%;
+  max-width: 1800px;
+  position: relative;
+  display: block;
 }
 
 
 /* ✅ 카드 */
 .template-card {
   width: 270px;
-  display: inline-block; 
+  display: inline-block;
   vertical-align: top;
   margin-bottom: 20px;
-  break-inside: avoid;
-  background: transparent;
   text-align: center;
-  position: relative;
+  background: transparent;
 }
 
 /* ✅ 썸네일 */
@@ -180,4 +180,18 @@ body.mypage .global-header .logo {
   min-height: 200px;
   text-align: center;
   margin-top: 40px;
+}
+
+@media (max-width: 600px) {
+  .template-scroll-area {
+    padding: 0 20px 20px;
+  }
+
+  .template-list {
+    max-width: 100%;
+  }
+
+  .template-card {
+    width: 100%;
+  }
 }
