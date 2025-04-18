@@ -144,12 +144,3 @@ body.mypage .global-header .logo {
   text-align: center;
   margin-top: 40px;
 }
-
-.global-footer {
-  background: #1f1f1f;
-  color: #aaa;
-  text-align: center;
-  padding: 16px 0;
-  font-size: 14px;
-  margin-top: auto;
-}
