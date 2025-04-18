@@ -9,41 +9,29 @@
 </head>
 <body class="mypage">
 
-  <div id="header-placeholder"></div>
+  <header class="global-header">
+    <div class="logo">Muscat</div>
+  </header>
 
   <main class="page-wrapper">
-    <section class="portfolio-header">
-      <h1 id="template-count" class="template-count-text">
-        총 <span class="highlight-number">0</span>개의 디자인을 저장했어요
-      </h1>
-    </section>
+    <div class="portfolio-header">
+      <h1>나의 저장 템플릿</h1>
+    </div>
 
-    <!-- 템플릿 리스트 전체를 감싸는 회색 박스 영역 -->
-    <section class="template-wrapper">
+    <div class="template-wrapper">
       <div class="template-list-header">
-        <div>
-          <button id="deleteSelectedBtn" class="btn btn-line" style="display:none;">삭제</button>
-          <button id="manageModeBtn" class="btn btn-line">관리</button>
-        </div>
-      </div>    
-
-
-      <!-- 🔽 JS로 채워질 템플릿 목록 -->
-      <div id="saved-template-list" class="template-list">
-        <!-- 예시 템플릿 카드 구조 (JS에서 동적으로 생성됨) -->
-        <!-- 
-        <div class="template-card">
-          <input type="checkbox" class="select-checkbox" data-id="문서ID" />
-          <div class="thumbnail-wrapper">
-            <img class="thumbnail" src="/example.png" alt="템플릿 미리보기">
-          </div>
-        </div>
-        -->
+        <button id="manageModeBtn">관리</button>
+        <button id="deleteSelectedBtn" style="display:none;">삭제</button>
       </div>
-    </section>
+
+      <div id="template-count" class="template-count-text"></div>
+      <div id="templateList" class="template-list"></div>
+    </div>
   </main>
 
-  <div id="footer-placeholder"></div>
+  <footer class="global-footer">
+    <p>© 2025 MUSCAT. All rights reserved.</p>
+  </footer>
 
   <script>
     fetch("/muscat/components/header.html")
