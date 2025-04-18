@@ -10,6 +10,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let isManaging = false;
+let masonryInstance = null;
 
 auth.onAuthStateChanged(user => {
   if (user) {
@@ -33,6 +34,12 @@ async function loadMyTemplates() {
   const deleteBtn = document.getElementById("deleteSelectedBtn");
 
   if (!container) return;
+
+  // ✅ container 초기화 후 grid-sizer 추가
+  container.innerHTML = '';
+  const gridSizer = document.createElement("div");
+  gridSizer.className = "grid-sizer";
+  container.appendChild(gridSizer);
 
   if (countText) {
     const count = snapshot.docs.length;
@@ -106,16 +113,16 @@ async function loadMyTemplates() {
     fragment.appendChild(wrapper);
   });
 
-  container.appendChild(fragment); // ✅ fragment 먼저 append 후
-  applyMasonryLayout();           // ✅ 이후에 Masonry 적용
+  container.appendChild(fragment);
 
   if (deleteBtn) {
     deleteBtn.style.display = isManaging ? "inline-block" : "none";
     deleteBtn.onclick = handleDelete;
   }
+
+  applyMasonryLayout();
 }
 
-// ✅ 삭제 기능
 async function handleDelete() {
   const confirmDelete = confirm("선택한 템플릿을 삭제하시겠습니까?");
   if (!confirmDelete) return;
@@ -132,22 +139,25 @@ async function handleDelete() {
   loadMyTemplates();
 }
 
-// ✅ Masonry 적용
 function applyMasonryLayout() {
   const container = document.querySelector(".template-list");
   if (!container) return;
 
-  imagesLoaded(container, { background: true }, function () {
-    new Masonry(container, {
-      itemSelector: ".template-card",
-      columnWidth: ".grid-sizer",
-      gutter: 20,
-      fitWidth: true
-    });
+  imagesLoaded(container, () => {
+    if (!masonryInstance) {
+      masonryInstance = new Masonry(container, {
+        itemSelector: ".template-card",
+        columnWidth: ".grid-sizer",
+        gutter: 20,
+        fitWidth: true
+      });
+    } else {
+      masonryInstance.reloadItems();
+      masonryInstance.layout();
+    }
   });
 }
 
-// ✅ 초기 실행
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
