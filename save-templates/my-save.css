@@ -60,6 +60,7 @@ body.mypage .global-header .logo {
   margin: 0 auto;
   width: 100%;
   padding-right: 100px;
+  padding-bottom: 20px;
 }
 
 /* ✅ 템플릿 스크롤 영역 */
