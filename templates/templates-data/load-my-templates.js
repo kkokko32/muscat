@@ -38,10 +38,10 @@ async function loadMyTemplates() {
   }
 
   if (!container) return;
-  container.innerHTML = "";
+  container.innerHTML = '<div class="grid-sizer"></div>'; // ✅ grid-sizer 유지
 
   if (snapshot.empty) {
-    container.innerHTML = `<p class="no-template">저장된 템플릿이 없습니다.</p>`;
+    container.innerHTML += `<p class="no-template">저장된 템플릿이 없습니다.</p>`;
     if (deleteBtn) deleteBtn.style.display = "none";
     return;
   }
@@ -73,26 +73,30 @@ async function loadMyTemplates() {
       wrapper.appendChild(thumbnailWrapper);
     }
 
+    // ✅ 브랜드명
     const brandP = document.createElement("h3");
     brandP.innerText = data.brand || "브랜드명 없음";
     wrapper.appendChild(brandP);
 
+    // ✅ 날짜
+    const dateP = document.createElement("p");
+    dateP.style.fontSize = "13px";
+    dateP.style.margin = "0";
+    dateP.style.color = "#999";
+
     if (data.createdAt?.toDate) {
       const createdDate = data.createdAt.toDate();
-      const dateP = document.createElement("p");
-      dateP.style.fontSize = "13px";
-      dateP.style.margin = "0";
-      dateP.style.color = "#999";
-
       const year = createdDate.getFullYear();
       const month = createdDate.getMonth() + 1;
       const day = createdDate.getDate();
       const hour = createdDate.getHours();
       const minute = createdDate.getMinutes();
-
       dateP.innerText = `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
-      wrapper.appendChild(dateP);
+    } else {
+      dateP.innerText = "날짜 정보 없음";
     }
+
+    wrapper.appendChild(dateP);
 
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
@@ -127,12 +131,10 @@ async function handleDelete() {
   loadMyTemplates();
 }
 
-// ✅ Masonry 레이아웃 적용 함수
 function applyMasonryLayout() {
   const container = document.querySelector(".template-list");
   if (!container) return;
 
-  // Masonry 적용 전 이미지 로딩 보장
   imagesLoaded(container, function () {
     new Masonry(container, {
       itemSelector: ".template-card",
@@ -143,7 +145,6 @@ function applyMasonryLayout() {
   });
 }
 
-// ✅ 초기 진입 시 이벤트 바인딩
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
