@@ -57,6 +57,8 @@ body.mypage .global-header .logo {
   display: flex;
   justify-content: flex-end;
   width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
   padding-right: 100px;
   padding-bottom: 20px;
   box-sizing: border-box;
@@ -64,11 +66,13 @@ body.mypage .global-header .logo {
 
 /* ✅ 템플릿 스크롤 영역 */
 .template-scroll-area {
-  padding: 0 20px 30px;
+  padding: 0 0px 30px;
   width: 100%;
   box-sizing: border-box;
   background-color: #292929;
   overflow-y: auto;
+  display: flex;
+  justify-content: center;
 }
 
 /* ✅ Masonry 열 기준 */
