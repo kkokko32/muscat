@@ -55,6 +55,11 @@ body.mypage .global-header .logo {
   padding: 20px 100px 10px;
 }
 
+.template-center-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 /* ✅ 스크롤 되는 카드 영역 */
 .template-scroll-area {
   flex: 1;

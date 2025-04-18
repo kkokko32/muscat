@@ -33,7 +33,14 @@ async function loadMyTemplates() {
   const deleteBtn = document.getElementById("deleteSelectedBtn");
 
   if (!container) return;
+  container.innerHTML = "";
 
+  // ✅ Masonry 기준 grid-sizer 삽입
+  const gridSizer = document.createElement("div");
+  gridSizer.className = "grid-sizer";
+  container.appendChild(gridSizer);
+
+  // ✅ 개수 텍스트
   if (countText) {
     const count = snapshot.docs.length;
     countText.innerHTML = `총 <span class="highlight-number">${count}</span>개의 디자인을 저장했어요`;
@@ -106,8 +113,8 @@ async function loadMyTemplates() {
     fragment.appendChild(wrapper);
   });
 
-  container.appendChild(fragment); // ✅ fragment 먼저 append 후
-  applyMasonryLayout();           // ✅ 이후에 Masonry 적용
+  container.appendChild(fragment);
+  applyMasonryLayout();
 
   if (deleteBtn) {
     deleteBtn.style.display = isManaging ? "inline-block" : "none";
@@ -115,7 +122,7 @@ async function loadMyTemplates() {
   }
 }
 
-// ✅ 삭제 기능
+// ✅ 삭제
 async function handleDelete() {
   const confirmDelete = confirm("선택한 템플릿을 삭제하시겠습니까?");
   if (!confirmDelete) return;
@@ -132,13 +139,16 @@ async function handleDelete() {
   loadMyTemplates();
 }
 
-// ✅ Masonry 적용
+// ✅ Masonry 적용 (이미지 로드 후)
 function applyMasonryLayout() {
   const container = document.querySelector(".template-list");
   if (!container) return;
 
-  imagesLoaded(container, { background: true }, function () {
-    new Masonry(container, {
+  imagesLoaded(container).on("always", () => {
+    if (window.masonryInstance) {
+      window.masonryInstance.destroy(); // ✅ 기존 인스턴스 제거
+    }
+    window.masonryInstance = new Masonry(container, {
       itemSelector: ".template-card",
       columnWidth: ".grid-sizer",
       gutter: 20,
@@ -147,7 +157,7 @@ function applyMasonryLayout() {
   });
 }
 
-// ✅ 초기 실행
+// ✅ DOM 로드 후 실행
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
