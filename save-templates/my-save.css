@@ -77,30 +77,21 @@ body.mypage .global-header .logo {
   color: #aafc3e;
 }
 
-/* ✅ 상단 버튼 영역 */
-.template-list-header {
-  display: flex; /* ✅ block → flex */
-  justify-content: flex-end;
-  margin-bottom: 20px;
-  max-width: 1800px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 #manageModeBtn, #deleteSelectedBtn {
   min-width: 80px;
   padding: 8px 16px;
   margin-left: 8px;
 }
 
-/* ✅ JS 기반 Masonry 레이아웃 */
+/* ✅ 템플릿 카드 전체 컨테이너 */
 .template-list {
   max-width: 1800px;
-  width: 100%;  
+  width: 100%;
   margin: 0 auto;
   position: relative;
-  display: block; 
+  display: block;
 }
+
 
 /* ✅ 카드 */
 .template-card {
