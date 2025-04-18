@@ -118,10 +118,9 @@ body.mypage .global-header .logo {
 }
 .template-card p {
   font-size: 13px;
-  color: #666;
+  color: #555;
   margin-top: 4px;
   margin-bottom: 4px;
-  border-radius: 12px;
   overflow: visible;
 }
 
