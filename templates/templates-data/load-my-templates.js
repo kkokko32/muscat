@@ -35,7 +35,7 @@ async function loadMyTemplates() {
 
   if (!container) return;
 
-  // ✅ container 초기화 후 grid-sizer 추가
+  // ✅ 초기화 후 grid-sizer 추가
   container.innerHTML = '';
   const gridSizer = document.createElement("div");
   gridSizer.className = "grid-sizer";
