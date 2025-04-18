@@ -119,6 +119,7 @@ main.page-wrapper {
   width: 100%;
   padding: 0 100px 30px;
   box-sizing: border-box;
+  background-color: #292929;
 }
 
 /* ✅ 상단 고정 영역 */
@@ -172,6 +173,16 @@ body.mypage .global-header .logo {
 .global-header a,
 .gnb a {
   font-weight: 300;
+}
+
+/* ✅ 푸터와 템플릿 사이 여백 */
+.footer-spacing {
+  margin-top: 30px;
+}
+
+/* ✅ 푸터는 고정 아님 (원래대로 흐름에 따라 배치) */
+body .global-footer {
+  position: static !important;
 }
 
 /* ✅ 반응형 */
