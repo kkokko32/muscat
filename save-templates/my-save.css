@@ -53,7 +53,7 @@ main.page-wrapper {
 /* ✅ 카드 요소 */
 .template-card {
   width: 270px;
-  background: transparent;
+  background: transparent !important;
   text-align: center;
   position: relative;
 }
