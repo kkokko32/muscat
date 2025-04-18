@@ -12,10 +12,13 @@ body {
 }
 
 main.page-wrapper {
-  flex: 1;
+  fflex: 1;
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100%;              
+  max-width: 100vw;        
+  box-sizing: border-box;   
   overflow: hidden;
 }
 
