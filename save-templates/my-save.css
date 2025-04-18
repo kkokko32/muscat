@@ -35,7 +35,7 @@ main.page-wrapper {
 .grid-sizer {
   width: 270px;
   height: 1px;
-  float: left; /* ✅ 핵심 */
+  float: left;
   visibility: hidden;
 }
 
@@ -82,12 +82,11 @@ body.mypage .global-header .logo {
 
 /* ✅ 스크롤 되는 카드 영역 */
 .template-scroll-area {
-  display: block;
-  padding: 0 30px 30px;
-  background-color: #292929;
   overflow-y: auto;
+  padding: 0 10px 30px;   /* 좌우 여백 줄임 */
   width: 100%;
   box-sizing: border-box;
+  background-color: #292929;
 }
 
 /* 타이틀 텍스트 */
@@ -111,7 +110,7 @@ body.mypage .global-header .logo {
 
 /* ✅ 템플릿 카드 전체 컨테이너 */
 .template-list {
-  width: auto;
+  width: 100%;            /* auto → 100% */
   max-width: 1800px;
   margin: 0 auto;
   position: relative;
@@ -121,7 +120,7 @@ body.mypage .global-header .logo {
 /* ✅ 카드 */
 .template-card {
   width: 270px;
-  float: left; /* ✅ 핵심 */
+  float: left;
   margin-bottom: 20px;
   text-align: center;
   background: transparent;
