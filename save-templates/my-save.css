@@ -96,6 +96,7 @@ body.mypage .global-header .logo {
 /* ✅ JS 기반 Masonry 레이아웃 */
 .template-list {
   max-width: 1800px;
+  width: 100%;  
   margin: 0 auto;
   position: relative;
   display: block; 
