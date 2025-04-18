@@ -92,7 +92,7 @@ body.mypage .global-header .logo {
   break-inside: avoid;
   border-radius: 12px;
   overflow: hidden;
-  background: #fff;
+  background: transparent; 
   color: #000;
   padding-bottom: 14px;
   text-align: center;
