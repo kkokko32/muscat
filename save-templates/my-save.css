@@ -16,12 +16,12 @@ main.page-wrapper {
   flex-direction: column;
 }
 
-.global-header {
-  padding: 20px;
-  background-color: #292929;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
+body.mypage .global-header {
+  background-color: #292929; /* 헤더 배경만 어둡게 */
+}
+body.mypage .global-header a,
+body.mypage .global-header .logo {
+  color: #ffffff !important; /* 헤더 텍스트 흰색 */
 }
 
 .template-count-text {
