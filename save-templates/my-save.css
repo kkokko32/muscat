@@ -36,7 +36,7 @@ body.mypage .global-header .logo {
 }
 
 .template-wrapper {
-  padding: 20px 100px 30px;
+  padding: 0 100px 0;
   box-sizing: border-box;
   width: 100%;
   flex-grow: 1;
