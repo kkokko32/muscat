@@ -71,7 +71,7 @@ body.mypage .global-header .logo {
 .template-list-header {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px 0;
+  padding-bottom: 20px;
 }
 
 #manageModeBtn, #deleteSelectedBtn {
