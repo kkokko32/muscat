@@ -52,16 +52,14 @@ body.mypage .global-header .logo {
   color: #B9FB52 !important;
 }
 
+/* ✅ 버튼 정렬 */
 .template-list-header {
   display: flex;
   justify-content: flex-end;
   max-width: 1800px;
   margin: 0 auto;
   width: 100%;
-}
-
-#manageModeBtn {
-  margin-right: 100px; 
+  padding-right: 100px;
 }
 
 /* ✅ 템플릿 스크롤 영역 */
@@ -75,28 +73,36 @@ body.mypage .global-header .logo {
   overflow-y: auto;
 }
 
-/* ✅ 템플릿 카드 전체 컨테이너 */
-.template-list {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 1800px;
-  width: 100%;
-  gap: 20px;
-  justify-content: flex-start;
-  align-items: flex-start; /* ✅ 핵심 */
-  position: relative;
-  padding-bottom: 40px;
+/* ✅ Masonry 열 기준 */
+.grid-sizer {
+  width: 270px;
+  height: 1px;
+  float: left;
+  visibility: hidden;
 }
 
-/*  카드 */
+/* ✅ Masonry 레이아웃: 카드 컨테이너 */
+.template-list {
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.template-list::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* ✅ 카드 */
 .template-card {
   width: 270px;
+  margin-bottom: 20px;
+  float: left;
   background: transparent;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-  flex-shrink: 0;
+  position: relative;
 }
 
 /* ✅ 썸네일 */
@@ -122,6 +128,7 @@ body.mypage .global-header .logo {
   color: #888;
   font-weight: 600;
   margin: 8px 0 4px;
+  text-align: center;
 }
 
 .template-card p {
@@ -161,10 +168,10 @@ body.mypage .global-header .logo {
 
   .template-list {
     max-width: 100%;
-    justify-content: center;
   }
 
   .template-card {
     width: 100%;
+    float: none;
   }
 }
