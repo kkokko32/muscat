@@ -136,9 +136,9 @@ function applyMasonryLayout() {
   imagesLoaded(container, function () {
     new Masonry(container, {
       itemSelector: ".template-card",
-      columnWidth: 270,
+      columnWidth: ".grid-sizer",
       gutter: 20,
-      fitWidth: true
+      percentPosition: true
     });
   });
 }
