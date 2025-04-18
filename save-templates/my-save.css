@@ -101,14 +101,14 @@ body.mypage .global-header .logo {
 /* ✅ 카드 */
 .template-card {
   width: 270px;
-  display: block;          /* ✅ inline-block 대신 block */
-  float: left;             /* ✅ Masonry는 float 기반 → 명시해주면 더 안정적 */
+  display: block;
   margin-bottom: 20px;
   background: transparent;
   text-align: center;
   position: relative;
   break-inside: avoid;
-  box-sizing: border-box;  /* ✅ 여백 계산 정확히 하기 위해 추가 권장 */
+  box-sizing: border-box;
+  /* float 제거함 */
 }
 
 /* ✅ 썸네일 */
