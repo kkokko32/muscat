@@ -34,15 +34,6 @@ async function loadMyTemplates() {
 
   if (!container) return;
 
-  // ✅ 기존 내용 초기화
-  container.innerHTML = '';
-
-  // ✅ Masonry 기준 grid-sizer 삽입
-  const gridSizer = document.createElement("div");
-  gridSizer.className = "grid-sizer";
-  container.appendChild(gridSizer);
-
-  // ✅ 총 개수 텍스트 표시
   if (countText) {
     const count = snapshot.docs.length;
     countText.innerHTML = `총 <span class="highlight-number">${count}</span>개의 디자인을 저장했어요`;
@@ -88,7 +79,10 @@ async function loadMyTemplates() {
     wrapper.appendChild(brandP);
 
     const dateP = document.createElement("p");
-    dateP.className = "template-date-text";
+    dateP.style.fontSize = "13px";
+    dateP.style.margin = "0";
+    dateP.style.color = "#999";
+
     if (data.createdAt?.toDate) {
       const createdDate = data.createdAt.toDate();
       const year = createdDate.getFullYear();
@@ -100,6 +94,7 @@ async function loadMyTemplates() {
     } else {
       dateP.innerText = "날짜 정보 없음";
     }
+
     wrapper.appendChild(dateP);
 
     wrapper.onclick = (e) => {
@@ -111,16 +106,16 @@ async function loadMyTemplates() {
     fragment.appendChild(wrapper);
   });
 
-  container.appendChild(fragment);
+  container.appendChild(fragment); // ✅ fragment 먼저 append 후
+  applyMasonryLayout();           // ✅ 이후에 Masonry 적용
 
   if (deleteBtn) {
     deleteBtn.style.display = isManaging ? "inline-block" : "none";
     deleteBtn.onclick = handleDelete;
   }
-
-  applyMasonryLayout(); // ✅ Masonry 적용
 }
 
+// ✅ 삭제 기능
 async function handleDelete() {
   const confirmDelete = confirm("선택한 템플릿을 삭제하시겠습니까?");
   if (!confirmDelete) return;
@@ -137,28 +132,22 @@ async function handleDelete() {
   loadMyTemplates();
 }
 
-// ✅ 이미지 로딩 후 Masonry 레이아웃 적용
+// ✅ Masonry 적용
 function applyMasonryLayout() {
   const container = document.querySelector(".template-list");
   if (!container) return;
 
-  imagesLoaded(container, () => {
-    setTimeout(() => {
-      if (!window.masonryInstance) {
-        window.masonryInstance = new Masonry(container, {
-          itemSelector: ".template-card",
-          columnWidth: ".grid-sizer",
-          gutter: 20,
-          fitWidth: true
-        });
-      } else {
-        window.masonryInstance.reloadItems();
-        window.masonryInstance.layout();
-      }
-    }, 50); // ✅ Masonry 적용 안정화
+  imagesLoaded(container, { background: true }, function () {
+    new Masonry(container, {
+      itemSelector: ".template-card",
+      columnWidth: ".grid-sizer",
+      gutter: 20,
+      fitWidth: true
+    });
   });
 }
 
+// ✅ 초기 실행
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
