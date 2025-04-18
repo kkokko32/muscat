@@ -100,6 +100,7 @@ body.mypage .global-header .logo {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 8px;
 }
 
 .thumbnail {
@@ -121,6 +122,14 @@ body.mypage .global-header .logo {
   color: #999;
   margin: 4px 0;
   text-align: center;
+}
+
+/* 날짜 텍스트 스타일 보완 */
+.template-date-text {
+  font-size: 13px;
+  margin: 4px 0 8px;
+  text-align: center;
+  color: #B9FB52;
 }
 
 /* ✅ 체크박스 */

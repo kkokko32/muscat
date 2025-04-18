@@ -37,7 +37,7 @@ async function loadMyTemplates() {
   // ✅ 기존 내용 초기화
   container.innerHTML = '';
 
-  // ✅ 총 개수 반영
+  // ✅ 총 개수 텍스트 표시
   if (countText) {
     const count = snapshot.docs.length;
     countText.innerHTML = `총 <span class="highlight-number">${count}</span>개의 디자인을 저장했어요`;
@@ -83,10 +83,7 @@ async function loadMyTemplates() {
     wrapper.appendChild(brandP);
 
     const dateP = document.createElement("p");
-    dateP.style.fontSize = "13px";
-    dateP.style.margin = "0";
-    dateP.style.color = "#999";
-
+    dateP.className = "template-date-text"; // ✅ 클래스 지정
     if (data.createdAt?.toDate) {
       const createdDate = data.createdAt.toDate();
       const year = createdDate.getFullYear();
@@ -98,10 +95,9 @@ async function loadMyTemplates() {
     } else {
       dateP.innerText = "날짜 정보 없음";
     }
-
     wrapper.appendChild(dateP);
 
-    // ✅ 카드 클릭 시 상세 페이지 이동
+    // ✅ 카드 클릭 시 상세페이지 이동
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
