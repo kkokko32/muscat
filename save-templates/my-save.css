@@ -101,7 +101,7 @@ body.mypage .global-header .logo {
 /* ✅ 카드 */
 .template-card {
   width: 270px;
-  display: inline-block; /* ✅ 핵심 */
+  display: inline-block; 
   vertical-align: top;
   margin-bottom: 20px;
   break-inside: avoid;
