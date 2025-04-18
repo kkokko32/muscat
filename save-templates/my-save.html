@@ -14,22 +14,16 @@
   </header>
 
   <main class="page-wrapper">
-    <div class="portfolio-header">
-      <h1>나의 저장 템플릿</h1>
-    </div>
-
     <div class="template-wrapper">
-      <div class="portfolio-header">
-        <h1 class="template-count-text" id="template-count">
-          총 <span class="highlight-number">0</span>개의 디자인을 저장했어요
-        </h1>
-      </div>
-    
+      <h1 class="template-count-text" id="template-count">
+        총 <span class="highlight-number">0</span>개의 디자인을 저장했어요
+      </h1>
+
       <div class="template-list-header">
         <button id="manageModeBtn">관리</button>
         <button id="deleteSelectedBtn" style="display: none">삭제</button>
       </div>
-    
+
       <div class="template-list" id="templateList"></div>
     </div>
   </main>
@@ -37,20 +31,6 @@
   <footer class="global-footer">
     <p>© 2025 MUSCAT. All rights reserved.</p>
   </footer>
-
-  <script>
-    fetch("/muscat/components/header.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("header-placeholder").innerHTML = html;
-      });
-
-    fetch("/muscat/components/footer.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("footer-placeholder").innerHTML = html;
-      });
-  </script>
 
   <script type="module" src="/muscat/common/firebase-init.js"></script>
   <script type="module" src="/muscat/common/utils-auth.js"></script>

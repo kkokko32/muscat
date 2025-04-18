@@ -24,10 +24,6 @@ main.page-wrapper {
   font-weight: bold;
 }
 
-.portfolio-header {
-  padding: 0 80px 20px;
-}
-.portfolio-header h1,
 .template-count-text {
   font-size: 42px;
   margin-bottom: 8px;
@@ -58,13 +54,13 @@ main.page-wrapper {
   margin-left: 8px;
 }
 
+/* ✅ Masonry 스타일 + 카드 가로 고정 */
 .template-list {
   column-count: 5;
   column-gap: 20px;
   max-width: 1800px;
   margin: 0 auto;
 }
-
 @media (max-width: 1600px) {
   .template-list { column-count: 4; }
 }
@@ -76,6 +72,10 @@ main.page-wrapper {
 }
 @media (max-width: 480px) {
   .template-list { column-count: 1; }
+}
+.template-list:empty::after {
+  content: "";
+  display: block;
 }
 
 .template-card {
@@ -144,4 +144,5 @@ main.page-wrapper {
   text-align: center;
   padding: 16px 0;
   font-size: 14px;
+  margin-top: auto;
 }
