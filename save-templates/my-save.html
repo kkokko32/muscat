@@ -5,22 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>내 작업실</title>
 
-   <!-- ✅ 파비콘 -->
-   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
-   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
+  <!-- ✅ 파비콘 -->
+  <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
+  <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
 
-  <!-- 잘못된 head-placeholder 제거 -->
+  <!-- ✅ 공통 스타일 -->
   <link rel="stylesheet" href="/muscat/common/common.css"/>
-  <link rel="stylesheet" href="/muscat/save-templates/my-save.css">
+  <link rel="stylesheet" href="/muscat/save-templates/my-save.css"/>
 
-  <!-- Masonry 및 이미지 로딩 -->
+  <!-- ✅ Masonry 및 이미지 로딩 -->
   <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
   <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 </head>
 
 <body class="mypage">
 
-  <!-- ✅ 헤더 fetch로 불러오기 -->
+  <!-- ✅ 헤더 -->
   <div id="header-placeholder"></div>
 
   <main class="page-wrapper">
@@ -35,27 +35,26 @@
       </div>
     </div>
 
+    <!-- ✅ Masonry 카드 목록 -->
     <div class="template-scroll-area">
-      <!-- <div class="template-center-wrapper"> -->
-        <div class="template-list" id="templateList">
-          <div class="grid-sizer"></div>
-          <!-- JS로 template-card 삽입 -->
-        </div>
-      <!-- </div> -->
+      <div class="template-list" id="templateList">
+        <div class="grid-sizer"></div>
+        <!-- JS에서 template-card 삽입 -->
+      </div>
     </div>
   </main>
 
-  <!-- ✅ 푸터 fetch로 불러오기 -->
+  <!-- ✅ 푸터 -->
   <div id="footer-placeholder"></div>
 
-  <!-- 공통 Firebase + 유틸 -->
+  <!-- ✅ Firebase 및 유틸 -->
   <script type="module" src="/muscat/common/firebase-init.js"></script>
   <script type="module" src="/muscat/common/utils-auth.js"></script>
   <script type="module" src="/muscat/templates/templates-data/load-my-templates.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="/muscat/common/image-fit.js"></script>
 
-  <!-- 헤더/푸터 불러오기 -->
+  <!-- ✅ 헤더/푸터 불러오기 -->
   <script>
     fetch('/muscat/components/header.html')
       .then(res => res.text())
@@ -70,6 +69,7 @@
       });
   </script>
 
+  <!-- ✅ 모달 영역 -->
   <div id="modal-placeholder"></div>
 </body>
 </html>

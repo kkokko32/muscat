@@ -40,7 +40,7 @@ main.page-wrapper {
   margin: 0 auto;
   position: relative;
   display: block;
-  /* text-align: center; ❌ 제거 */
+  /* text-align: center 제거됨 */
 }
 
 /* ✅ Masonry float fix */
@@ -53,7 +53,7 @@ main.page-wrapper {
 /* ✅ 카드 요소 */
 .template-card {
   width: 270px;
-  float: left; /* ✅ inline-block → float 변경 */
+  float: left;
   margin-bottom: 20px;
   background: transparent;
   text-align: center;
@@ -164,6 +164,7 @@ main.page-wrapper {
 body.mypage .global-header {
   background-color: #292929;
 }
+
 body.mypage .global-header a,
 body.mypage .global-header .logo {
   color: #ffffff !important;
