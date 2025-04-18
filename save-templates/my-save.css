@@ -28,21 +28,20 @@ main.page-wrapper {
 
 /* ✅ Masonry 기준 열 너비 */
 .grid-sizer {
-  width: 270px;
-  float: left;
-  height: 1px;
-  visibility: hidden;
+  display: none;
 }
 
 /* ✅ 카드 리스트 래퍼 */
 .template-list {
-  width: fit-content;
-  max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  display: block;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;  /* ✅ 중앙 정렬 */
+  gap: 20px;                /* ✅ 카드 사이 간격 */
+  max-width: 1800px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
+
 
 /* ✅ Masonry float fix */
 .template-list::after {
@@ -54,8 +53,6 @@ main.page-wrapper {
 /* ✅ 카드 요소 */
 .template-card {
   width: 270px;
-  float: left;
-  margin-bottom: 20px;
   background: transparent;
   text-align: center;
   position: relative;
