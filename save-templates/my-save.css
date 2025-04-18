@@ -24,8 +24,14 @@ body.mypage .global-header .logo {
   color: #ffffff !important; /* 헤더 텍스트 흰색 */
 }
 
+.global-header a,
+.gnb a {
+  font-weight: 300; 
+}
+
 .template-count-text {
   font-size: 42px;
+  font-weight: 600;
   margin-bottom: 8px;
   color: #ffffff;
   text-align: center;
