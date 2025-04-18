@@ -24,7 +24,7 @@ async function loadMyTemplates() {
   const q = query(
     collection(db, "savedTemplates"),
     where("uid", "==", user.uid),
-    orderBy("createdAt", "desc") // 최신순 정렬
+    orderBy("createdAt", "desc")
   );
 
   const snapshot = await getDocs(q);
@@ -82,6 +82,7 @@ async function loadMyTemplates() {
       const dateP = document.createElement("p");
       dateP.style.fontSize = "13px";
       dateP.style.margin = "0";
+      dateP.style.color = "#999";
 
       const year = createdDate.getFullYear();
       const month = createdDate.getMonth() + 1;
@@ -126,12 +127,12 @@ async function handleDelete() {
   loadMyTemplates();
 }
 
-// ✅ Masonry 적용
+// ✅ Masonry 레이아웃 적용 함수
 function applyMasonryLayout() {
   const container = document.querySelector(".template-list");
-
   if (!container) return;
 
+  // Masonry 적용 전 이미지 로딩 보장
   imagesLoaded(container, function () {
     new Masonry(container, {
       itemSelector: ".template-card",
@@ -142,6 +143,7 @@ function applyMasonryLayout() {
   });
 }
 
+// ✅ 초기 진입 시 이벤트 바인딩
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
