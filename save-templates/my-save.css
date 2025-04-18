@@ -1,5 +1,6 @@
 html, body {
-  height: 100%;
+  height: auto;
+  min-height: 100vh; /* 푸터 아래로 밀리는 것 방지 */
   margin: 0;
 }
 
