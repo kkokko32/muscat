@@ -9,8 +9,8 @@
 </head>
 <body class="mypage">
 
-  <!-- ✅ 동적 헤더 삽입 -->
-  <div id="header-container"></div>
+  <!-- ✅ 헤더 fetch로 불러오기 -->
+  <div id="header-placeholder"></div>
 
   <main class="page-wrapper">
     <div class="template-wrapper">
@@ -27,22 +27,28 @@
     </div>
   </main>
 
-  <footer class="global-footer">
-    <p>© 2025 MUSCAT. All rights reserved.</p>
-  </footer>
+  <!-- ✅ 푸터 fetch로 불러오기 -->
+  <div id="footer-placeholder"></div>
 
+  <!-- 공통 Firebase + 유틸 -->
   <script type="module" src="/muscat/common/firebase-init.js"></script>
   <script type="module" src="/muscat/common/utils-auth.js"></script>
   <script type="module" src="/muscat/templates/templates-data/load-my-templates.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="/muscat/common/image-fit.js"></script>
 
-  <!-- ✅ 헤더 로딩 스크립트 -->
+  <!-- 헤더/푸터 불러오기 -->
   <script>
     fetch('/muscat/components/header.html')
       .then(res => res.text())
       .then(html => {
-        document.getElementById("header-container").innerHTML = html;
+        document.getElementById("header-placeholder").innerHTML = html;
+      });
+
+    fetch('/muscat/components/footer.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("footer-placeholder").innerHTML = html;
       });
   </script>
 
