@@ -52,14 +52,16 @@ body.mypage .global-header .logo {
   color: #B9FB52 !important;
 }
 
-/*  버튼 정렬 */
 .template-list-header {
   display: flex;
   justify-content: flex-end;
   max-width: 1800px;
   margin: 0 auto;
   width: 100%;
-  padding-right: 100px; /* ✅ 오른쪽 간격 */
+}
+
+#manageModeBtn {
+  margin-right: 100px; 
 }
 
 /* ✅ 템플릿 스크롤 영역 */
@@ -81,16 +83,16 @@ body.mypage .global-header .logo {
   width: 100%;
   gap: 20px;
   justify-content: flex-start;
+  align-items: flex-start; /* ✅ 핵심 */
   position: relative;
-  padding-bottom: 40px; 
+  padding-bottom: 40px;
 }
 
-/* ✅ 카드 */
+/*  카드 */
 .template-card {
   width: 270px;
   background: transparent;
   text-align: center;
-  position: relative;
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
