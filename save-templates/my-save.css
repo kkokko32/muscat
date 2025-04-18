@@ -86,22 +86,19 @@ body.mypage .global-header .logo {
 }
 
 .template-card {
-  border-radius: 0;
-  overflow: hidden;
-  background: #fff;
-  color: #000;
-  text-align: center;
-  width: 270px;
   display: inline-block;
+  width: 270px;
   margin-bottom: 20px;
   break-inside: avoid;
+  text-align: center;
   position: relative;
+  background: transparent; 
 }
 
 .thumbnail-wrapper {
-  border-radius: 12px 12px 0 0;
+  border-radius: 12px;
   overflow: hidden;
-  background: #f0f0f0;
+  background: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,6 +108,7 @@ body.mypage .global-header .logo {
   width: 100%;
   height: auto;
   object-fit: contain;
+  display: block;
 }
 
 .template-card h3 {
