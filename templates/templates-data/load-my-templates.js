@@ -85,7 +85,7 @@ async function loadMyTemplates() {
       const createdDate = data.createdAt.toDate();
       const dateP = document.createElement("p");
       dateP.style.fontSize = "13px";
-      dateP.style.color = "#666";
+      // dateP.style.color = "#666";
       dateP.style.margin = "0";
 
       const year = createdDate.getFullYear();
