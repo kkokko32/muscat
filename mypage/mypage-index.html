@@ -4,6 +4,13 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>홍길동님, 반갑습니다</title>
+  <script>
+    fetch('/muscat/components/head.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("head-placeholder").innerHTML = html;
+      });
+  </script>
   <link rel="stylesheet" href="/muscat/common/common.css"/>
   <link rel="stylesheet" href="/muscat/mypage/mypage.css"/>
 </head>
