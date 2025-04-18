@@ -36,11 +36,12 @@ main.page-wrapper {
 
 /* ✅ 카드 리스트 래퍼 */
 .template-list {
-  max-width: 1800px;
-  margin: 0 auto;
+  width: fit-content;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
   position: relative;
   display: block;
-  /* text-align: center 제거됨 */
 }
 
 /* ✅ Masonry float fix */
