@@ -90,7 +90,7 @@ body.mypage .global-header .logo {
 
 /* 카드 단위 */
 .template-card {
-  width: 270px; /* Masonry 기준과 일치 */
+  width: 100%; /* Masonry 기준과 일치 */
   display: block;
   margin-bottom: 20px;
   break-inside: avoid;
