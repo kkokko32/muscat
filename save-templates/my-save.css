@@ -29,6 +29,7 @@ main.page-wrapper {
 /* ✅ grid-sizer (Masonry 기준 열 너비) */
 .grid-sizer {
   width: 270px;
+  height: 0;          /* ✅ 시각적으로 보이지 않게 처리 */
   float: left;
 }
 
@@ -49,10 +50,20 @@ body.mypage .global-header .logo {
 
 /* ✅ 상단 고정 영역 */
 .template-header-fixed {
-  flex-shrink: 0;
-  background-color: #292929;
-  z-index: 10;
   padding: 20px 100px 10px;
+  background-color: #292929;
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+
+/* ✅ 버튼 정렬 */
+.template-list-header {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
 }
 
 /* ✅ 스크롤 되는 카드 영역 */
@@ -120,6 +131,12 @@ body.mypage .global-header .logo {
   height: auto;
   object-fit: contain;
   display: block;
+}
+
+/* ✅ 템플릿 카드 */
+.template-card h3,
+.template-card p {
+  text-align: center;
 }
 
 /* ✅ 브랜드명, 저장일 */
