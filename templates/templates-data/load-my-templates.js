@@ -34,9 +34,6 @@ async function loadMyTemplates() {
 
   if (!container) return;
 
-  // ✅ grid-sizer 유지
-  container.innerHTML = '<div class="grid-sizer"></div>';
-
   if (countText) {
     const count = snapshot.docs.length;
     countText.innerHTML = `총 <span class="highlight-number">${count}</span>개의 디자인을 저장했어요`;
