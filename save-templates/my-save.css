@@ -49,6 +49,7 @@ body.mypage .global-header .logo {
   max-width: 1800px;
   margin: 0 auto;
   box-sizing: border-box;
+  text-align: center; /*
 }
 
 /* ✅ 버튼 정렬 */
@@ -80,6 +81,18 @@ body.mypage .global-header .logo {
   gap: 20px;
   justify-content: flex-start;
   position: relative;
+}
+
+.template-count-text {
+  font-size: 42px;
+  font-weight: 600;
+  color: #ffffff; 
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.template-count-text .highlight-number {
+  color: #B9FB52; 
 }
 
 /* ✅ 카드 */
