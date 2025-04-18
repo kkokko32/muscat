@@ -10,7 +10,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let isManaging = false;
-let masonryInstance = null;
 
 auth.onAuthStateChanged(user => {
   if (user) {
@@ -35,19 +34,17 @@ async function loadMyTemplates() {
 
   if (!container) return;
 
-  // ✅ 초기화 후 grid-sizer 추가
+  // ✅ 기존 내용 초기화
   container.innerHTML = '';
-  const gridSizer = document.createElement("div");
-  gridSizer.className = "grid-sizer";
-  container.appendChild(gridSizer);
 
+  // ✅ 총 개수 반영
   if (countText) {
     const count = snapshot.docs.length;
     countText.innerHTML = `총 <span class="highlight-number">${count}</span>개의 디자인을 저장했어요`;
   }
 
   if (snapshot.empty) {
-    container.innerHTML += `<p class="no-template">저장된 템플릿이 없습니다.</p>`;
+    container.innerHTML = `<p class="no-template">저장된 템플릿이 없습니다.</p>`;
     if (deleteBtn) deleteBtn.style.display = "none";
     return;
   }
@@ -104,6 +101,7 @@ async function loadMyTemplates() {
 
     wrapper.appendChild(dateP);
 
+    // ✅ 카드 클릭 시 상세 페이지 이동
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
@@ -119,8 +117,6 @@ async function loadMyTemplates() {
     deleteBtn.style.display = isManaging ? "inline-block" : "none";
     deleteBtn.onclick = handleDelete;
   }
-
-  applyMasonryLayout();
 }
 
 async function handleDelete() {
@@ -137,25 +133,6 @@ async function handleDelete() {
 
   alert("삭제가 완료되었습니다.");
   loadMyTemplates();
-}
-
-function applyMasonryLayout() {
-  const container = document.querySelector(".template-list");
-  if (!container) return;
-
-  imagesLoaded(container, () => {
-    if (!masonryInstance) {
-      masonryInstance = new Masonry(container, {
-        itemSelector: ".template-card",
-        columnWidth: ".grid-sizer",
-        gutter: 20,
-        fitWidth: true
-      });
-    } else {
-      masonryInstance.reloadItems();
-      masonryInstance.layout();
-    }
-  });
 }
 
 window.addEventListener("DOMContentLoaded", () => {

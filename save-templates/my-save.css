@@ -1,7 +1,3 @@
-body.mypage .template-list {
-  display: block !important;
-}
-
 html, body {
   height: 100%;
   margin: 0;
@@ -31,22 +27,7 @@ main.page-wrapper {
   padding: 70px 0 0 !important;
 }
 
-/* ✅ Masonry 기준 열 너비 */
-.grid-sizer {
-  width: 270px;
-  height: 1px;
-  float: left;
-  visibility: hidden;
-}
-
-/* ✅ float 정렬 시 높이 유지 */
-.template-list::after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-/* 헤더 색상 유지 */
+/* ✅ 헤더 색상 유지 */
 body.mypage .global-header {
   background-color: #292929;
 }
@@ -55,7 +36,6 @@ body.mypage .global-header .logo {
   color: #ffffff !important;
 }
 
-/* GNB 폰트 얇게 */
 .global-header a,
 .gnb a {
   font-weight: 300;
@@ -80,16 +60,16 @@ body.mypage .global-header .logo {
   width: 100%;
 }
 
-/* ✅ 스크롤 되는 카드 영역 */
 .template-scroll-area {
   overflow-y: auto;
-  padding: 0 10px 30px;   /* 좌우 여백 줄임 */
+  padding: 0 20px 30px;
   width: 100%;
   box-sizing: border-box;
   background-color: #292929;
+  display: flex;
+  justify-content: center;
 }
 
-/* 타이틀 텍스트 */
 .template-count-text {
   font-size: 42px;
   font-weight: 600;
@@ -108,22 +88,23 @@ body.mypage .global-header .logo {
   margin-left: 8px;
 }
 
-/* ✅ 템플릿 카드 전체 컨테이너 */
+/* ✅ 템플릿 카드 전체 컨테이너 (flex 적용) */
 .template-list {
-  width: 100%;            /* auto → 100% */
+  display: flex;
+  flex-wrap: wrap;
   max-width: 1800px;
-  margin: 0 auto;
+  width: 100%;
+  gap: 20px;
+  justify-content: flex-start;
   position: relative;
-  display: block;
 }
 
 /* ✅ 카드 */
 .template-card {
   width: 270px;
-  float: left;
-  margin-bottom: 20px;
-  text-align: center;
   background: transparent;
+  text-align: center;
+  position: relative;
 }
 
 /* ✅ 썸네일 */
@@ -143,28 +124,20 @@ body.mypage .global-header .logo {
   display: block;
 }
 
-/* ✅ 텍스트 정렬 */
-.template-card h3,
-.template-card p {
-  text-align: center;
-}
-
-/* ✅ 브랜드명, 저장일 */
+/* ✅ 텍스트 */
 .template-card h3 {
   font-size: 14px;
   color: #888;
   font-weight: 600;
   margin: 8px 0 4px;
 }
-
 .template-card p {
   font-size: 12px;
   color: #999;
-  margin-top: 4px;
-  margin-bottom: 4px;
+  margin: 4px 0;
+  text-align: center;
 }
 
-/* ✅ 체크박스 */
 .select-checkbox {
   position: absolute;
   top: 12px;
@@ -172,12 +145,10 @@ body.mypage .global-header .logo {
   transform: scale(1.4);
   display: none;
 }
-
 .manage-mode .select-checkbox {
   display: block;
 }
 
-/* ✅ 템플릿이 없을 때 안내 */
 .no-template {
   font-size: 16px;
   color: #666;
@@ -194,10 +165,10 @@ body.mypage .global-header .logo {
 
   .template-list {
     max-width: 100%;
+    justify-content: center;
   }
 
   .template-card {
     width: 100%;
-    float: none;
   }
 }
