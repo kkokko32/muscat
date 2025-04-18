@@ -107,13 +107,11 @@ body.mypage .global-header .logo {
 
 /* ✅ 템플릿 카드 전체 컨테이너 */
 .template-list {
-  width: 100%;
+  width: auto;
+  margin: 0 auto;
   max-width: 1800px;
   position: relative;
   display: block;
-  flex-grow: 1;
-  min-width: 0;
-  text-align: center; 
 }
 
 /* ✅ 카드 */
