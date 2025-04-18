@@ -19,6 +19,10 @@ main.page-wrapper {
   overflow: hidden;
 }
 
+.page-wrapper {
+  padding: 70px 0 0 !important;
+}
+
 /* 다크 모드 헤더 스타일 유지 */
 body.mypage .global-header {
   background-color: #292929;
