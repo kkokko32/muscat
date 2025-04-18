@@ -6,8 +6,10 @@ import {
   getDocs,
   deleteDoc,
   doc,
-  orderBy // ✅ 추가
+  orderBy
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import Masonry from "https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js";
+import imagesLoaded from "https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js";
 
 let isManaging = false;
 
@@ -21,7 +23,6 @@ async function loadMyTemplates() {
   const user = auth.currentUser;
   if (!user) return;
 
-  // ✅ 최신순 정렬 조건 추가
   const q = query(
     collection(db, "savedTemplates"),
     where("uid", "==", user.uid),
@@ -71,10 +72,6 @@ async function loadMyTemplates() {
       previewImg.alt = "저장된 템플릿 미리보기";
       previewImg.className = "thumbnail";
 
-      previewImg.onload = () => {
-        wrapper.classList.add("ready");
-      };
-
       thumbnailWrapper.appendChild(previewImg);
       wrapper.appendChild(thumbnailWrapper);
     }
@@ -112,6 +109,22 @@ async function loadMyTemplates() {
     deleteBtn.style.display = isManaging ? "inline-block" : "none";
     deleteBtn.onclick = handleDelete;
   }
+
+  applyMasonryLayout(); // ✅ masonry 적용
+}
+
+function applyMasonryLayout() {
+  const container = document.querySelector('.template-list');
+  if (!container) return;
+
+  imagesLoaded(container, function () {
+    new Masonry(container, {
+      itemSelector: '.template-card',
+      columnWidth: 270,
+      gutter: 20,
+      fitWidth: true
+    });
+  });
 }
 
 async function handleDelete() {

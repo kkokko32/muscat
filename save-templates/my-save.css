@@ -82,8 +82,6 @@ body.mypage .global-header .logo {
 
 /* ✅ Masonry 카드 레이아웃 */
 .template-list {
-  column-count: 5;
-  column-gap: 20px;
   max-width: 1800px;
   margin: 0 auto;
 }
@@ -113,6 +111,7 @@ body.mypage .global-header .logo {
   text-align: center;
   position: relative;
   background: transparent;
+  margin-bottom: 40px;
 }
 
 /* 썸네일 상단만 radius */
