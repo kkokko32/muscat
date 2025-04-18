@@ -249,6 +249,7 @@ a.underline:hover {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 16px 30px;
 }
 
 .template-card {
