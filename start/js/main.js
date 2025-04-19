@@ -1,3 +1,4 @@
+
 function resizeSingleIframe(iframe) {
   const doc = iframe.contentDocument || iframe.contentWindow?.document;
   const frame = doc?.querySelector('.template-frame');
@@ -91,10 +92,7 @@ function selectStyle(button) {
   filterTemplates();
 }
 
-function updateTemplateInfoText() {
-  // 필터 버튼이 포함된 #templateInfoText 영역을 건드리지 않음
-
-}
+function updateTemplateInfoText() {}
 
 function filterTemplates() {
   const industry = document.getElementById("selectedIndustry")?.innerText;
@@ -118,7 +116,6 @@ function filterTemplates() {
   }
 }
 
-// 실시간 입력 반영
 function syncInputToIframe(id, value) {
   const iframes = document.querySelectorAll(".template-card.visible iframe");
   iframes.forEach(iframe => {
@@ -131,26 +128,22 @@ function syncInputToIframe(id, value) {
 }
 
 function syncImageToIframe(id, file) {
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const dataUrl = e.target.result;
+  const objectUrl = URL.createObjectURL(file);
 
-    const iframes = document.querySelectorAll(".template-card.visible iframe");
-    iframes.forEach(iframe => {
-      const doc = iframe.contentDocument || iframe.contentWindow?.document;
-      const el = doc?.querySelector(`#${id}`);
-      if (el) el.src = dataUrl;
-    });
+  const iframes = document.querySelectorAll(".template-card.visible iframe");
+  iframes.forEach(iframe => {
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    const el = doc?.querySelector(`#${id}`);
+    if (el) el.src = objectUrl;
+  });
 
-    if (id === "brandLogo") {
-      localStorage.setItem("brandLogo", dataUrl);
-    } else if (id === "mainImage") {
-      localStorage.setItem("mainImage", dataUrl);
-    }
+  if (id === "brandLogo") {
+    localStorage.setItem("brandLogo", objectUrl);
+  } else if (id === "mainImage") {
+    localStorage.setItem("mainImage", objectUrl);
+  }
 
-    updateLocalStorage();
-  };
-  reader.readAsDataURL(file);
+  updateLocalStorage();
 }
 
 function updateLocalStorage() {

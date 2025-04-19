@@ -132,36 +132,28 @@
       window.location.href = `/muscat/templates/templates-design/${path}`;
     }
 
-    // ✅ 이미지 업로드 시 미리보기 및 sessionStorage 저장
     document.getElementById("logoInput").addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const img = document.getElementById("logoPreview");
-          img.src = reader.result;
-          img.style.display = "block";
-          sessionStorage.setItem("tempLogo", reader.result);
-        };
-        reader.readAsDataURL(file);
+        const objectUrl = URL.createObjectURL(file);
+        const img = document.getElementById("logoPreview");
+        img.src = objectUrl;
+        img.style.display = "block";
+        sessionStorage.setItem("tempLogo", objectUrl);
       }
     });
 
     document.getElementById("mainImageInput").addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const img = document.getElementById("mainPreview");
-          img.src = reader.result;
-          img.style.display = "block";
-          sessionStorage.setItem("tempMain", reader.result);
-        };
-        reader.readAsDataURL(file);
+        const objectUrl = URL.createObjectURL(file);
+        const img = document.getElementById("mainPreview");
+        img.src = objectUrl;
+        img.style.display = "block";
+        sessionStorage.setItem("tempMain", objectUrl);
       }
     });
 
-    // ✅ 입력값 복원 (새로고침 시 유지)
     window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand");
       const slogan = sessionStorage.getItem("tempSlogan");
