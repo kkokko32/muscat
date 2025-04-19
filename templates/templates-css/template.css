@@ -76,6 +76,7 @@ iframe {
 }
 
 .template-close {
+  position: absolute; 
   top: 20px;
   right: 20px;
   font-size: 50px;
@@ -116,6 +117,17 @@ iframe {
   background: none; /* 유지 */
   color: #cbff6e;
   border-color: #cbff6e;
+}
+
+.delete-btn {
+  color: #fff;
+  background: none;
+  border: 1px solid #666;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .delete-btn.active {
