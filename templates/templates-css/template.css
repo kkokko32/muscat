@@ -119,3 +119,14 @@ iframe {
   color: #cbff6e;
   border-color: #cbff6e;
 }
+
+.delete-btn.active {
+  color: #cbff6e;
+  border-color: #cbff6e;
+}
+
+.delete-btn.active:hover {
+  background: none;
+  color: #cbff6e;
+  border-color: #cbff6e;
+}
