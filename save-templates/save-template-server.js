@@ -3,10 +3,8 @@ import {
   collection,
   addDoc,
   deleteDoc,
-  getDocs,
-  query,
-  where,
   doc,
+  getDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
@@ -16,15 +14,40 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
+// 버튼 요소
 const saveBtn = document.getElementById("saveTemplateBtn");
 const deleteBtn = document.getElementById("deleteTemplateBtn");
-let savedDocId = null;
+const downloadBtn = document.getElementById("downloadBtn");
 
 const params = new URLSearchParams(window.location.search);
 const currentDocId = params.get("docId");
+let savedDocId = null;
 
 console.log("✅ save-template-server.js 연결됨");
 
+// ✅ 템플릿 불러오기 기능
+async function loadTemplate() {
+  if (!currentDocId) return;
+
+  try {
+    const ref = doc(db, "savedTemplates", currentDocId);
+    const snapshot = await getDoc(ref);
+    if (!snapshot.exists()) return;
+
+    const data = snapshot.data();
+    const response = await fetch(data.htmlUrl);
+    const htmlText = await response.text();
+
+    const frame = document.getElementById("templateFrame");
+    if (frame) {
+      frame.outerHTML = htmlText;
+    }
+  } catch (e) {
+    console.error("템플릿 로드 실패:", e);
+  }
+}
+
+// ✅ 이미지 로딩 대기
 function waitForImageLoad(imageElement) {
   return new Promise(resolve => {
     if (!imageElement || !imageElement.src) {
@@ -38,6 +61,7 @@ function waitForImageLoad(imageElement) {
   });
 }
 
+// ✅ 이미지 확장자 추출
 function getImageExtension(dataUrl) {
   if (dataUrl.startsWith("data:image/png")) return "png";
   if (dataUrl.startsWith("data:image/svg")) return "svg";
@@ -45,6 +69,7 @@ function getImageExtension(dataUrl) {
   return "jpg";
 }
 
+// ✅ Storage 업로드
 async function uploadImageToStorage(base64Data, path) {
   const storageRef = ref(storage, path);
   await uploadString(storageRef, base64Data, 'data_url');
@@ -58,7 +83,7 @@ async function uploadHTMLToStorage(htmlString, path) {
   return await getDownloadURL(htmlRef);
 }
 
-// ✅ 템플릿 상세페이지에서 사용하는 저장 기능
+// ✅ 저장 기능
 async function handleSaveTemplate() {
   const user = auth.currentUser;
   if (!user) {
@@ -88,12 +113,7 @@ async function handleSaveTemplate() {
       return;
     }
 
-    const clonedFrame = frame.cloneNode(true);
-    clonedFrame.querySelector(".brand-name").innerText = brand;
-    clonedFrame.querySelector(".brand-slogan").innerText = slogan;
-    clonedFrame.querySelector(".logo-preview").src = logoImg?.src || "";
-    clonedFrame.querySelector(".main-preview").src = imageImg?.src || "";
-    const frameHTML = clonedFrame.outerHTML;
+    const frameHTML = frame.outerHTML;
 
     const canvas = await html2canvas(frame, {
       backgroundColor: null,
@@ -139,7 +159,7 @@ async function handleSaveTemplate() {
   }
 }
 
-// ✅ 템플릿 상세페이지에서 사용하는 삭제 기능
+// ✅ 삭제 기능
 async function handleDeleteTemplate() {
   const user = auth.currentUser;
   if (!user) {
@@ -164,10 +184,31 @@ async function handleDeleteTemplate() {
   }
 }
 
-// ✅ 템플릿 상세페이지에서 사용하는 저장/삭제 버튼 이벤트 바인딩
+// ✅ 다운로드 기능
+function setupDownload() {
+  downloadBtn?.addEventListener("click", async () => {
+    const frame = document.querySelector(".template-frame");
+    const logo = frame.querySelector(".logo-preview");
+    const image = frame.querySelector(".main-preview");
+
+    await Promise.all([
+      waitForImageLoad(logo),
+      waitForImageLoad(image)
+    ]);
+
+    const canvas = await html2canvas(frame);
+    const link = document.createElement("a");
+    link.download = "template.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+
+// ✅ 실행
 auth.onAuthStateChanged(user => {
   if (user) {
-    // 필요 시 이후 기능 확장 가능
+    setupDownload();
+    loadTemplate();
   }
 });
 
