@@ -49,8 +49,8 @@ iframe {
 /* 우측 고정 버튼 영역 */
 .template-buttons {
   position: absolute;
-  top: 10px;
-  right: -80px; /* template-frame 기준으로 우측 여백 20px 떨어짐 (패딩 + 버튼 크기 감안) */
+  top: 40px;
+  right: -80px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -69,16 +69,16 @@ iframe {
 }
 
 .template-close {
-  position: absolute; 
-  top: 20px;
-  right: 20px;
+  position: fixed;  
+  top: 30px;
+  right: 30px;
   font-size: 50px;
   font-weight: 100;
   color: #eee;
   background: none;
   border: none;
   cursor: pointer;
-  z-index: 10;
+  z-index: 9999;
 }
 
 /* 저장 버튼 공통 스타일 */
