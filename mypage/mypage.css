@@ -1,4 +1,3 @@
-/* 전체 레이아웃 */
 html, body {
   height: 100%;
   margin: 0;
@@ -249,13 +248,6 @@ body.mypage .info-sidebar .card-header h4 {
   pointer-events: none;
 }
 
-.template-card p {
-  font-size: 13px;
-  color: #666;
-  margin-top: 8px;
-  text-align: center;
-}
-
 /* 썸네일 */
 body.mypage .thumbnail {
   height: 230px;
@@ -278,6 +270,20 @@ body.mypage .thumbnail {
   height: auto;
   object-fit: contain;
   display: block;
+}
+
+body.mypage .template-card h3 {
+  font-size: 14px;
+  color: #888;
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
+body.mypage .template-card p {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+  margin-bottom: 0;
 }
 
 /* 선택 체크박스 */
