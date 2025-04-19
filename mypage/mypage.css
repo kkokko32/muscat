@@ -118,6 +118,14 @@ body.mypage .info-sidebar .btn-group .btn {
 }
 
 /* 저장한 디자인 카드 */
+.card-design #templateList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;  /* 가로 가운데 */
+  align-items: center;      /* 세로 가운데 */
+  min-height: 250px;        /* 카드 없을 때도 높이 확보 */
+}
+
 .card-design {
   height: 100%;
   flex: 1;
@@ -229,7 +237,7 @@ body.mypage .info-sidebar .card-header h4 {
 
 /* 템플릿 카드 */
 .template-card {
-  width: 278px;
+  width: 315px;
   background: white;
   border-radius: 12px;
   overflow: hidden;
