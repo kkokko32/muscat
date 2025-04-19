@@ -32,7 +32,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 
-  <!-- ✅ 실시간 반영 메시지 수신 스크립트 -->
+  <!-- ✅ 실시간 반영 메시지 수신 -->
   <script>
     window.addEventListener("message", (event) => {
       const data = event.data;
@@ -49,6 +49,29 @@
       }
       if (data.mainImageUrl && document.querySelector(".main-preview")) {
         document.querySelector(".main-preview").src = data.mainImageUrl;
+      }
+    });
+  </script>
+
+  <!-- ✅ 상세페이지 진입 시 sessionStorage 값 반영 -->
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const brand = sessionStorage.getItem("tempBrand");
+      const slogan = sessionStorage.getItem("tempSlogan");
+      const logoUrl = sessionStorage.getItem("tempLogo");
+      const mainUrl = sessionStorage.getItem("tempMain");
+
+      if (brand && document.querySelector(".brand-name")) {
+        document.querySelector(".brand-name").innerText = brand;
+      }
+      if (slogan && document.querySelector(".brand-slogan")) {
+        document.querySelector(".brand-slogan").innerText = slogan;
+      }
+      if (logoUrl && document.querySelector(".logo-preview")) {
+        document.querySelector(".logo-preview").src = logoUrl;
+      }
+      if (mainUrl && document.querySelector(".main-preview")) {
+        document.querySelector(".main-preview").src = mainUrl;
       }
     });
   </script>
