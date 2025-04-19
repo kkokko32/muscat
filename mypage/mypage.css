@@ -203,10 +203,11 @@ body.mypage .info-sidebar .card-header h4 {
   text-decoration: none;
 }
 
+/* 회색 라인 버튼 스타일 (수정됨) */
 .btn-line {
   background: none;
-  border: 1px solid #999;
-  color: #444;
+  border: 1px solid #666;
+  color: #888;
   transition: 0.2s ease;
 }
 
