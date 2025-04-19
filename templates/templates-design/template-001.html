@@ -4,77 +4,29 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Template</title>
-
+  
+  <!-- ✅ 파비콘 추가 -->
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
+
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
-
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: #292929;
-      overflow: auto;
-    }
-
-    .template-frame {
-      margin: 50px auto;
-      position: relative;
-      width: 1200px;
-      min-height: 1200px;
-      background-color: beige;
-    }
-
-    .template-buttons {
-      position: fixed;
-      top: 100px;
-      right: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      z-index: 100;
-    }
-
-    .template-close {
-      font-size: 32px;
-      color: white;
-      cursor: pointer;
-      text-align: center;
-      background: none;
-      border: none;
-      padding: 0;
-    }
-
-    .save-btn, .download-btn, .delete-btn {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: none;
-      font-size: 13px;
-      background-color: #333;
-      color: white;
-      cursor: pointer;
-    }
-
-    .delete-btn {
-      background-color: #e53935;
-    }
-  </style>
 </head>
-<body>
+<body class="template-page">
 
-  <!-- ✅ 템플릿 영역 -->
-  <div class="template-frame" id="templateFrame">
-    <div id="templateContent"></div>
-  </div>
+  <div class="template-frame" id="templateFrame" style="margin: 0 auto; position: relative; width: 1200px; height: 1600px;">
+    <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
+    <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
+    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
+    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
 
-  <!-- ✅ 버튼 영역 -->
-  <div class="template-buttons">
-    <button class="template-close" onclick="window.history.back()">&times;</button>
-    <button id="saveTemplateBtn" class="save-btn">저장</button>
-    <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
-    <button id="downloadBtn" class="download-btn">다운로드</button>
-  </div>
+    <!-- ✅ 버튼 영역 -->
+    <div class="template-buttons">
+      <button class="template-close" onclick="window.history.back()">&times;</button>
+      <button id="saveTemplateBtn" class="save-btn">저장</button>
+      <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
+      <button id="downloadBtn" class="download-btn">다운로드</button>
+    </div>
+  </div> <!-- ✅ 이 닫는 태그가 누락됐었음 -->
 
   <!-- ✅ 외부 스크립트 로딩 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
