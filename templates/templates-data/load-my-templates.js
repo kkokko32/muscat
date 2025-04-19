@@ -60,6 +60,7 @@ async function loadMyTemplates() {
 
     const wrapper = document.createElement("div");
     wrapper.className = "template-card";
+    wrapper.style.marginBottom = "60px"; // ✅ 상하 여백 명시적으로 설정
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -122,7 +123,7 @@ async function loadMyTemplates() {
   }
 }
 
-// ✅ 삭제
+// ✅ 삭제 기능
 async function handleDelete() {
   const confirmDelete = confirm("선택한 템플릿을 삭제하시겠습니까?");
   if (!confirmDelete) return;
@@ -146,12 +147,14 @@ function applyMasonryLayout() {
 
   imagesLoaded(container).on("always", () => {
     if (window.masonryInstance) {
-      window.masonryInstance.destroy(); // ✅ 기존 인스턴스 제거
+      window.masonryInstance.destroy(); // 기존 인스턴스 제거
     }
+
     window.masonryInstance = new Masonry(container, {
       itemSelector: ".template-card",
       columnWidth: ".grid-sizer",
-      gutter: 60,
+      gutter: 20,
+      horizontalOrder: true,
       fitWidth: true
     });
   });
