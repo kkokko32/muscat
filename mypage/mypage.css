@@ -314,8 +314,8 @@ body.mypage .template-card p {
 /* 비밀번호 변경 / 로그아웃 버튼 (좌측 사이드바) */
 body.mypage .info-sidebar .btn-line {
   background: none !important;
-  border: 1px solid #292929 !important;
-  color: #292929 !important;
+  border: 1px solid #666 !important;
+  color: #eee !important;
   font-size: 13px !important;
   font-weight: 400 !important;
   padding: 6px 14px !important;
@@ -324,11 +324,10 @@ body.mypage .info-sidebar .btn-line {
   transition: 0.2s ease;
 }
 
-
 /* 더보기 / 바로가기 버튼 (카드 헤더 내) */
 body.mypage .card-header .btn-link {
   background: none !important;
-  border: 1px solid #292929 !important;
+  border: 1px solid #444 !important;
   color: #292929 !important;
   font-size: 13px !important;
   font-weight: 400 !important;
