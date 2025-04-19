@@ -35,8 +35,8 @@ main.page-wrapper {
 .template-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;  /* ✅ 중앙 정렬 */
-  gap: 30px 20px;              /* ✅ 카드 사이 간격 */
+  justify-content: center;  
+  gap: 40px 20px;             /*  카드 사이 간격 */
   max-width: 1800px;
   margin: 0 auto;
   box-sizing: border-box;
@@ -56,6 +56,7 @@ main.page-wrapper {
   background: transparent !important;
   text-align: center;
   position: relative;
+  margin-bottom: 0px;
 }
 
 /* ✅ 썸네일 */
@@ -87,7 +88,6 @@ main.page-wrapper {
   font-size: 12px;
   color: #999;
   margin-top: 4px;
-  margin-bottom: 30px;
 }
 
 /* ✅ 체크박스 */
