@@ -31,11 +31,11 @@
   <script type="module">
     import { db } from "/muscat/common/firebase-init.js";
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+  
     const params = new URLSearchParams(window.location.search);
     const docId = params.get("docId");
     const frameContainer = document.getElementById("templateFrame");
-
+  
     async function loadTemplate() {
       if (!docId) {
         const data = JSON.parse(localStorage.getItem("templateData") || "{}");
@@ -43,7 +43,7 @@
         const sloganEl = document.getElementById("brandDesc");
         const logoEl = document.getElementById("brandLogo");
         const imageEl = document.getElementById("mainImage");
-
+  
         if (data.brand) brandEl.innerText = data.brand;
         if (data.slogan) sloganEl.innerText = data.slogan;
         if (data.logoUrl || localStorage.getItem("brandLogo")) {
@@ -52,59 +52,61 @@
         if (data.imageUrl || localStorage.getItem("mainImage")) {
           imageEl.src = data.imageUrl || localStorage.getItem("mainImage");
         }
-
+  
         setupDownload();
         return;
       }
-
+  
       try {
         const ref = doc(db, "savedTemplates", docId);
         const snapshot = await getDoc(ref);
-
+  
         if (!snapshot.exists()) {
           frameContainer.innerHTML = "<p style='text-align:center;padding:100px;'>템플릿 정보를 찾을 수 없습니다.</p>";
           return;
         }
-
+  
         const data = snapshot.data();
         const response = await fetch(data.htmlUrl);
         const htmlText = await response.text();
-        frameContainer.outerHTML = htmlText;
-
+  
+        // ✅ innerHTML로만 교체하여 버튼 영역 유지
+        frameContainer.innerHTML = htmlText;
+  
         setTimeout(() => {
           const brandEl = document.querySelector(".brand-name");
           const sloganEl = document.querySelector(".brand-slogan");
           const logoEl = document.querySelector(".logo-preview");
           const imageEl = document.querySelector(".main-preview");
-
-          if (data.brand) brandEl.innerText = data.brand;
-          if (data.slogan) sloganEl.innerText = data.slogan;
-          if (data.logoUrl) logoEl.src = data.logoUrl;
-          if (data.imageUrl) imageEl.src = data.imageUrl;
+  
+          if (data.brand && brandEl) brandEl.innerText = data.brand;
+          if (data.slogan && sloganEl) sloganEl.innerText = data.slogan;
+          if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
+          if (data.imageUrl && imageEl) imageEl.src = data.imageUrl;
         }, 500);
-
+  
         setupDownload();
-
+  
       } catch (e) {
         console.error("템플릿 불러오기 실패:", e);
         frameContainer.innerHTML = "<p style='text-align:center;padding:100px;'>오류가 발생했습니다.</p>";
       }
     }
-
+  
     function setupDownload() {
       const downloadBtn = document.getElementById("downloadBtn");
       const frame = document.querySelector(".template-frame");
-
+  
       downloadBtn?.addEventListener("click", async () => {
         const logo = frame.querySelector(".logo-preview");
         const image = frame.querySelector(".main-preview");
-
+  
         const waitForImageLoad = (img) => new Promise(resolve => {
           if (!img || !img.src || img.complete) return resolve();
           img.onload = resolve;
           img.onerror = resolve;
         });
-
+  
         await Promise.all([waitForImageLoad(logo), waitForImageLoad(image)]);
         const canvas = await html2canvas(frame);
         const link = document.createElement("a");
@@ -113,7 +115,7 @@
         link.click();
       });
     }
-
+  
     loadTemplate();
   </script>
 
