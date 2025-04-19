@@ -257,6 +257,11 @@ body.mypage .info-sidebar .card-header h4 {
 }
 
 /* 썸네일 */
+body.mypage .thumbnail {
+  height: 250px;
+  object-fit: cover;
+}
+
 .thumbnail-wrapper {
   width: 100%;
   background: #f0f0f0;

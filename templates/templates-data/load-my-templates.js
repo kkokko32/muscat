@@ -54,13 +54,17 @@ async function loadMyTemplates() {
 
   const fragment = document.createDocumentFragment();
 
-  snapshot.forEach(docSnap => {
+  // ✅ 현재 페이지가 마이페이지 홈인지 확인
+  const isMyPage = location.pathname.includes("mypage-index.html");
+  const maxItems = isMyPage ? 4 : Infinity;
+
+  snapshot.docs.slice(0, maxItems).forEach(docSnap => {
     const data = docSnap.data();
     const docId = docSnap.id;
 
     const wrapper = document.createElement("div");
     wrapper.className = "template-card";
-    wrapper.style.marginBottom = "40px"; // ✅ 여백 40px로 수정됨
+    wrapper.style.marginBottom = "40px";
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
