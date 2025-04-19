@@ -38,14 +38,22 @@ async function loadTemplate() {
     const response = await fetch(data.htmlUrl);
     const htmlText = await response.text();
 
-    // frame 전체를 덮어쓰는 대신 내부만 교체 (버튼은 유지됨)
     const wrapper = document.getElementById("templateFrame");
     const tempDom = document.createElement("div");
     tempDom.innerHTML = htmlText;
 
     const newFrame = tempDom.querySelector(".template-frame");
     if (newFrame && wrapper) {
-      wrapper.innerHTML = newFrame.innerHTML;
+      // ✅ 내부 요소들만 수동으로 복사하여 script 손상 방지
+      const brand = newFrame.querySelector(".brand-name")?.innerText || "";
+      const slogan = newFrame.querySelector(".brand-slogan")?.innerText || "";
+      const logo = newFrame.querySelector(".logo-preview")?.src || "";
+      const image = newFrame.querySelector(".main-preview")?.src || "";
+
+      if (wrapper.querySelector(".brand-name")) wrapper.querySelector(".brand-name").innerText = brand;
+      if (wrapper.querySelector(".brand-slogan")) wrapper.querySelector(".brand-slogan").innerText = slogan;
+      if (wrapper.querySelector(".logo-preview")) wrapper.querySelector(".logo-preview").src = logo;
+      if (wrapper.querySelector(".main-preview")) wrapper.querySelector(".main-preview").src = image;
     }
   } catch (e) {
     console.error("템플릿 로드 실패:", e);
