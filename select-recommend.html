@@ -54,8 +54,11 @@
           <p class="upload-label">이미지를 업로드해주세요</p>
           <button class="upload-btn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
           <input accept="image/*" id="logoInput" style="display: none" type="file" />
+          <img id="logoPreview" style="max-width:100px; display:none; margin-top:10px;" />
+
           <button class="upload-btn" type="button" onclick="document.getElementById('mainImageInput').click()">메인 이미지 업로드</button>
           <input accept="image/*" id="mainImageInput" style="display: none" type="file" />
+          <img id="mainPreview" style="max-width:200px; display:none; margin-top:10px;" />
         </div>
       </div>
     </aside>
@@ -76,53 +79,85 @@
 
           <div class="template-scroll">
             <div class="template-preview">
-             
-              <div class="template-card visible" data-concept="메뉴판" data-industry="카페" data-style="모던,심플" onclick="goToTemplate('template-001.html')">
+              <div class="template-card visible" onclick="goToTemplate('template-001.html')">
                 <iframe data-template="/muscat/templates/templates-design/template-001.html" title="템플릿 미리보기 1"></iframe>
               </div>
-              
-              <div class="template-card visible" data-concept="명함" data-industry="식당" data-style="전통" onclick="goToTemplate('template-002.html')">
+              <div class="template-card visible" onclick="goToTemplate('template-002.html')">
                 <iframe data-template="/muscat/templates/templates-design/template-002.html" title="템플릿 미리보기 2"></iframe>
               </div>
-              
-              <div class="template-card visible" data-concept="SNS 이미지" data-industry="뷰티샵" data-style="럭셔리" onclick="goToTemplate('template-003.html')">
+              <div class="template-card visible" onclick="goToTemplate('template-003.html')">
                 <iframe data-template="/muscat/templates/templates-design/template-003.html" title="템플릿 미리보기 3"></iframe>
               </div>
-              
-              <div class="template-card visible" data-concept="포장지" data-industry="비즈니스" data-style="에코,자연" onclick="goToTemplate('template-004.html')">
+              <div class="template-card visible" onclick="goToTemplate('template-004.html')">
                 <iframe data-template="/muscat/templates/templates-design/template-004.html" title="템플릿 미리보기 4"></iframe>
               </div>
-              
-              <div class="template-card visible" data-concept="메뉴판" data-industry="기타" data-style="기타" onclick="goToTemplate('template-005.html')">
+              <div class="template-card visible" onclick="goToTemplate('template-005.html')">
                 <iframe data-template="/muscat/templates/templates-design/template-005.html" title="템플릿 미리보기 5"></iframe>
               </div>
-              
-              <div class="template-card visible" data-concept="명함" data-industry="카페" data-style="모던,심플" onclick="goToTemplate('template-006.html')">
+              <div class="template-card visible" onclick="goToTemplate('template-006.html')">
                 <iframe data-template="/muscat/templates/templates-design/template-006.html" title="템플릿 미리보기 6"></iframe>
               </div>
-              
-              <div class="template-card visible" data-concept="SNS 이미지" data-industry="식당" data-style="전통" onclick="goToTemplate('template-007.html')">
+              <div class="template-card visible" onclick="goToTemplate('template-007.html')">
                 <iframe data-template="/muscat/templates/templates-design/template-007.html" title="템플릿 미리보기 7"></iframe>
               </div>
-              
-              <div class="template-card visible" data-concept="포장지" data-industry="뷰티샵" data-style="럭셔리" onclick="goToTemplate('template-008.html')">
+              <div class="template-card visible" onclick="goToTemplate('template-008.html')">
                 <iframe data-template="/muscat/templates/templates-design/template-008.html" title="템플릿 미리보기 8"></iframe>
               </div>
-              
-              <div class="template-card visible" data-concept="메뉴판" data-industry="비즈니스" data-style="에코,자연" onclick="goToTemplate('template-009.html')">
+              <div class="template-card visible" onclick="goToTemplate('template-009.html')">
                 <iframe data-template="/muscat/templates/templates-design/template-009.html" title="템플릿 미리보기 9"></iframe>
               </div>
-              
-              <div class="template-card visible" data-concept="명함" data-industry="기타" data-style="기타" onclick="goToTemplate('template-010.html')">
+              <div class="template-card visible" onclick="goToTemplate('template-010.html')">
                 <iframe data-template="/muscat/templates/templates-design/template-010.html" title="템플릿 미리보기 10"></iframe>
               </div>
-              
             </div>
           </div>
         </div>
       </div>
     </section>
   </main>
+
+  <!-- ✅ 템플릿 클릭 시 sessionStorage 저장 -->
+  <script>
+    function goToTemplate(path) {
+      const brand = document.getElementById("brandName")?.value || "";
+      const slogan = document.getElementById("brandDesc")?.value || "";
+      const logoUrl = document.getElementById("logoPreview")?.src || "";
+      const mainUrl = document.getElementById("mainPreview")?.src || "";
+
+      sessionStorage.setItem("tempBrand", brand);
+      sessionStorage.setItem("tempSlogan", slogan);
+      sessionStorage.setItem("tempLogo", logoUrl);
+      sessionStorage.setItem("tempMain", mainUrl);
+
+      window.location.href = `/muscat/templates/templates-design/${path}`;
+    }
+
+    document.getElementById("logoInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = document.getElementById("logoPreview");
+          img.src = reader.result;
+          img.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById("mainImageInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = document.getElementById("mainPreview");
+          img.src = reader.result;
+          img.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
 
   <script>
     fetch("/muscat/components/header.html")
