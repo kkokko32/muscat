@@ -210,14 +210,6 @@ body.mypage .info-sidebar .card-header h4 {
   text-decoration: none;
 }
 
-/* 회색 라인 버튼 스타일 (수정됨) */
-.btn-line {
-  background: none;
-  border: 1px solid #666;
-  color: #888;
-  transition: 0.2s ease;
-}
-
 .mypage-card .btn-group .btn {
   width: 100%;
   text-align: center;
@@ -305,4 +297,44 @@ body.mypage .template-card p {
 
 .manage-mode .select-checkbox {
   display: block;
+}
+
+/* 더보기, 바로가기 버튼 전용 스타일 */
+.card-header .btn.btn-link {
+  background: none;
+  border: 1px solid #292929;
+  color: #292929;
+  font-size: 13px;
+  font-weight: 400;
+  padding: 6px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+/* 비밀번호 변경 / 로그아웃 버튼 (좌측 사이드바) */
+body.mypage .info-sidebar .btn-line {
+  background: none !important;
+  border: 1px solid #292929 !important;
+  color: #292929 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  padding: 6px 14px !important;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+
+/* 더보기 / 바로가기 버튼 (카드 헤더 내) */
+body.mypage .card-header .btn-link {
+  background: none !important;
+  border: 1px solid #292929 !important;
+  color: #292929 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  padding: 6px 14px !important;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.2s ease;
 }
