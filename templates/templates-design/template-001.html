@@ -60,11 +60,6 @@
       background-color: #e53935;
     }
 
-    .save-btn[disabled] {
-      background-color: #777;
-      cursor: not-allowed;
-    }
-
     .hidden {
       display: none !important;
     }
@@ -85,6 +80,7 @@
     <button id="downloadBtn" class="download-btn">다운로드</button>
   </div>
 
+  <!-- ✅ html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script type="module">
@@ -121,27 +117,28 @@
         setTimeout(() => insertValues(data), 300);
         setupDownload();
 
-        // ✅ 버튼 상태 조정
-        saveBtn.disabled = true;
+        // ✅ 삭제 버튼 활성화 (중복 등록 방지)
         deleteBtn.classList.remove("hidden");
-
-        deleteBtn.addEventListener("click", async () => {
-          const confirmDelete = confirm("정말 삭제하시겠습니까?");
-          if (!confirmDelete) return;
-
-          await deleteDoc(doc(db, "savedTemplates", docId));
-          alert("삭제되었습니다.");
-
-          // 버튼 상태 복원
-          deleteBtn.classList.add("hidden");
-          saveBtn.disabled = false;
-        });
 
       } catch (e) {
         console.error("템플릿 불러오기 실패:", e);
         content.innerHTML = "<p style='text-align:center;padding:100px;'>오류가 발생했습니다.</p>";
       }
     }
+
+    // ✅ 삭제 버튼 이벤트 (중복 방지, 최초 1회만 등록됨)
+    deleteBtn.addEventListener("click", async () => {
+      const confirmDelete = confirm("정말 삭제하시겠습니까?");
+      if (!confirmDelete) return;
+
+      const docId = new URLSearchParams(window.location.search).get("docId");
+      if (!docId) return;
+
+      await deleteDoc(doc(db, "savedTemplates", docId));
+      alert("삭제되었습니다.");
+
+      deleteBtn.classList.add("hidden");
+    });
 
     function insertValues(data) {
       const brandEl = document.querySelector(".brand-name");
