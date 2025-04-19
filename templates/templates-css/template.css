@@ -1,5 +1,16 @@
 
 /* 템플릿 공통 스타일 */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
 .template-page {
   background-color: #292929;
   margin-top: 0;
