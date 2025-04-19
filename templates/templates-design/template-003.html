@@ -10,31 +10,31 @@
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      overflow-y: scroll;
-      scrollbar-width: none; /* Firefox */
-    }
-    body::-webkit-scrollbar {
-      display: none; /* Chrome, Safari */
+    .template-frame {
+      width: 2480px;
+      height: 3508px;
+      background-color: #e3c6e5;
+      transform: scale(0.4);
+      transform-origin: top center;
+      margin: 0 auto;
+      position: relative;
     }
   </style>
 </head>
 <body class="template-page">
 
-  <div class="template-frame" id="templateFrame" style="margin: 0 auto; position: relative; width: 2480px; height: 3508px; background-color: #e3c6e5; transform: scale(0.4);">
-    <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
-    <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
-    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
+  <button class="template-close" onclick="window.history.back()">&times;</button>
+  <div class="template-buttons">
+    <button id="saveTemplateBtn" class="save-btn">저장</button>
+    <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
+    <button id="downloadBtn" class="download-btn">다운로드</button>
+  </div>
 
-    <button class="template-close" onclick="window.history.back()">&times;</button>
-    <div class="template-buttons">
-      <button id="saveTemplateBtn" class="save-btn">저장</button>
-      <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
-      <button id="downloadBtn" class="download-btn">다운로드</button>
-    </div>
+  <div class="template-frame" id="templateFrame">
+    <div class="brand-name" id="brandName" style="font-size: 96px; font-weight: bold; color: #333; margin-top: 200px;">브랜드명</div>
+    <div class="brand-slogan" id="brandDesc" style="font-size: 48px; color: #555; margin-bottom: 60px;">브랜드 슬로건</div>
+    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 200px; height: 200px; object-fit: contain; margin-bottom: 60px;" />
+    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 800px; height: 800px; object-fit: cover;" />
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
