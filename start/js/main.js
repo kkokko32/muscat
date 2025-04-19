@@ -224,3 +224,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const firstStyle = document.querySelector('.inline-concept-filter button');
   if (firstStyle) firstStyle.click();
 });
+
+// 글로벌 등록
+window.selectIndustry = selectIndustry;
+window.selectConcept = selectConcept;
+window.selectStyle = selectStyle;
