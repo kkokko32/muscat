@@ -127,8 +127,12 @@
       const downloadURL = await getDownloadURL(snapshot.ref);
   
       const img = document.getElementById(imgId);
-      img.src = downloadURL;
-      img.style.display = "none";
+      if (img) {
+        img.src = downloadURL;
+        img.style.display = "none"; // 필요 시 "block"으로 변경
+      } else {
+        console.warn(`[Firebase 업로드] 미리보기 요소 '${imgId}'를 찾을 수 없습니다`);
+      }
   
       sessionStorage.setItem(storageKey, downloadURL);
     }
@@ -147,7 +151,7 @@
       window.location.href = `/muscat/templates/templates-design/${path}`;
     }
   
-    document.getElementById("logoInput").addEventListener("change", async (e) => {
+    document.getElementById("logoInput")?.addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (file) {
         const filename = `temp/logo_${Date.now()}`;
@@ -155,7 +159,7 @@
       }
     });
   
-    document.getElementById("mainImageInput").addEventListener("change", async (e) => {
+    document.getElementById("mainImageInput")?.addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (file) {
         const filename = `temp/main_${Date.now()}`;
@@ -169,18 +173,25 @@
       const logo = sessionStorage.getItem("tempLogo");
       const main = sessionStorage.getItem("tempMain");
   
-      if (brand) document.getElementById("brandName").value = brand;
-      if (slogan) document.getElementById("brandDesc").value = slogan;
-      if (logo) {
-        document.getElementById("logoPreview").src = logo;
-        document.getElementById("logoPreview").style.display = "none"; // ✅ block → none
+      const brandInput = document.getElementById("brandName");
+      const sloganInput = document.getElementById("brandDesc");
+      const logoImg = document.getElementById("logoPreview");
+      const mainImg = document.getElementById("mainPreview");
+  
+      if (brand && brandInput) brandInput.value = brand;
+      if (slogan && sloganInput) sloganInput.value = slogan;
+  
+      if (logo && logoImg) {
+        logoImg.src = logo;
+        logoImg.style.display = "none"; // ✅ 필요 시 "block"으로 바꿔도 됨
       }
-      if (main) {
-        document.getElementById("mainPreview").src = main;
-        document.getElementById("mainPreview").style.display = "none"; // ✅ block → none
+  
+      if (main && mainImg) {
+        mainImg.src = main;
+        mainImg.style.display = "none";
       }
-   });
-  </script>
+    });
+  </script>  
 
   <script>
     fetch("/muscat/components/header.html")
