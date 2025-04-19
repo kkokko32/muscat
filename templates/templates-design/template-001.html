@@ -26,10 +26,31 @@
       <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
       <button id="downloadBtn" class="download-btn">다운로드</button>
     </div>
-  </div> <!-- ✅ 이 닫는 태그가 누락됐었음 -->
+  </div>
 
   <!-- ✅ 외부 스크립트 로딩 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
+
+  <!-- ✅ 실시간 반영 메시지 수신 스크립트 -->
+  <script>
+    window.addEventListener("message", (event) => {
+      const data = event.data;
+      if (!data) return;
+
+      if (data.brand && document.querySelector(".brand-name")) {
+        document.querySelector(".brand-name").innerText = data.brand;
+      }
+      if (data.slogan && document.querySelector(".brand-slogan")) {
+        document.querySelector(".brand-slogan").innerText = data.slogan;
+      }
+      if (data.logoUrl && document.querySelector(".logo-preview")) {
+        document.querySelector(".logo-preview").src = data.logoUrl;
+      }
+      if (data.mainImageUrl && document.querySelector(".main-preview")) {
+        document.querySelector(".main-preview").src = data.mainImageUrl;
+      }
+    });
+  </script>
 </body>
 </html>
