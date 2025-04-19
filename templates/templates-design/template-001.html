@@ -81,14 +81,13 @@
   <div class="template-buttons">
     <button class="template-close" onclick="window.history.back()">&times;</button>
     <button id="saveTemplateBtn" class="save-btn">저장</button>
-    <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
+    <button id="deleteTemplateBtn" class="delete-btn hidden">삭제</button>
     <button id="downloadBtn" class="download-btn">다운로드</button>
   </div>
 
-  <!-- ✅ html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-  <!-- ✅ 템플릿 불러오기 및 버튼 상태 관리 -->
+  <!-- ✅ 기능 로직 -->
   <script type="module">
     import { db } from "/muscat/common/firebase-init.js";
     import { doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -103,6 +102,10 @@
     const downloadBtn = document.getElementById("downloadBtn");
 
     async function loadTemplate() {
+      // 기본: 저장 활성화, 삭제 숨김
+      saveBtn.disabled = false;
+      deleteBtn.classList.add("hidden");
+
       if (!docId) return;
 
       try {
@@ -122,7 +125,7 @@
         setTimeout(() => insertValues(data), 300);
         setupDownload();
 
-        // ✅ 저장된 템플릿인 경우 상태 전환
+        // 저장된 템플릿이므로 저장 비활성화, 삭제 버튼 노출
         saveBtn.disabled = true;
         deleteBtn.classList.remove("hidden");
 
@@ -132,7 +135,7 @@
       }
     }
 
-    // ✅ 삭제 버튼 클릭 시
+    // ✅ 삭제 후 상태 전환
     deleteBtn.addEventListener("click", async () => {
       const confirmDelete = confirm("정말 삭제하시겠습니까?");
       if (!confirmDelete) return;
@@ -140,11 +143,12 @@
       await deleteDoc(doc(db, "savedTemplates", docId));
       alert("삭제되었습니다.");
 
-      deleteBtn.classList.add("hidden");
+      // 저장 버튼 활성화 / 삭제 버튼 숨김
       saveBtn.disabled = false;
+      deleteBtn.classList.add("hidden");
     });
 
-    // ✅ 사용자 데이터 반영
+    // ✅ 데이터 삽입
     function insertValues(data) {
       const brandEl = document.querySelector(".brand-name");
       const sloganEl = document.querySelector(".brand-slogan");
@@ -157,7 +161,7 @@
       if (data.imageUrl && imageEl) imageEl.src = data.imageUrl;
     }
 
-    // ✅ 다운로드 기능
+    // ✅ 다운로드
     function setupDownload() {
       downloadBtn?.addEventListener("click", async () => {
         const logo = frame.querySelector(".logo-preview");
