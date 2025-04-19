@@ -81,7 +81,7 @@ body.mypage .info-sidebar .btn-group {
 body.mypage .info-sidebar .btn-group .btn {
   width: 100%;
   max-width: 358px;
-  height: 40px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -303,8 +303,8 @@ body.mypage .template-card p {
   background: none;
   border: 1px solid #292929;
   color: #292929;
-  font-size: 13px;
-  font-weight: 400;
+  font-size: 15px;
+  font-weight: 200;
   padding: 6px 14px;
   border-radius: 6px;
   text-decoration: none;
@@ -318,7 +318,7 @@ body.mypage .info-sidebar .btn-line {
   color: #eee !important;
   font-size: 13px !important;
   font-weight: 400 !important;
-  padding: 6px 14px !important;
+  padding: 4px 0px !important;
   border-radius: 6px;
   text-decoration: none;
   transition: 0.2s ease;
@@ -327,7 +327,7 @@ body.mypage .info-sidebar .btn-line {
 /* 더보기 / 바로가기 버튼 (카드 헤더 내) */
 body.mypage .card-header .btn-link {
   background: none !important;
-  border: 1px solid #444 !important;
+  border: 1px solid #666 !important;
   color: #292929 !important;
   font-size: 13px !important;
   font-weight: 400 !important;
