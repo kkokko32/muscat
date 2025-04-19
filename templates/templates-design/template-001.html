@@ -45,7 +45,7 @@
       padding: 0;
     }
 
-    .save-btn, .download-btn, .delete-btn {
+    .save-btn, .download-btn {
       width: 50px;
       height: 50px;
       border-radius: 50%;
@@ -56,17 +56,9 @@
       cursor: pointer;
     }
 
-    .delete-btn {
-      background-color: #e53935;
-    }
-
     .save-btn:disabled {
       background-color: #777;
       cursor: not-allowed;
-    }
-
-    .hidden {
-      display: none !important;
     }
   </style>
 </head>
@@ -81,7 +73,6 @@
   <div class="template-buttons">
     <button class="template-close" onclick="window.history.back()">&times;</button>
     <button id="saveTemplateBtn" class="save-btn">저장</button>
-    <button id="deleteTemplateBtn" class="delete-btn hidden">삭제</button>
     <button id="downloadBtn" class="download-btn">다운로드</button>
   </div>
 
@@ -90,22 +81,16 @@
   <!-- ✅ 기능 로직 -->
   <script type="module">
     import { db } from "/muscat/common/firebase-init.js";
-    import { doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const params = new URLSearchParams(window.location.search);
     const docId = params.get("docId");
 
     const frame = document.getElementById("templateFrame");
     const content = document.getElementById("templateContent");
-    const saveBtn = document.getElementById("saveTemplateBtn");
-    const deleteBtn = document.getElementById("deleteTemplateBtn");
     const downloadBtn = document.getElementById("downloadBtn");
 
     async function loadTemplate() {
-      // 기본: 저장 활성화, 삭제 숨김
-      saveBtn.disabled = false;
-      deleteBtn.classList.add("hidden");
-
       if (!docId) return;
 
       try {
@@ -125,28 +110,11 @@
         setTimeout(() => insertValues(data), 300);
         setupDownload();
 
-        // 저장된 템플릿이므로 저장 비활성화, 삭제 버튼 노출
-        saveBtn.disabled = true;
-        deleteBtn.classList.remove("hidden");
-
       } catch (e) {
         console.error("템플릿 불러오기 실패:", e);
         content.innerHTML = "<p style='text-align:center;padding:100px;'>오류가 발생했습니다.</p>";
       }
     }
-
-    // ✅ 삭제 후 상태 전환
-    deleteBtn.addEventListener("click", async () => {
-      const confirmDelete = confirm("정말 삭제하시겠습니까?");
-      if (!confirmDelete) return;
-
-      await deleteDoc(doc(db, "savedTemplates", docId));
-      alert("삭제되었습니다.");
-
-      // 저장 버튼 활성화 / 삭제 버튼 숨김
-      saveBtn.disabled = false;
-      deleteBtn.classList.add("hidden");
-    });
 
     // ✅ 데이터 삽입
     function insertValues(data) {
