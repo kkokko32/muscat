@@ -45,7 +45,7 @@
       padding: 0;
     }
 
-    .save-btn, .download-btn {
+    .save-btn, .download-btn, .delete-btn {
       width: 50px;
       height: 50px;
       border-radius: 50%;
@@ -56,9 +56,8 @@
       cursor: pointer;
     }
 
-    .save-btn:disabled {
-      background-color: #777;
-      cursor: not-allowed;
+    .delete-btn {
+      background-color: #e53935;
     }
   </style>
 </head>
@@ -73,6 +72,7 @@
   <div class="template-buttons">
     <button class="template-close" onclick="window.history.back()">&times;</button>
     <button id="saveTemplateBtn" class="save-btn">저장</button>
+    <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
     <button id="downloadBtn" class="download-btn">다운로드</button>
   </div>
 
@@ -81,7 +81,7 @@
   <!-- ✅ 기능 로직 -->
   <script type="module">
     import { db } from "/muscat/common/firebase-init.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const params = new URLSearchParams(window.location.search);
     const docId = params.get("docId");
@@ -89,6 +89,7 @@
     const frame = document.getElementById("templateFrame");
     const content = document.getElementById("templateContent");
     const downloadBtn = document.getElementById("downloadBtn");
+    const deleteBtn = document.getElementById("deleteTemplateBtn");
 
     async function loadTemplate() {
       if (!docId) return;
@@ -115,6 +116,26 @@
         content.innerHTML = "<p style='text-align:center;padding:100px;'>오류가 발생했습니다.</p>";
       }
     }
+
+    // ✅ 삭제 기능
+    deleteBtn.addEventListener("click", async () => {
+      if (!docId) {
+        alert("삭제할 템플릿 정보가 없습니다.");
+        return;
+      }
+
+      const confirmDelete = confirm("정말 삭제하시겠습니까?");
+      if (!confirmDelete) return;
+
+      try {
+        await deleteDoc(doc(db, "savedTemplates", docId));
+        alert("삭제되었습니다.");
+        // 아무 버튼 상태도 바꾸지 않음
+      } catch (err) {
+        console.error("삭제 실패:", err);
+        alert("삭제 중 오류가 발생했습니다.");
+      }
+    });
 
     // ✅ 데이터 삽입
     function insertValues(data) {
