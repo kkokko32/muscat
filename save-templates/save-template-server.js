@@ -58,7 +58,7 @@ async function uploadHTMLToStorage(htmlString, path) {
   return await getDownloadURL(htmlRef);
 }
 
-// ✅ 저장 기능만 수행
+// ✅ 템플릿 상세페이지에서 사용하는 저장 기능
 async function handleSaveTemplate() {
   const user = auth.currentUser;
   if (!user) {
@@ -139,7 +139,7 @@ async function handleSaveTemplate() {
   }
 }
 
-// ✅ 삭제 버튼 별도 동작
+// ✅ 템플릿 상세페이지에서 사용하는 삭제 기능
 async function handleDeleteTemplate() {
   const user = auth.currentUser;
   if (!user) {
@@ -164,10 +164,10 @@ async function handleDeleteTemplate() {
   }
 }
 
-// ✅ 이벤트 바인딩
+// ✅ 템플릿 상세페이지에서 사용하는 저장/삭제 버튼 이벤트 바인딩
 auth.onAuthStateChanged(user => {
   if (user) {
-    // 필요 시 이후 로딩 처리 가능 (현재는 생략)
+    // 필요 시 이후 기능 확장 가능
   }
 });
 
