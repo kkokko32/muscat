@@ -37,47 +37,38 @@
     window.addEventListener("message", (event) => {
       const data = event.data;
       if (!data) return;
-
-      if (data.brand && document.querySelector(".brand-name")) {
-        document.querySelector(".brand-name").textContent = data.brand;
-      }
-      if (data.slogan && document.querySelector(".brand-slogan")) {
-        document.querySelector(".brand-slogan").textContent = data.slogan;
-      }
-      if (data.logoUrl && document.querySelector(".logo-preview")) {
-        document.querySelector(".logo-preview").src = data.logoUrl;
-      }
-      if (data.mainImageUrl && document.querySelector(".main-preview")) {
-        document.querySelector(".main-preview").src = data.mainImageUrl;
-      }
+  
+      const brandEl = document.querySelector(".brand-name");
+      const sloganEl = document.querySelector(".brand-slogan");
+      const logoEl = document.querySelector(".logo-preview");
+      const mainEl = document.querySelector(".main-preview");
+  
+      if (data.brand && brandEl) brandEl.textContent = data.brand;
+      if (data.slogan && sloganEl) sloganEl.textContent = data.slogan;
+      if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
+      if (data.mainImageUrl && mainEl) mainEl.src = data.mainImageUrl;
     });
   </script>
-
-  <!-- ✅ sessionStorage 기반 값 반영 -->
+  
+  <!-- ✅ sessionStorage 값 기반 자동 반영 -->
   <script>
-    setTimeout(() => {
+    window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand");
       const slogan = sessionStorage.getItem("tempSlogan");
       const logoUrl = sessionStorage.getItem("tempLogo");
       const mainUrl = sessionStorage.getItem("tempMain");
-
-      if (brand) {
-        const el = document.querySelector(".brand-name");
-        if (el) el.textContent = brand;
-      }
-      if (slogan) {
-        const el = document.querySelector(".brand-slogan");
-        if (el) el.textContent = slogan;
-      }
-      if (logoUrl) {
-        const el = document.querySelector(".logo-preview");
-        if (el) el.src = logoUrl;
-      }
-      if (mainUrl) {
-        const el = document.querySelector(".main-preview");
-        if (el) el.src = mainUrl;
-      }
-    }, 200);
+  
+      const brandEl = document.querySelector(".brand-name");
+      const sloganEl = document.querySelector(".brand-slogan");
+      const logoEl = document.querySelector(".logo-preview");
+      const mainEl = document.querySelector(".main-preview");
+  
+      if (brand && brandEl) brandEl.textContent = brand;
+      if (slogan && sloganEl) sloganEl.textContent = slogan;
+      if (logoUrl && logoEl) logoEl.src = logoUrl;
+      if (mainUrl && mainEl) mainEl.src = mainUrl;
+    });
   </script>
+ 
 </body>
 </html>
