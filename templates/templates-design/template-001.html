@@ -14,13 +14,14 @@
 </head>
 <body class="template-page">
 
-  <!-- ✅ 템플릿 디자인 영역 -->
+  <!-- ✅ 템플릿 디자인 프레임 (전체 덮어쓰기 대상) -->
   <div class="template-frame" id="templateFrame" style="margin: 0 auto; position: relative; width: 1200px; height: 1200px; background-color: beige;">
-    
-    <!-- ✅ 이 안에 저장된 템플릿 HTML이 삽입됨 -->
-    <div id="templateContent"></div>
+    <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
+    <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
+    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
+    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
 
-    <!-- ✅ 고정 버튼 영역 (닫기, 저장, 다운로드) -->
+    <!-- ✅ 버튼 영역 -->
     <div class="template-buttons">
       <div class="template-close" onclick="window.history.back()">&times;</div>
       <button id="saveTemplateBtn" class="save-btn">저장</button>
@@ -31,14 +32,14 @@
   <!-- ✅ html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-  <!-- ✅ 템플릿 불러오기 및 렌더링 -->
+  <!-- ✅ 템플릿 불러오기 및 사용자 데이터 삽입 -->
   <script type="module">
     import { db } from "/muscat/common/firebase-init.js";
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    
+
     const params = new URLSearchParams(window.location.search);
     const docId = params.get("docId");
-    const frameContent = document.getElementById("templateContent");
+    const frameContainer = document.getElementById("templateFrame");
 
     async function loadTemplate() {
       if (!docId) {
@@ -53,7 +54,7 @@
         const snapshot = await getDoc(ref);
 
         if (!snapshot.exists()) {
-          frameContent.innerHTML = "<p style='text-align:center;padding:100px;'>템플릿 정보를 찾을 수 없습니다.</p>";
+          frameContainer.innerHTML = "<p style='text-align:center;padding:100px;'>템플릿 정보를 찾을 수 없습니다.</p>";
           return;
         }
 
@@ -61,31 +62,26 @@
         const response = await fetch(data.htmlUrl);
         const htmlText = await response.text();
 
-        // ✅ 버튼 영역 제외한 .templateContent만 교체
-        frameContent.innerHTML = htmlText;
+        // ✅ template-frame 전체를 교체 (인라인 스타일 포함)
+        frameContainer.outerHTML = htmlText;
 
-        // ✅ 콘텐츠에 사용자 데이터 반영
-        setTimeout(() => insertValues(data), 300);
+        setTimeout(() => {
+          const brandEl = document.querySelector(".brand-name");
+          const sloganEl = document.querySelector(".brand-slogan");
+          const logoEl = document.querySelector(".logo-preview");
+          const imageEl = document.querySelector(".main-preview");
 
-        setupDownload();
+          if (data.brand && brandEl) brandEl.innerText = data.brand;
+          if (data.slogan && sloganEl) sloganEl.innerText = data.slogan;
+          if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
+          if (data.imageUrl && imageEl) imageEl.src = data.imageUrl;
 
+          setupDownload();
+        }, 300);
       } catch (e) {
         console.error("템플릿 불러오기 실패:", e);
-        frameContent.innerHTML = "<p style='text-align:center;padding:100px;'>오류가 발생했습니다.</p>";
+        frameContainer.innerHTML = "<p style='text-align:center;padding:100px;'>오류가 발생했습니다.</p>";
       }
-    }
-
-    // ✅ 사용자 저장값 삽입
-    function insertValues(data) {
-      const brandEl = document.querySelector(".brand-name");
-      const sloganEl = document.querySelector(".brand-slogan");
-      const logoEl = document.querySelector(".logo-preview");
-      const imageEl = document.querySelector(".main-preview");
-
-      if (data.brand && brandEl) brandEl.innerText = data.brand;
-      if (data.slogan && sloganEl) sloganEl.innerText = data.slogan;
-      if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
-      if (data.imageUrl && imageEl) imageEl.src = data.imageUrl;
     }
 
     // ✅ 다운로드 기능
@@ -104,6 +100,7 @@
         });
 
         await Promise.all([waitForImageLoad(logo), waitForImageLoad(image)]);
+
         const canvas = await html2canvas(frame);
         const link = document.createElement("a");
         link.download = "template.png";
@@ -115,7 +112,7 @@
     loadTemplate();
   </script>
 
-  <!-- ✅ 저장 기능 모듈 -->
+  <!-- ✅ 저장 기능 -->
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 </body>
 </html>
