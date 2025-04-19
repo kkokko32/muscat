@@ -4,24 +4,68 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Template</title>
-  
+
   <!-- ✅ 파비콘 -->
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
 
   <!-- ✅ 스타일 -->
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: auto;
+      background-color: #f0f0f0;
+    }
+
+    .template-frame {
+      margin: 50px auto;
+      position: relative;
+      width: 1200px;
+      min-height: 1200px;
+      background-color: beige;
+      padding-bottom: 100px;
+    }
+
+    .template-buttons {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .template-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 30px;
+      cursor: pointer;
+    }
+
+    .save-btn,
+    .download-btn {
+      padding: 10px 16px;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .save-btn { background-color: #4CAF50; color: white; }
+    .download-btn { background-color: #2196F3; color: white; }
+    .delete-btn { background-color: #F44336; color: white; }
+  </style>
 </head>
 <body class="template-page">
 
-  <!-- ✅ 템플릿 디자인 프레임 (전체 덮어쓰기 대상) -->
-  <div class="template-frame" id="templateFrame" style="margin: 0 auto; position: relative; width: 1200px; height: 1200px; background-color: beige;">
-    <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
-    <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
-    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
+  <!-- ✅ 템플릿 디자인 영역 -->
+  <div class="template-frame" id="templateFrame">
+    <div id="templateContent"></div>
 
-    <!-- ✅ 버튼 영역 -->
+    <!-- ✅ 고정 버튼 영역 -->
     <div class="template-buttons">
       <div class="template-close" onclick="window.history.back()">&times;</div>
       <button id="saveTemplateBtn" class="save-btn">저장</button>
@@ -32,29 +76,25 @@
   <!-- ✅ html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-  <!-- ✅ 템플릿 불러오기 및 사용자 데이터 삽입 -->
+  <!-- ✅ 템플릿 불러오기 및 버튼 전환/삭제 기능 -->
   <script type="module">
     import { db } from "/muscat/common/firebase-init.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const params = new URLSearchParams(window.location.search);
     const docId = params.get("docId");
-    const frameContainer = document.getElementById("templateFrame");
+    const frameContent = document.getElementById("templateContent");
+    const saveBtn = document.getElementById("saveTemplateBtn");
 
     async function loadTemplate() {
-      if (!docId) {
-        const data = JSON.parse(localStorage.getItem("templateData") || "{}");
-        insertValues(data);
-        setupDownload();
-        return;
-      }
+      if (!docId) return;
 
       try {
         const ref = doc(db, "savedTemplates", docId);
         const snapshot = await getDoc(ref);
 
         if (!snapshot.exists()) {
-          frameContainer.innerHTML = "<p style='text-align:center;padding:100px;'>템플릿 정보를 찾을 수 없습니다.</p>";
+          frameContent.innerHTML = "<p style='text-align:center;padding:100px;'>템플릿 정보를 찾을 수 없습니다.</p>";
           return;
         }
 
@@ -62,29 +102,45 @@
         const response = await fetch(data.htmlUrl);
         const htmlText = await response.text();
 
-        // ✅ template-frame 전체를 교체 (인라인 스타일 포함)
-        frameContainer.outerHTML = htmlText;
+        frameContent.innerHTML = htmlText;
 
-        setTimeout(() => {
-          const brandEl = document.querySelector(".brand-name");
-          const sloganEl = document.querySelector(".brand-slogan");
-          const logoEl = document.querySelector(".logo-preview");
-          const imageEl = document.querySelector(".main-preview");
+        setTimeout(() => insertValues(data), 300);
+        setupDownload();
 
-          if (data.brand && brandEl) brandEl.innerText = data.brand;
-          if (data.slogan && sloganEl) sloganEl.innerText = data.slogan;
-          if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
-          if (data.imageUrl && imageEl) imageEl.src = data.imageUrl;
+        // ✅ 버튼을 "삭제"로 전환
+        if (saveBtn) {
+          saveBtn.textContent = "삭제";
+          saveBtn.classList.remove("save-btn");
+          saveBtn.classList.add("delete-btn");
 
-          setupDownload();
-        }, 300);
+          saveBtn.addEventListener("click", async () => {
+            const confirmDelete = confirm("정말 이 템플릿을 삭제하시겠습니까?");
+            if (!confirmDelete) return;
+
+            await deleteDoc(doc(db, "savedTemplates", docId));
+            alert("삭제되었습니다.");
+            window.location.href = "/muscat/mypage/my-save.html";
+          });
+        }
+
       } catch (e) {
         console.error("템플릿 불러오기 실패:", e);
-        frameContainer.innerHTML = "<p style='text-align:center;padding:100px;'>오류가 발생했습니다.</p>";
+        frameContent.innerHTML = "<p style='text-align:center;padding:100px;'>오류가 발생했습니다.</p>";
       }
     }
 
-    // ✅ 다운로드 기능
+    function insertValues(data) {
+      const brandEl = document.querySelector(".brand-name");
+      const sloganEl = document.querySelector(".brand-slogan");
+      const logoEl = document.querySelector(".logo-preview");
+      const imageEl = document.querySelector(".main-preview");
+
+      if (data.brand && brandEl) brandEl.innerText = data.brand;
+      if (data.slogan && sloganEl) sloganEl.innerText = data.slogan;
+      if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
+      if (data.imageUrl && imageEl) imageEl.src = data.imageUrl;
+    }
+
     function setupDownload() {
       const downloadBtn = document.getElementById("downloadBtn");
       const frame = document.querySelector(".template-frame");
@@ -100,7 +156,6 @@
         });
 
         await Promise.all([waitForImageLoad(logo), waitForImageLoad(image)]);
-
         const canvas = await html2canvas(frame);
         const link = document.createElement("a");
         link.download = "template.png";
