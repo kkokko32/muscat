@@ -11,13 +11,12 @@
 
   <!-- ✅ 스타일 -->
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
-
   <style>
     html, body {
       margin: 0;
       padding: 0;
+      background-color: #292929;
       overflow: auto;
-      background-color: #f0f0f0;
     }
 
     .template-frame {
@@ -30,53 +29,62 @@
     }
 
     .template-buttons {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
+      position: fixed;
+      top: 50%;
+      right: 30px;
+      transform: translateY(-50%);
       display: flex;
-      gap: 10px;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 100;
     }
 
     .template-close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #111;
+      color: white;
+      font-size: 24px;
+      text-align: center;
+      line-height: 50px;
       cursor: pointer;
     }
 
-    .save-btn,
-    .download-btn {
-      padding: 10px 16px;
-      font-size: 14px;
+    .save-btn, .download-btn, .delete-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
       border: none;
+      font-size: 13px;
+      background-color: #333;
+      color: white;
       cursor: pointer;
-      border-radius: 4px;
     }
 
-    .save-btn { background-color: #4CAF50; color: white; }
-    .download-btn { background-color: #2196F3; color: white; }
-    .delete-btn { background-color: #F44336; color: white; }
+    .delete-btn {
+      background-color: #e53935;
+    }
   </style>
 </head>
-<body class="template-page">
+<body>
 
-  <!-- ✅ 템플릿 디자인 영역 -->
+  <!-- ✅ 템플릿 디자인만 담기는 영역 -->
   <div class="template-frame" id="templateFrame">
     <div id="templateContent"></div>
+  </div>
 
-    <!-- ✅ 고정 버튼 영역 -->
-    <div class="template-buttons">
-      <div class="template-close" onclick="window.history.back()">&times;</div>
-      <button id="saveTemplateBtn" class="save-btn">저장</button>
-      <button id="downloadBtn" class="download-btn">다운로드</button>
-    </div>
+  <!-- ✅ 버튼은 템플릿 외부에 고정 -->
+  <div class="template-buttons">
+    <div class="template-close" onclick="window.history.back()">&times;</div>
+    <button id="saveTemplateBtn" class="save-btn">저장</button>
+    <button id="downloadBtn" class="download-btn">다운로드</button>
   </div>
 
   <!-- ✅ html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-  <!-- ✅ 템플릿 불러오기 및 버튼 전환/삭제 기능 -->
+  <!-- ✅ 템플릿 불러오기 및 삭제 기능 -->
   <script type="module">
     import { db } from "/muscat/common/firebase-init.js";
     import { doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -102,21 +110,22 @@
         const response = await fetch(data.htmlUrl);
         const htmlText = await response.text();
 
+        // ✅ 디자인만 삽입
         frameContent.innerHTML = htmlText;
 
+        // ✅ 사용자 데이터 삽입
         setTimeout(() => insertValues(data), 300);
         setupDownload();
 
-        // ✅ 버튼을 "삭제"로 전환
+        // ✅ 저장 → 삭제 버튼 전환
         if (saveBtn) {
           saveBtn.textContent = "삭제";
           saveBtn.classList.remove("save-btn");
           saveBtn.classList.add("delete-btn");
 
           saveBtn.addEventListener("click", async () => {
-            const confirmDelete = confirm("정말 이 템플릿을 삭제하시겠습니까?");
+            const confirmDelete = confirm("정말 삭제하시겠습니까?");
             if (!confirmDelete) return;
-
             await deleteDoc(doc(db, "savedTemplates", docId));
             alert("삭제되었습니다.");
             window.location.href = "/muscat/mypage/my-save.html";
