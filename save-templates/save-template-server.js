@@ -17,6 +17,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 const saveBtn = document.getElementById("saveTemplateBtn");
+const deleteBtn = document.getElementById("deleteTemplateBtn");
 let savedDocId = null;
 
 const params = new URLSearchParams(window.location.search);
@@ -57,23 +58,11 @@ async function uploadHTMLToStorage(htmlString, path) {
   return await getDownloadURL(htmlRef);
 }
 
-async function handleSaveOrDelete() {
+// ✅ 저장 기능만 수행
+async function handleSaveTemplate() {
   const user = auth.currentUser;
   if (!user) {
     alert("로그인이 필요합니다.");
-    return;
-  }
-
-  if (savedDocId) {
-    try {
-      await deleteDoc(doc(db, "savedTemplates", savedDocId));
-      savedDocId = null;
-      alert("저장이 해제되었습니다.");
-      updateButtonState("저장", false);
-    } catch (e) {
-      console.error("삭제 실패:", e.message || e);
-      alert("삭제 중 오류가 발생했습니다.\n" + (e.message || e));
-    }
     return;
   }
 
@@ -99,7 +88,6 @@ async function handleSaveOrDelete() {
       return;
     }
 
-    // HTML 백업용 복제
     const clonedFrame = frame.cloneNode(true);
     clonedFrame.querySelector(".brand-name").innerText = brand;
     clonedFrame.querySelector(".brand-slogan").innerText = slogan;
@@ -107,7 +95,6 @@ async function handleSaveOrDelete() {
     clonedFrame.querySelector(".main-preview").src = imageImg?.src || "";
     const frameHTML = clonedFrame.outerHTML;
 
-    // 썸네일 생성
     const canvas = await html2canvas(frame, {
       backgroundColor: null,
       useCORS: true
@@ -122,19 +109,16 @@ async function handleSaveOrDelete() {
     ctx.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
     const thumbnailDataUrl = resizedCanvas.toDataURL("image/jpeg", 0.4);
 
-    // 파일 경로 생성
     const timestamp = Date.now();
     const basePath = `users/${user.uid}/${timestamp}`;
     const logoExt = getImageExtension(logoImg?.src || "");
     const imageExt = getImageExtension(imageImg?.src || "");
 
-    // Storage 업로드
     const logoUrl = logoImg?.src ? await uploadImageToStorage(logoImg.src, `${basePath}/logo.${logoExt}`) : "";
     const imageUrl = imageImg?.src ? await uploadImageToStorage(imageImg.src, `${basePath}/main.${imageExt}`) : "";
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
 
-    // Firestore 저장
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
       brand,
@@ -142,13 +126,12 @@ async function handleSaveOrDelete() {
       logoUrl,
       imageUrl,
       thumbnailUrl,
-      htmlUrl, // ✅ Firestore에는 URL만 저장
+      htmlUrl,
       createdAt: serverTimestamp()
     });
 
     savedDocId = docRef.id;
     alert("템플릿이 서버에 저장되었습니다!");
-    updateButtonState("삭제", true);
 
   } catch (e) {
     console.error("저장 실패:", e.message || e);
@@ -156,36 +139,37 @@ async function handleSaveOrDelete() {
   }
 }
 
-function updateButtonState(text, isActive) {
-  if (!saveBtn) return;
-  saveBtn.innerText = text;
-  if (isActive) {
-    saveBtn.classList.add("active");
-  } else {
-    saveBtn.classList.remove("active");
+// ✅ 삭제 버튼 별도 동작
+async function handleDeleteTemplate() {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("로그인이 필요합니다.");
+    return;
+  }
+
+  if (!currentDocId) {
+    alert("삭제할 템플릿이 없습니다.");
+    return;
+  }
+
+  const confirmDelete = confirm("정말 삭제하시겠습니까?");
+  if (!confirmDelete) return;
+
+  try {
+    await deleteDoc(doc(db, "savedTemplates", currentDocId));
+    alert("템플릿이 삭제되었습니다.");
+  } catch (e) {
+    console.error("삭제 실패:", e.message || e);
+    alert("삭제 중 오류가 발생했습니다.\n" + (e.message || e));
   }
 }
 
-async function checkExistingSavedTemplate() {
-  const user = auth.currentUser;
-  if (!user || !currentDocId) return;
-
-  const q = query(collection(db, "savedTemplates"), where("uid", "==", user.uid));
-  const snapshot = await getDocs(q);
-  if (snapshot.empty) return;
-
-  snapshot.forEach(docSnap => {
-    if (docSnap.id === currentDocId) {
-      savedDocId = docSnap.id;
-      updateButtonState("삭제", true);
-    }
-  });
-}
-
+// ✅ 이벤트 바인딩
 auth.onAuthStateChanged(user => {
   if (user) {
-    checkExistingSavedTemplate();
+    // 필요 시 이후 로딩 처리 가능 (현재는 생략)
   }
 });
 
-saveBtn?.addEventListener("click", handleSaveOrDelete);
+saveBtn?.addEventListener("click", handleSaveTemplate);
+deleteBtn?.addEventListener("click", handleDeleteTemplate);
