@@ -58,13 +58,10 @@ function loadTemplatesToIframes() {
 function selectIndustry(button) {
   document.querySelectorAll("#step1 .button-grid button").forEach(btn => btn.classList.remove("active"));
   button.classList.add("active");
-
   const selected = button.innerText;
   const target = document.getElementById("selectedIndustry");
   if (target) target.innerText = selected;
-
   document.getElementById("step2")?.classList.remove("disabled");
-
   updateTemplateInfoText();
   filterTemplates();
 }
@@ -72,13 +69,10 @@ function selectIndustry(button) {
 function selectConcept(button) {
   document.querySelectorAll("#step2 .button-grid button").forEach(btn => btn.classList.remove("active"));
   button.classList.add("active");
-
   const selected = button.innerText;
   const target = document.getElementById("selectedConcept");
   if (target) target.innerText = selected;
-
   document.getElementById("step3")?.classList.remove("disabled");
-
   updateTemplateInfoText();
   filterTemplates();
 }
@@ -86,11 +80,9 @@ function selectConcept(button) {
 function selectStyle(button) {
   document.querySelectorAll(".inline-concept-filter button").forEach(btn => btn.classList.remove("active"));
   button.classList.add("active");
-
   const selected = button.innerText;
   const target = document.getElementById("selectedStyle");
   if (target) target.innerText = selected;
-
   filterTemplates();
 }
 
@@ -100,19 +92,16 @@ function filterTemplates() {
   const industry = document.getElementById("selectedIndustry")?.innerText;
   const concept = document.getElementById("selectedConcept")?.innerText;
   const style = document.querySelector(".inline-concept-filter .active")?.innerText;
-
   document.querySelectorAll(".template-card").forEach(card => {
     const matchIndustry = !industry || industry === "전체" || card.dataset.industry === industry;
     const matchConcept = !concept || concept === "전체" || card.dataset.concept === concept;
     const matchStyle = !style || style === "전체" || (card.dataset.style || "").includes(style);
-
     if (matchIndustry && matchConcept && matchStyle) {
       card.classList.add("visible");
     } else {
       card.classList.remove("visible");
     }
   });
-
   if (window.msnry) {
     window.msnry.layout();
   }
@@ -125,7 +114,6 @@ function syncInputToIframe(id, value) {
     const el = doc?.querySelector(`#${id}`);
     if (el) el.textContent = value;
   });
-
   updateLocalStorage();
 }
 
@@ -133,13 +121,14 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
   const storageRef = ref(storage, storagePath);
   const snapshot = await uploadBytes(storageRef, file);
   const downloadURL = await getDownloadURL(snapshot.ref);
-
   const img = document.getElementById(imgElementId);
-  img.src = downloadURL;
-  img.style.display = "block";
-
+  if (img) {
+    img.src = downloadURL;
+    img.style.display = "block";
+  } else {
+    console.warn(`[경고] id='${imgElementId}' 요소를 찾을 수 없습니다.`);
+  }
   sessionStorage.setItem(sessionKey, downloadURL);
-
   const iframes = document.querySelectorAll(".template-card.visible iframe");
   iframes.forEach(iframe => {
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -153,7 +142,6 @@ function updateLocalStorage() {
   const slogan = document.getElementById("brandDesc")?.value || "";
   const logo = sessionStorage.getItem("tempLogo") || "";
   const main = sessionStorage.getItem("tempMain") || "";
-
   const data = { brand, slogan, logo, main };
   localStorage.setItem("templateData", JSON.stringify(data));
 }
@@ -165,14 +153,12 @@ function goToTemplate(filename) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const grid = document.querySelector('.template-preview');
-
   window.msnry = new Masonry(grid, {
     itemSelector: '.template-card',
     columnWidth: 440,
     gutter: 16,
     fitWidth: true
   });
-
   imagesLoaded(grid, () => {
     loadTemplatesToIframes();
     window.msnry.layout();
@@ -180,13 +166,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const brandInput = document.getElementById("brandName");
   const descInput = document.getElementById("brandDesc");
-
   if (brandInput && descInput) {
     brandInput.addEventListener("input", () => {
       descInput.disabled = brandInput.value.trim() === "";
       syncInputToIframe("brandName", brandInput.value);
     });
-
     descInput.addEventListener("input", () => {
       syncInputToIframe("brandDesc", descInput.value);
     });
@@ -194,7 +178,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const logoInput = document.getElementById("logoInput");
   const mainImageInput = document.getElementById("mainImageInput");
-
   if (logoInput) {
     logoInput.addEventListener("change", e => {
       const file = e.target.files[0];
@@ -204,7 +187,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-
   if (mainImageInput) {
     mainImageInput.addEventListener("change", e => {
       const file = e.target.files[0];
@@ -217,15 +199,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const firstIndustry = document.querySelector('#step1 .button-grid button');
   if (firstIndustry) firstIndustry.click();
-
   const firstConcept = document.querySelector('#step2 .button-grid button');
   if (firstConcept) firstConcept.click();
-
   const firstStyle = document.querySelector('.inline-concept-filter button');
   if (firstStyle) firstStyle.click();
 });
 
-// 글로벌 등록
 window.selectIndustry = selectIndustry;
 window.selectConcept = selectConcept;
 window.selectStyle = selectStyle;
