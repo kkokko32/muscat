@@ -151,7 +151,7 @@ function applyMasonryLayout() {
     window.masonryInstance = new Masonry(container, {
       itemSelector: ".template-card",
       columnWidth: ".grid-sizer",
-      gutter: 20,
+      gutter: 60,
       fitWidth: true
     });
   });
