@@ -39,10 +39,10 @@
       if (!data) return;
 
       if (data.brand && document.querySelector(".brand-name")) {
-        document.querySelector(".brand-name").innerText = data.brand;
+        document.querySelector(".brand-name").textContent = data.brand;
       }
       if (data.slogan && document.querySelector(".brand-slogan")) {
-        document.querySelector(".brand-slogan").innerText = data.slogan;
+        document.querySelector(".brand-slogan").textContent = data.slogan;
       }
       if (data.logoUrl && document.querySelector(".logo-preview")) {
         document.querySelector(".logo-preview").src = data.logoUrl;
@@ -63,11 +63,11 @@
 
       if (brand) {
         const el = document.querySelector(".brand-name");
-        if (el) el.innerText = brand;
+        if (el) el.textContent = brand;
       }
       if (slogan) {
         const el = document.querySelector(".brand-slogan");
-        if (el) el.innerText = slogan;
+        if (el) el.textContent = slogan;
       }
       if (logoUrl) {
         const el = document.querySelector(".logo-preview");
