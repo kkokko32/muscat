@@ -229,8 +229,7 @@ body.mypage .info-sidebar .card-header h4 {
 
 /* 템플릿 카드 */
 .template-card {
-  width: 315px;
-  background: white;
+  width: 300px;
   border-radius: 12px;
   overflow: hidden;
   position: relative;
