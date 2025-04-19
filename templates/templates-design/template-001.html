@@ -53,27 +53,31 @@
     });
   </script>
 
-  <!-- ✅ sessionStorage 기반 초기 데이터 반영 -->
+  <!-- ✅ sessionStorage 기반 값 반영 (브랜드명/슬로건 보완용) -->
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
+    window.onload = () => {
       const brand = sessionStorage.getItem("tempBrand");
       const slogan = sessionStorage.getItem("tempSlogan");
       const logoUrl = sessionStorage.getItem("tempLogo");
       const mainUrl = sessionStorage.getItem("tempMain");
 
-      if (brand && document.querySelector(".brand-name")) {
-        document.querySelector(".brand-name").innerText = brand;
+      if (brand) {
+        const el = document.querySelector(".brand-name");
+        if (el) el.innerText = brand;
       }
-      if (slogan && document.querySelector(".brand-slogan")) {
-        document.querySelector(".brand-slogan").innerText = slogan;
+      if (slogan) {
+        const el = document.querySelector(".brand-slogan");
+        if (el) el.innerText = slogan;
       }
-      if (logoUrl && document.querySelector(".logo-preview")) {
-        document.querySelector(".logo-preview").src = logoUrl;
+      if (logoUrl) {
+        const el = document.querySelector(".logo-preview");
+        if (el) el.src = logoUrl;
       }
-      if (mainUrl && document.querySelector(".main-preview")) {
-        document.querySelector(".main-preview").src = mainUrl;
+      if (mainUrl) {
+        const el = document.querySelector(".main-preview");
+        if (el) el.src = mainUrl;
       }
-    });
+    };
   </script>
 </body>
 </html>
