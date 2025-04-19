@@ -1,3 +1,5 @@
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+import { storage } from "/muscat/common/firebase-init.js";
 
 function resizeSingleIframe(iframe) {
   const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -127,30 +129,30 @@ function syncInputToIframe(id, value) {
   updateLocalStorage();
 }
 
-function syncImageToIframe(id, file) {
-  const objectUrl = URL.createObjectURL(file);
+async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessionKey) {
+  const storageRef = ref(storage, storagePath);
+  const snapshot = await uploadBytes(storageRef, file);
+  const downloadURL = await getDownloadURL(snapshot.ref);
+
+  const img = document.getElementById(imgElementId);
+  img.src = downloadURL;
+  img.style.display = "block";
+
+  sessionStorage.setItem(sessionKey, downloadURL);
 
   const iframes = document.querySelectorAll(".template-card.visible iframe");
   iframes.forEach(iframe => {
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
-    const el = doc?.querySelector(`#${id}`);
-    if (el) el.src = objectUrl;
+    const el = doc?.querySelector(`#${imgElementId}`);
+    if (el) el.src = downloadURL;
   });
-
-  if (id === "brandLogo") {
-    localStorage.setItem("brandLogo", objectUrl);
-  } else if (id === "mainImage") {
-    localStorage.setItem("mainImage", objectUrl);
-  }
-
-  updateLocalStorage();
 }
 
 function updateLocalStorage() {
   const brand = document.getElementById("brandName")?.value || "";
   const slogan = document.getElementById("brandDesc")?.value || "";
-  const logo = localStorage.getItem("brandLogo") || "";
-  const main = localStorage.getItem("mainImage") || "";
+  const logo = sessionStorage.getItem("tempLogo") || "";
+  const main = sessionStorage.getItem("tempMain") || "";
 
   const data = { brand, slogan, logo, main };
   localStorage.setItem("templateData", JSON.stringify(data));
@@ -196,14 +198,20 @@ document.addEventListener("DOMContentLoaded", () => {
   if (logoInput) {
     logoInput.addEventListener("change", e => {
       const file = e.target.files[0];
-      if (file) syncImageToIframe("brandLogo", file);
+      if (file) {
+        const filename = `temp-logo-${Date.now()}`;
+        uploadToFirebaseAndPreview(file, "brandLogo", `previews/${filename}`, "tempLogo");
+      }
     });
   }
 
   if (mainImageInput) {
     mainImageInput.addEventListener("change", e => {
       const file = e.target.files[0];
-      if (file) syncImageToIframe("mainImage", file);
+      if (file) {
+        const filename = `temp-main-${Date.now()}`;
+        uploadToFirebaseAndPreview(file, "mainImage", `previews/${filename}`, "tempMain");
+      }
     });
   }
 

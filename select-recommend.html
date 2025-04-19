@@ -117,49 +117,58 @@
   </main>
 
   <!-- ✅ sessionStorage 저장 및 템플릿 이동 -->
-  <script>
+  <script type="module">
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { storage } from "/muscat/common/firebase-init.js";
+  
+    async function uploadImageAndSetPreview(file, imgId, storagePath, storageKey) {
+      const storageRef = ref(storage, storagePath);
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+  
+      const img = document.getElementById(imgId);
+      img.src = downloadURL;
+      img.style.display = "block";
+  
+      sessionStorage.setItem(storageKey, downloadURL);
+    }
+  
     function goToTemplate(path) {
       const brand = document.getElementById("brandName")?.value || "";
       const slogan = document.getElementById("brandDesc")?.value || "";
       const logoUrl = document.getElementById("logoPreview")?.src || "";
       const mainUrl = document.getElementById("mainPreview")?.src || "";
-
+  
       sessionStorage.setItem("tempBrand", brand);
       sessionStorage.setItem("tempSlogan", slogan);
       sessionStorage.setItem("tempLogo", logoUrl);
       sessionStorage.setItem("tempMain", mainUrl);
-
+  
       window.location.href = `/muscat/templates/templates-design/${path}`;
     }
-
-    document.getElementById("logoInput").addEventListener("change", (e) => {
+  
+    document.getElementById("logoInput").addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (file) {
-        const objectUrl = URL.createObjectURL(file);
-        const img = document.getElementById("logoPreview");
-        img.src = objectUrl;
-        img.style.display = "block";
-        sessionStorage.setItem("tempLogo", objectUrl);
+        const filename = `temp/logo_${Date.now()}`;
+        await uploadImageAndSetPreview(file, "logoPreview", filename, "tempLogo");
       }
     });
-
-    document.getElementById("mainImageInput").addEventListener("change", (e) => {
+  
+    document.getElementById("mainImageInput").addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (file) {
-        const objectUrl = URL.createObjectURL(file);
-        const img = document.getElementById("mainPreview");
-        img.src = objectUrl;
-        img.style.display = "block";
-        sessionStorage.setItem("tempMain", objectUrl);
+        const filename = `temp/main_${Date.now()}`;
+        await uploadImageAndSetPreview(file, "mainPreview", filename, "tempMain");
       }
     });
-
+  
     window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand");
       const slogan = sessionStorage.getItem("tempSlogan");
       const logo = sessionStorage.getItem("tempLogo");
       const main = sessionStorage.getItem("tempMain");
-
+  
       if (brand) document.getElementById("brandName").value = brand;
       if (slogan) document.getElementById("brandDesc").value = slogan;
       if (logo) {
