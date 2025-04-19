@@ -173,13 +173,13 @@
       if (slogan) document.getElementById("brandDesc").value = slogan;
       if (logo) {
         document.getElementById("logoPreview").src = logo;
-        document.getElementById("logoPreview").style.display = "block";
+        document.getElementById("logoPreview").style.display = "none"; // ✅ block → none
       }
       if (main) {
         document.getElementById("mainPreview").src = main;
-        document.getElementById("mainPreview").style.display = "block";
+        document.getElementById("mainPreview").style.display = "none"; // ✅ block → none
       }
-    });
+   });
   </script>
 
   <script>
