@@ -1,16 +1,18 @@
 
 /* 템플릿 공통 스타일 */
 html, body {
-  height: 100%;
   margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
   overflow-y: scroll;
+  overflow-x: hidden;
   scrollbar-width: none; /* Firefox */
 }
 
 body::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
 }
-
 .template-page {
   background-color: #292929;
   margin-top: 0;
@@ -36,15 +38,6 @@ body::-webkit-scrollbar {
   width: 400px;
   height: 400px;
   object-fit: cover; /* 또는 contain, 필요 시 조절 가능 */
-}
-
-
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
 }
 
 iframe {
