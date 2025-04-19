@@ -38,9 +38,14 @@ async function loadTemplate() {
     const response = await fetch(data.htmlUrl);
     const htmlText = await response.text();
 
-    const frame = document.getElementById("templateFrame");
-    if (frame) {
-      frame.outerHTML = htmlText;
+    // frame 전체를 덮어쓰는 대신 내부만 교체 (버튼은 유지됨)
+    const wrapper = document.getElementById("templateFrame");
+    const tempDom = document.createElement("div");
+    tempDom.innerHTML = htmlText;
+
+    const newFrame = tempDom.querySelector(".template-frame");
+    if (newFrame && wrapper) {
+      wrapper.innerHTML = newFrame.innerHTML;
     }
   } catch (e) {
     console.error("템플릿 로드 실패:", e);
