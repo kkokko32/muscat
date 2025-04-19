@@ -53,9 +53,9 @@
     });
   </script>
 
-  <!-- ✅ sessionStorage 기반 값 반영 (브랜드명/슬로건 보완용) -->
+  <!-- ✅ sessionStorage 기반 값 반영 -->
   <script>
-    setTimeout(() => {
+    window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand");
       const slogan = sessionStorage.getItem("tempSlogan");
       const logoUrl = sessionStorage.getItem("tempLogo");
@@ -77,7 +77,7 @@
         const el = document.querySelector(".main-preview");
         if (el) el.src = mainUrl;
       }
-    }, 100);
+    });
   </script>
 </body>
 </html>
