@@ -60,7 +60,7 @@ async function loadMyTemplates() {
 
     const wrapper = document.createElement("div");
     wrapper.className = "template-card";
-    wrapper.style.marginBottom = "60px"; // ✅ 상하 여백 명시적으로 설정
+    wrapper.style.marginBottom = "40px"; // ✅ 여백 40px로 수정됨
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
