@@ -106,7 +106,7 @@ body.mypage .info-sidebar .btn-group .btn {
 
 /* 공통 카드 스타일 */
 .mypage-card {
-  background: #fff;
+  background: #eee;
   border-radius: 16px;
   box-sizing: border-box;
   padding: 24px 30px;
