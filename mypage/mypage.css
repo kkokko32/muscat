@@ -1,16 +1,23 @@
 /* 전체 레이아웃 */
-html, body, main {
-  height: auto;
-  min-height: 100%;
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body.mypage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 body.mypage main {
+  flex: 1;
   padding-bottom: 40px;
 }
 
+/* 레이아웃 그리드 */
 body.mypage .info-layout {
   width: 100%;
-  max-width: none;
   padding: 0 100px;
   box-sizing: border-box;
   display: grid;
@@ -20,16 +27,13 @@ body.mypage .info-layout {
   min-height: 600px;
 }
 
-
 body.mypage .global-header {
   background-color: hsl(0, 0%, 99%);
-  
 }
 
+/* 타이틀 */
 .mypage-title {
-  margin-top: 120px;
-  margin-left: 28px;
-  margin-bottom: 40px;
+  margin: 120px 0 40px 28px;
   text-align: left;
   padding: 0 100px;
 }
@@ -46,7 +50,7 @@ body.mypage .global-header {
   color: #666;
 }
 
-/* 좌측: 계정 정보 (고정 너비) */
+/* 좌측: 계정 정보 */
 body.mypage .info-sidebar {
   grid-row: 1 / 2;
   display: flex;
@@ -56,10 +60,10 @@ body.mypage .info-sidebar {
 
 body.mypage .info-sidebar .mypage-card {
   height: 100%;
-  justify-content: flex-start;
   padding: 24px 30px;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
 }
 
 body.mypage .info-sidebar .mypage-card p {
@@ -85,15 +89,15 @@ body.mypage .info-sidebar .btn-group .btn {
   padding: 0;
 }
 
-/* 우측: 템플릿 정보 (유동 너비) */
+/* 우측: 저장한 디자인 */
 .info-main {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  min-height: 100%;
   justify-content: flex-start;
   grid-column: 2 / 3;
   grid-row: 1 / 2;
+  min-height: 100%;
 }
 
 .h4 {
@@ -101,7 +105,7 @@ body.mypage .info-sidebar .btn-group .btn {
   margin: 0;
 }
 
-/* 마이페이지 전용 카드 스타일 */
+/* 공통 카드 스타일 */
 .mypage-card {
   background: #fff;
   border-radius: 16px;
@@ -114,20 +118,20 @@ body.mypage .info-sidebar .btn-group .btn {
   flex: 1;
 }
 
-/* 저장한 디자인 카드: 높이 계정정보와 동일하게 */
+/* 저장한 디자인 카드 */
 .card-design {
   height: 100%;
   flex: 1;
 }
 
-/* 내 포트폴리오 카드: 계정+저장한 디자인과 같은 가로, 얇은 높이 */
+/* 포트폴리오 카드 */
 .card-portfolio {
   min-height: 160px;
   grid-column: 1 / span 2;
   grid-row: 2 / 3;
 }
 
-/* 계정 카드만 다른 배경색 */
+/* 계정 카드 전용 스타일 */
 .account-card {
   background-color: #292929;
   color: white;
@@ -149,6 +153,7 @@ body.mypage .info-sidebar .btn-group .btn {
   color: #999 !important;
 }
 
+/* 카드 헤더 */
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -160,19 +165,17 @@ body.mypage .info-sidebar .btn-group .btn {
 }
 
 .card-header h4 {
-  margin: 0;
-  margin-left: 20px;
+  margin: 0 0 0 20px;
 }
 
 .card-header .btn {
   width: auto;
-  margin-left: auto;
-  margin-right: 20px;
+  margin: 0 20px 0 auto;
 }
 
 body.mypage .info-sidebar .card-header h4 {
   font-size: 16pt;
-  padding: 12px 0 12px 0;
+  padding: 12px 0;
 }
 
 .mypage-card .btn-group {
@@ -186,7 +189,7 @@ body.mypage .info-sidebar .card-header h4 {
   color: #666;
 }
 
-/* 버튼 공통 스타일 */
+/* 버튼 스타일 */
 .btn {
   width: 100px;
   margin-right: 0;
@@ -200,7 +203,6 @@ body.mypage .info-sidebar .card-header h4 {
   text-decoration: none;
 }
 
-/* 회색 라인 버튼 스타일 */
 .btn-line {
   background: none;
   border: 1px solid #999;
@@ -208,23 +210,24 @@ body.mypage .info-sidebar .card-header h4 {
   transition: 0.2s ease;
 }
 
-/* 마이페이지 전용 버튼 그룹 내부 버튼은 block + 100% width */
 .mypage-card .btn-group .btn {
   width: 100%;
   text-align: center;
 }
 
+/* 템플릿 리스트 */
 .template-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;     /* 가운데 정렬 */
+  justify-content: center;
   gap: 12px;
   max-width: 1720px;
-  margin: 0 auto;               /* 좌우 여백 제거하고 가운데로 */
-  padding: 0;                   /* 불필요한 여백 제거 */
+  margin: 0 auto;
+  padding: 0;
   width: 100%;
 }
 
+/* 템플릿 카드 */
 .template-card {
   width: 278px;
   background: white;
@@ -245,7 +248,6 @@ body.mypage .info-sidebar .card-header h4 {
   pointer-events: none;
 }
 
-/* 필요 시 텍스트 아래 정렬 */
 .template-card p {
   font-size: 13px;
   color: #666;
@@ -253,10 +255,9 @@ body.mypage .info-sidebar .card-header h4 {
   text-align: center;
 }
 
-
+/* 썸네일 */
 .thumbnail-wrapper {
   width: 100%;
-  height: auto;
   background: #f0f0f0;
   display: flex;
   justify-content: center;
@@ -272,7 +273,7 @@ body.mypage .info-sidebar .card-header h4 {
   display: block;
 }
 
-
+/* 선택 체크박스 */
 .select-checkbox {
   position: absolute;
   top: 12px;
@@ -280,7 +281,6 @@ body.mypage .info-sidebar .card-header h4 {
   transform: scale(1.4);
   display: none;
 }
-
 
 .manage-mode .select-checkbox {
   display: block;
