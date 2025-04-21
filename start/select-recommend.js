@@ -56,8 +56,11 @@ function resizeSingleIframe(iframe) {
 
 function loadTemplatesToIframes() {
   showLoading();
+
   const iframes = document.querySelectorAll('.template-card iframe');
   let loadedCount = 0;
+  const total = iframes.length;
+
   iframes.forEach(iframe => {
     let templatePath = iframe.dataset.template;
     if (!templatePath.startsWith('/')) {
@@ -65,33 +68,39 @@ function loadTemplatesToIframes() {
     }
     iframe.src = templatePath;
 
-    iframe.onload = () => {
+    const onIframeDone = () => {
       try {
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        iframeDoc.body.classList.add("inside-preview");
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+        iframeDoc?.body?.classList.add("inside-preview");
 
-        const style = iframeDoc.createElement("style");
-        style.textContent = `
-          #saveTemplateBtn,
-          #deleteTemplateBtn,
-          #downloadBtn,
-          .template-close {
-            display: none !important;
-          }
-
-          body.inside-preview .template-frame {
-            margin-top: 0 !important;
-          }
-        `;
-        iframeDoc.head.appendChild(style);
+        const style = iframeDoc?.createElement("style");
+        if (style) {
+          style.textContent = `
+            #saveTemplateBtn,
+            #deleteTemplateBtn,
+            #downloadBtn,
+            .template-close {
+              display: none !important;
+            }
+            body.inside-preview .template-frame {
+              margin-top: 0 !important;
+            }
+          `;
+          iframeDoc.head.appendChild(style);
+        }
       } catch (e) {
         console.warn("iframe 접근 실패:", e);
       }
 
       resizeSingleIframe(iframe);
       loadedCount++;
-      if (loadedCount === iframes.length) hideLoading();
+      if (loadedCount === total) {
+        setTimeout(hideLoading, 300);
+      }
     };
+
+    iframe.onload = onIframeDone;
+    iframe.onerror = onIframeDone;
   });
 }
 
