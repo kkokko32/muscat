@@ -1,0 +1,196 @@
+/* ✅ 마이페이지 헤더 배경 */
+body.mypage .global-header {
+  background-color: #292929;
+}
+
+/* ✅ 로고는 항상 흰색 */
+body.mypage .global-header .logo {
+  color: #ffffff !important;
+}
+
+/* ✅ 기본 메뉴 텍스트 색상 (#888로 비활성) */
+body.mypage .global-header nav a {
+  color: #888 !important;
+}
+
+/* ✅ 현재 메뉴 (머스캣 셀렉션 등) 강조 - 흰색 */
+body.mypage .global-header nav a.menu_m {
+  color: #ffffff !important;
+}
+
+/* ✅ 호버 시에도 흰색 유지 (비활성 메뉴 포함) */
+body.mypage .global-header nav a:hover {
+  color: #ffffff !important;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: #292929;
+  color: #ffffff;
+  min-width: 360px;
+  height: 100vh;
+}
+
+main.page-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  padding: 70px 0 0 !important;
+}
+
+/* ✅ 카드 리스트 래퍼 */
+.template-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 20px;
+  max-width: 1800px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* ✅ 카드 요소 */
+.template-card {
+  width: 270px;
+  margin-bottom: 60px;
+  background: transparent !important;
+  text-align: center;
+  position: relative;
+}
+
+/* ✅ 썸네일 */
+.thumbnail-wrapper {
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.thumbnail {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 12px;
+}
+
+/* ✅ 텍스트 */
+.template-card h3 {
+  font-size: 14px;
+  color: #888;
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
+.template-card p {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+/* ✅ 체크박스 */
+.select-checkbox {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  transform: scale(1.4);
+  display: none;
+}
+
+.manage-mode .select-checkbox {
+  display: block;
+}
+
+/* ✅ 템플릿이 없을 때 안내 */
+.no-template {
+  font-size: 16px;
+  color: #666;
+  min-height: 200px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* ✅ 스크롤 영역 */
+.template-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  width: 100%;
+  padding: 0 100px 80px; /* ✅ 여백 확보 */
+  box-sizing: border-box;
+  background-color: #292929;
+}
+
+/* ✅ 상단 고정 영역 */
+.template-header-fixed {
+  flex-shrink: 0;
+  background-color: #292929;
+  z-index: 10;
+  padding: 20px 100px 10px;
+}
+
+/* ✅ 텍스트 */
+.template-count-text {
+  font-size: 42px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.highlight-number {
+  color: #aafc3e;
+}
+
+/* ✅ 상단 버튼 */
+.template-list-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#manageModeBtn,
+#deleteSelectedBtn {
+  min-width: 80px;
+  padding: 8px 16px;
+  margin-left: 8px;
+}
+
+/* ✅ 푸터는 고정 아님 */
+body .global-footer {
+  position: static !important;
+}
+
+/* ✅ 반응형 */
+@media (max-width: 600px) {
+  .template-scroll-area {
+    padding: 0 20px 80px;
+  }
+
+  .template-list {
+    max-width: 100%;
+  }
+
+  .template-card {
+    width: 100%;
+  }
+}

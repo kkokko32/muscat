@@ -1,0 +1,109 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Muscat</title>
+  
+    <!-- ✅ 파비콘 -->
+    <link rel="icon" href="common/favicon.png" type="image/png">
+    <link rel="shortcut icon" href="common/favicon.ico" type="image/x-icon">
+  
+    <!-- ✅ 공통 스타일 -->
+    <link rel="stylesheet" href="common/common.css" />
+  
+    <!-- ✅ 페이지 전용 스타일 -->
+    <style>
+      /* auth-box는 로그인/회원가입 폼 전용 */
+      .auth-box {
+        margin: 40px auto;
+        max-width: 400px;
+        padding: 20px;
+        background: #f5f5f5;
+        border-radius: 8px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+  
+      .auth-box h2 {
+        font-size: 20px;
+        margin-top: 0;
+      }
+  
+      .auth-box input {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 8px;
+      }
+  
+      .auth-box button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        background: #292929;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+  
+      .auth-box button:hover {
+        background: #444;
+      }
+
+      /* index.html 전용 회원가입 링크 스타일 */
+      body .modal-switch-text a.underline,
+      body .modal-switch-text a.underline:hover {
+        text-decoration-color: #000 !important;
+        -webkit-text-decoration-color: #000 !important;
+        color: #000 !important;
+      }
+    </style>
+  </head>
+  
+<body>
+  <div id="header-placeholder"></div>
+
+  <div class="main-container">
+    <div class="main-text">
+      <h2>소상공인을 위한</h2>
+      <h2>마케팅 디자인 서비스</h2>
+      <h1>Muscat Service</h1>
+    </div>
+  </div>
+
+  <main class="main-hero">
+    <h1 class="main-heading">소상공인을 위한<br/>마케팅 디자인 서비스<br/>Muscat</h1>
+    <a href="select-recommend.html">
+      <button class="start-btn">디자인 시작하기</button>
+    </a>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <!-- Firebase 연결 -->
+  <script type="module" src="common/firebase-init.js"></script>
+  <!-- ✅ 공통 auth + 보호 기능 포함 -->
+  <script type="module" src="common/utils-auth.js"></script>
+
+  <!-- 헤더 / 푸터 포함 -->
+  <script>
+    fetch("components/header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-placeholder").innerHTML = html;
+      });
+
+      fetch("components/footer.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("footer-placeholder").innerHTML = html;
+      });
+  </script>
+
+  <!-- 모달 삽입 -->
+  <div id="modal-placeholder"></div>
+</body>
+</html>
+=======
+ 
+>>>>>>> main

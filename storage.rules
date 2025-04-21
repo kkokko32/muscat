@@ -1,0 +1,22 @@
+rules_version = '2';
+
+// Craft rules based on data in your Firestore database
+// allow write: if firestore.get(
+//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /temp/{allPaths=**} {
+      // 개발 환경을 위해 임시로 모든 접근 허용
+      allow read, write: if true;
+    }
+    match /previews/{allPaths=**} {
+      // 개발 환경을 위해 임시로 모든 접근 허용
+      allow read, write: if true;
+    }
+    match /{allPaths=**} {
+      // 나머지 경로는 인증된 사용자만 접근 가능
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}

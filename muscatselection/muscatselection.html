@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>전체 포트폴리오</title>
+  <!-- ✅ 파비콘 추가 -->
+  <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
+  <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
+
+  <link rel="stylesheet" href="/muscat/common/common.css" />
+  <link rel="stylesheet" href="/muscat/muscatselection/muscatselection.css" />
+</head>
+<body class="mypage">
+
+  <div id="header-placeholder"></div>
+
+  <main class="page-wrapper">
+    <section class="portfolio-header">
+      <h1>전체 포트폴리오</h1>
+      <p style="color: #bbb; font-size: 16px;">
+        Muscat을 통해 제작된 템플릿 결과물들이 업종별로 정리되어 실시간으로 업로드됩니다
+      </p>
+    </section>
+
+    <section class="template-wrapper">
+      <div class="template-list-header">
+        <div>
+          <button class="btn btn-line" onclick="goToMypageSave()">내 포트폴리오 보기</button>
+        </div>
+      </div>
+
+      <div id="portfolio-template-list" class="template-list">
+        <!-- 포트폴리오 템플릿 리스트가 JS로 삽입될 예정 -->
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+    fetch("/muscat/components/header.html").then(res => res.text()).then(html => {
+      document.getElementById("header-placeholder").innerHTML = html;
+    });
+    fetch("/muscat/components/footer.html").then(res => res.text()).then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    });
+
+    function goToMypageSave() {
+      window.location.href = "/muscat/save-templates/my-save.html";
+    }
+  </script>
+
+  <script type="module" src="/muscat/common/firebase-init.js"></script>
+  <script type="module" src="/muscat/common/utils-auth.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="/muscat/common/image-fit.js"></script>
+  <div id="modal-placeholder"></div>
+</body>
+</html>

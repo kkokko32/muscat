@@ -1,0 +1,85 @@
+<!-- /muscat/components/head.html -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Muscat</title>
+
+  <!-- ✅ 파비콘 -->
+  <link rel="icon" href="/muscat/common/favicon.png" type="image/png" />
+  <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon" />
+
+  <!-- ✅ 공통 CSS -->
+  <link rel="stylesheet" href="/muscat/common/common.css" />
+
+  <!-- ✅ 로딩 오버레이 스타일 -->
+  <style>
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #loadingOverlay .spinner {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #ccc;
+      border-top-color: #aafc3e;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<!-- ✅ 공통 헤더 -->
+<header class="global-header">
+  <a href="/muscat/index.html" class="logo">Muscat</a>
+  <nav>
+    <!-- 전체 사용자 접근 가능 메뉴 -->
+    <a href="/muscat/select-recommend.html" class="menu_d">디자인 피드</a>
+    <a href="/muscat/muscatselection/muscatselection.html" class="menu_s">머스캣 셀렉션</a>
+
+    <!-- 로그인 상태에서만 보이는 메뉴 -->
+    <a href="#" onclick="goToMypageSave()" id="btn-mybranding" class="menu_m" style="display: none;">내 작업실</a>
+
+    <!-- 로그아웃 상태에서만 보이는 버튼 -->
+    <a href="#" class="underline" id="btn-signup" onclick="openSignupModal(); return false;" style="display: none;">회원가입</a>
+    <button class="login-btn" id="btn-login" onclick="openLoginModal()" style="display: none;">로그인</button>
+
+    <!-- 로그인 상태에서만 보이는 마이페이지 아이콘 -->
+    <a href="/muscat/mypage/mypage-index.html" id="btn-mypage" style="display: none;">
+      <img src="/muscat/assets/profile-icon.svg" alt="마이페이지" style="top: 2px; width:28px; height:28px; border-radius:50%;" />
+    </a>
+  </nav>
+</header>
+
+<!-- ✅ 로딩 오버레이 -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<!-- ✅ 전역 로딩 함수 -->
+<script>
+  function showLoading() {
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) overlay.style.display = "flex";
+  }
+
+  function hideLoading() {
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) overlay.style.display = "none";
+  }
+
+  // ✅ 현재 메뉴 강조 기능은 제외됨
+</script>

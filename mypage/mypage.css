@@ -1,0 +1,370 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body.mypage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+body.mypage main {
+  flex: 1;
+  padding-bottom: 70px; 
+}
+
+body.mypage .info-layout {
+  width: 100%;
+  padding: 0 100px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 24px;
+  min-height: calc(100vh - 160px); 
+}
+
+body.mypage .global-header {
+  background-color: hsl(0, 0%, 99%);
+}
+
+/* 타이틀 */
+.mypage-title {
+  margin: 85px 0 40px 28px;
+  text-align: left;
+  padding: 0 100px;
+}
+
+.mypage-title h1 {
+  font-size: 42px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #292929;
+}
+
+.mypage-title p {
+  font-size: 16px;
+  color: #666;
+}
+
+/* 좌측: 계정 정보 */
+body.mypage .info-sidebar {
+  grid-row: 1 / 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+body.mypage .info-sidebar .mypage-card {
+  height: auto; /* 또는 삭제 */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 24px 30px;
+}
+
+body.mypage .info-sidebar .mypage-card p {
+  font-size: 14px;
+  color: #333;
+}
+
+body.mypage .info-sidebar .btn-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto;
+  margin-bottom: 8px;
+}
+
+body.mypage .info-sidebar .btn-group .btn {
+  width: 100%;
+  max-width: 358px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* 우측: 저장한 디자인 */
+.info-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: flex-start;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  min-height: 100%;
+}
+
+.h4 {
+  font-size: 16pt;
+  margin: 0;
+}
+
+#template-count {
+  position: relative;
+  top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.card-design .card-header,
+.card-portfolio .card-header {
+  position: relative;
+  top: 10px;
+}
+
+/* 공통 카드 스타일 */
+.mypage-card {
+  background: #eee;
+  border-radius: 16px;
+  box-sizing: border-box;
+  padding: 24px 30px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1;
+}
+
+/* 저장한 디자인 카드 */
+.card-design #templateList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;  /* 가로 가운데 */
+  align-items: center;      /* 세로 가운데 */
+  min-height: 300px;        /* 카드 없을 때도 높이 확보 */
+}
+
+.card-design {
+  height: 100%;
+  flex: 1;
+}
+
+/* 포트폴리오 카드 */
+.card-portfolio {
+  min-height: 160px;
+  grid-column: 1 / span 2;
+  grid-row: 2 / 3;
+}
+
+/* 계정 카드 전용 스타일 */
+.account-card {
+  background-color: #292929;
+  color: white;
+}
+
+.account-card p,
+.account-card h4,
+.account-card .btn-line {
+  color: #eee;
+  border-color: #666;
+}
+
+.account-card .btn-line:hover {
+  color: #aafc3e;
+  border-color: #aafc3e;
+}
+
+.account-card p {
+  color: #999 !important;
+}
+
+/* 카드 헤더 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0 0 0;
+  margin: -24px -20px 0;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.card-header h4 {
+  margin: 0 0 0 20px;
+}
+
+.card-header .btn {
+  width: auto;
+  margin: 0 20px 0 auto;
+}
+
+body.mypage .info-sidebar .card-header h4 {
+  font-size: 16pt;
+  padding: 12px 0;
+}
+
+.mypage-card .btn-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.mypage-card p {
+  margin: 0 0 20px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* 버튼 스타일 */
+.btn {
+  width: 100px;
+  margin-right: 0;
+  text-align: center;
+  display: inline-block;
+  padding: 10px 24px;
+  background: #aafc3e;
+  border-radius: 6px;
+  font-weight: bold;
+  color: #000;
+  text-decoration: none;
+}
+
+.mypage-card .btn-group .btn {
+  width: 100%;
+  text-align: center;
+}
+
+/* 템플릿 리스트 */
+.template-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  padding: 0 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 템플릿 카드 */
+.template-card {
+  width: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+
+.template-preview {
+  transform: scale(0.3);
+  transform-origin: top left;
+  width: 1200px;
+  height: 1600px;
+  pointer-events: none;
+}
+
+/* 썸네일 */
+body.mypage .thumbnail {
+  height: 230px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 12px;
+}
+
+.thumbnail-wrapper {
+  width: 100%;
+  height: 230px;
+  background: #f0f0f0;
+  border-radius: 12px;
+  overflow: hidden; /* 꼭 있어야 함 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0; 
+}
+
+body.mypage .template-card h3 {
+  font-size: 14px;
+  color: #888;
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
+body.mypage .template-card p {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+.card-count-text {
+  position: relative;
+  top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* 선택 체크박스 */
+.select-checkbox {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  transform: scale(1.4);
+  display: none;
+}
+
+.manage-mode .select-checkbox {
+  display: block;
+}
+
+/* 더보기, 바로가기 버튼 전용 스타일 */
+.card-header .btn.btn-link {
+  background: none;
+  border: 1px solid #292929;
+  color: #292929;
+  font-size: 15px;
+  font-weight: 200;
+  padding: 6px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+/* 비밀번호 변경 / 로그아웃 버튼 (좌측 사이드바) */
+body.mypage .info-sidebar .btn-line {
+  background: none !important;
+  border: 1px solid #666 !important;
+  color: #eee !important;
+  font-size: 12pt !important;     
+  font-weight: 200 !important; 
+  padding: 4px 0px !important;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+/* 더보기 / 바로가기 버튼 (카드 헤더 내) */
+body.mypage .card-header .btn-link {
+  background: none !important;
+  border: 1px solid #666 !important;
+  color: #292929 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  padding: 6px 14px !important;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+footer {
+  position: relative;
+  margin-top: 60px;
+  background: #000;
+  color: #fff;
+  text-align: center;
+  padding: 20px 0;
+}

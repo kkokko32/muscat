@@ -1,0 +1,107 @@
+<!-- 모달 전체 오버레이 -->
+<div id="login-modal" class="modal-overlay" style="
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+">
+  <!-- 콘텐츠 래퍼 -->
+  <div style="
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    font-family: sans-serif;
+    width: 360px;
+    overflow: hidden;
+  ">
+    <!-- X 버튼 -->
+    <div style="position: relative; height: 56px;">
+      <button onclick="closeModal()" style="
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: none;
+        border: none;
+        font-size: 26px;
+        line-height: 1;
+        color: #666;
+        cursor: pointer;
+      ">&times;</button>
+    </div>
+
+    <!-- 콘텐츠 영역 -->
+    <div style="padding: 0 32px 32px;">
+      <h2 style="
+        margin: 0 0 32px;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+      ">로그인</h2>
+
+      <input type="email" placeholder="이메일" id="login-email" style="
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+        box-sizing: border-box;
+      " />
+
+      <input type="password" placeholder="비밀번호" id="login-password" style="
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+        box-sizing: border-box;
+      " />
+
+      <button onclick="signIn()" style="
+        width: 100%;
+        background: #222;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+      ">로그인</button>
+
+      <button onclick="signInWithGoogle()" style="
+        margin-top: 40px;
+        width: 100%;
+        background: white;
+        border: 1px solid #292929;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #292929;
+      ">
+        <img src="/muscat/assets/google-icon.svg" alt="Google" style="width: 18px; height: 18px; object-fit: contain;" />
+        Google 계정으로 간편 로그인 / 회원가입
+      </button>
+
+      <p style="
+        margin-top: 20px;
+        font-size: 13px;
+        text-align: center;
+        color: #666;
+      ">
+        계정이 없으신가요?
+        <a href="#" onclick="openSignupModal()" style="color: #9b59b6; text-decoration: none;">회원가입</a>
+      </p>
+    </div>
+  </div>
+</div>

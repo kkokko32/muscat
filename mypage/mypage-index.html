@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>홍길동님, 반갑습니다</title>
+  <!-- ✅ 파비콘 추가 -->
+  <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
+  <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/muscat/common/common.css"/>
+  <link rel="stylesheet" href="/muscat/mypage/mypage.css"/>
+</head>
+<body class="mypage">
+
+<div id="header-placeholder"></div>
+
+<main>
+  <section class="mypage-title">
+    <h1>홍길동님, 반갑습니다</h1>
+  </section>
+
+  <div class="info-layout">
+    <!-- 좌측 계정 정보 -->
+    <aside class="info-sidebar">
+      <div class="mypage-card account-card">
+        <div class="card-header">
+          <h4 class="h4">계정 정보</h4>
+        </div>
+        <p>이메일: user@email.com</p>
+        <div class="btn-group">
+          <a href="#" class="btn btn-line">비밀번호 변경</a>
+          <a href="#" class="btn btn-line" onclick="logout()">로그아웃</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 우측 저장한 디자인 -->
+    <section class="info-main">
+      <div class="mypage-card card-design">
+        <div class="card-header">
+          <h4 class="h4">최근 저장한 디자인</h4>
+          <a href="/muscat/save-templates/my-save.html" class="btn btn-link">더보기</a>
+        </div>
+        <p id="template-count">총 0개</p>
+        <div id="templateList" style="margin-top:50px; display:flex; flex-wrap:wrap; gap:12px;">
+          <!-- 예시 카드 (JS 렌더링 시 동일 구조 유지 필요)
+          <div class="template-card">
+            <div class="thumbnail-wrapper">
+              <img class="thumbnail" src="../example.png" alt="썸네일">
+            </div>
+            <p style="text-align:center; font-weight:bold; margin-top:8px;">브랜드명</p>
+          </div>
+          -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 하단 포트폴리오 -->
+    <section class="card-portfolio">
+      <div class="mypage-card">
+        <div class="card-header">
+          <h4 class="h4">내 포트폴리오</h4>
+          <a href="/muscat/muscatselection/muscatselection.html" class="btn btn-link">바로가기</a>
+        </div>
+        <p id="portfolio-count" class="card-count-text">공개 디자인 0개</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script>
+  fetch("/muscat/components/header.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("header-placeholder").innerHTML = html;
+    });
+
+  fetch("/muscat/components/footer.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    });
+</script>
+
+<script type="module" src="/muscat/common/firebase-init.js"></script>
+<script type="module" src="/muscat/common/utils-auth.js"></script>
+<script type="module" src="/muscat/templates/templates-data/load-my-templates.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="/muscat/common/image-fit.js"></script>
+
+<div id="modal-placeholder"></div>
+
+</body>
+</html>

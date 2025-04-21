@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Template</title>
+
+  <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
+  <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
+  <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow-y: scroll;
+      scrollbar-width: none; /* Firefox */
+    }
+    body::-webkit-scrollbar {
+      display: none; /* Chrome, Safari */
+    }
+  </style>
+</head>
+<body class="template-page">
+
+  <div class="template-frame" id="templateFrame" style="position: relative; width: 800px; height: 800px; background-color: #333;" >
+    <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
+    <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
+    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
+    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
+
+    <button class="template-close" onclick="window.history.back()">&times;</button>
+    <div class="template-buttons">
+      <button id="saveTemplateBtn" class="save-btn">저장</button>
+      <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
+      <button id="downloadBtn" class="download-btn">다운로드</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
+
+  <script>
+    window.addEventListener("message", (event) => {
+      const data = event.data;
+      if (!data) return;
+
+      const brandEl = document.querySelector(".brand-name");
+      const sloganEl = document.querySelector(".brand-slogan");
+      const logoEl = document.querySelector(".logo-preview");
+      const mainEl = document.querySelector(".main-preview");
+
+      if (data.brand && brandEl) brandEl.textContent = data.brand;
+      if (data.slogan && sloganEl) sloganEl.textContent = data.slogan;
+      if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
+      if (data.mainImageUrl && mainEl) mainEl.src = data.mainImageUrl;
+    });
+  </script>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
+      const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
+      const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
+      const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+
+      const brandEl = document.querySelector(".brand-name");
+      const sloganEl = document.querySelector(".brand-slogan");
+      const logoEl = document.querySelector(".logo-preview");
+      const mainEl = document.querySelector(".main-preview");
+
+      if (brand && brandEl) brandEl.textContent = brand;
+      if (slogan && sloganEl) sloganEl.textContent = slogan;
+      if (logoUrl && logoEl) logoEl.src = logoUrl;
+      if (mainUrl && mainEl) mainEl.src = mainUrl;
+    });
+  </script>
+</body>
+</html>
