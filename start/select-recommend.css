@@ -194,8 +194,8 @@ input[disabled] {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  padding-left: 20px;
   padding-bottom: 100px;
+  justify-content: center;
 }
 
 /* 템플릿 카드 */
