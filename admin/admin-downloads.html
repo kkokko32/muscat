@@ -1,33 +1,46 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>다운로드된 템플릿 리스트</title>
-  <link rel="stylesheet" href="/muscat/admin/css/admin.css" />
-  <style>
-    .download-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .download-card {
-      border: 1px solid #ccc;
-      padding: 10px;
-      width: 220px;
-      border-radius: 8px;
-      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-      background: #fff;
-    }
-
-    .download-card img {
-      width: 100%;
-      height: auto;
-      border-radius: 4px;
-    }
-  </style>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>다운로드된 템플릿 리스트</title>
+  
+    <!-- ✅ 스타일 -->
+    <link rel="stylesheet" href="/muscat/admin/css/admin.css" />
+    <style>
+      .download-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+  
+      .download-card {
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 220px;
+        border-radius: 8px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+        background: #fff;
+      }
+  
+      .download-card img {
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+      }
+    </style>
+  
+    <!-- ✅ Firebase SDK CDN (순서 중요) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
+  
+    <!-- ✅ Firebase 전역 등록 스크립트 -->
+    <script src="/muscat/common/firebase-init.js"></script>
+    <script src="/muscat/common/utils-auth.js"></script>
+  </head>
+  
 
 <body>
   <nav style="margin-bottom:30px;">

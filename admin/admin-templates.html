@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>템플릿 메타 관리</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
-    h1 { font-size: 24px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-    .color-box { width: 30px; height: 20px; display: inline-block; border: 1px solid #000; }
-  </style>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>템플릿 메타 관리</title>
+  
+    <style>
+      body { font-family: Arial, sans-serif; margin: 40px; }
+      h1 { font-size: 24px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+      th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+      .color-box { width: 30px; height: 20px; display: inline-block; border: 1px solid #000; }
+    </style>
+  
+    <!-- ✅ Firebase SDK CDN (순서 중요) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
+  
+    <!-- ✅ 전역 등록 스크립트 -->
+    <script src="/muscat/common/firebase-init.js"></script>
+    <script src="/muscat/common/utils-auth.js"></script>
+  </head>
+  
 <body>
   <nav style="margin-bottom:30px;">
   <a href="/muscat/admin/admin-index.html">대시보드</a> |

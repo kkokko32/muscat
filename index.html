@@ -11,6 +11,16 @@
   
     <!-- ✅ 공통 스타일 -->
     <link rel="stylesheet" href="/muscat/common/common.css" />
+
+    <!-- ✅ Firebase SDK CDN (순서 중요) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
+
+    <!-- ✅ 전역 등록 스크립트 -->
+    <script src="/muscat/common/firebase-init.js"></script>
+    <script src="/muscat/common/utils-auth.js"></script>
   
     <!-- ✅ 페이지 전용 스타일 -->
     <style>
