@@ -14,8 +14,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-const storage = getStorage(app); 
 
-export { db, auth, storage }; // storage까지 export
+// ✅ 전역으로 등록하여 다른 JS에서도 접근 가능
+window.db = getFirestore(app);
+window.auth = getAuth(app);
+window.storage = getStorage(app);
