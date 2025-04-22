@@ -1,3 +1,10 @@
+
+import {
+  getStorage,
+  ref,
+  deleteObject
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
 import { db, auth } from "/muscat/common/firebase-init.js";
 import {
   collection,
@@ -143,7 +150,29 @@ async function handleDelete() {
   for (const cb of checkboxes) {
     const docId = cb.getAttribute("data-id");
     if (docId) {
-      await deleteDoc(doc(db, "savedTemplates", docId));
+      
+    // ✅ Firestore 문서 삭제 전에 Storage 파일 제거
+    const docRef = doc(db, "savedTemplates", docId);
+    const docSnap = await getDoc(docRef);
+    const data = docSnap?.data();
+    if (data) {
+      const storage = getStorage();
+      const filesToDelete = [
+        data.thumbnailUrl,
+        data.htmlUrl,
+        data.imageUrl,
+        data.logoUrl
+      ];
+      for (const fileUrl of filesToDelete) {
+        if (fileUrl) {
+          const path = decodeURIComponent(new URL(fileUrl).pathname.split("/o/")[1].split("?alt=")[0]);
+          const fileRef = ref(storage, path);
+          await deleteObject(fileRef).catch(() => {});
+        }
+      }
+    }
+
+    await deleteDoc(docRef);
     }
   }
 
