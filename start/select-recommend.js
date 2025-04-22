@@ -1,9 +1,7 @@
-// ✅ firebase-init.js를 통해 등록된 전역 객체 사용
-const storage = window.storage;
-const firebaseRef = window.firebaseStorageRef;
-const firebaseUploadBytes = window.firebaseUploadBytes;
-const firebaseGetDownloadURL = window.firebaseGetDownloadURL;
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+import { storage } from "/muscat/common/firebase-init.js";
 
+// ✅ 로딩 오버레이 제어 함수
 function showLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
@@ -63,11 +61,6 @@ function loadTemplatesToIframes() {
   let loadedCount = 0;
   const total = iframes.length;
 
-  if (total === 0) {
-    hideLoading();
-    return;
-  }
-
   iframes.forEach(iframe => {
     let templatePath = iframe.dataset.template;
     if (!templatePath.startsWith('/')) {
@@ -102,27 +95,13 @@ function loadTemplatesToIframes() {
       resizeSingleIframe(iframe);
       loadedCount++;
       if (loadedCount === total) {
-        setTimeout(hideLoading, 400);
+        setTimeout(hideLoading, 300);
       }
     };
 
     iframe.onload = onIframeDone;
-    iframe.onerror = () => {
-      console.warn("iframe 로딩 실패:", iframe.dataset.template);
-      loadedCount++;
-      if (loadedCount === total) {
-        setTimeout(hideLoading, 400);
-      }
-    };
+    iframe.onerror = onIframeDone;
   });
-
-  // ✅ 예외 처리: 너무 오래 걸리면 로딩 강제 종료
-  setTimeout(() => {
-    if (loadedCount < total) {
-      console.warn("일부 iframe이 너무 오래 걸림 → 로딩 종료 강제 실행");
-      hideLoading();
-    }
-  }, 10000);
 }
 
 function selectIndustry(button) {
@@ -188,10 +167,9 @@ function syncInputToIframe(id, value) {
 }
 
 async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessionKey) {
-  const storageRef = firebaseRef(storage, storagePath);
-  const snapshot = await firebaseUploadBytes(storageRef, file);
-  const downloadURL = await firebaseGetDownloadURL(snapshot.ref);
-
+  const storageRef = ref(storage, storagePath);
+  const snapshot = await uploadBytes(storageRef, file);
+  const downloadURL = await getDownloadURL(snapshot.ref);
   const img = document.getElementById(imgElementId);
   if (img) {
     img.src = downloadURL;
@@ -200,7 +178,6 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
     console.warn(`[경고] id='${imgElementId}' 요소를 찾을 수 없습니다.`);
   }
   sessionStorage.setItem(sessionKey, downloadURL);
-
   const iframes = document.querySelectorAll(".template-card.visible iframe");
   iframes.forEach(iframe => {
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -280,4 +257,3 @@ document.addEventListener("DOMContentLoaded", () => {
 window.selectIndustry = selectIndustry;
 window.selectConcept = selectConcept;
 window.selectStyle = selectStyle;
-window.goToTemplate = goToTemplate;
