@@ -5,33 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Muscat 관리자 대시보드</title>
   <link rel="stylesheet" href="/muscat/admin/css/admin.css" />
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 30px;
-      background: #f8f8f8;
-    }
-    h1 {
-      font-size: 28px;
-      margin-bottom: 20px;
-    }
-    .stat {
-      margin-bottom: 15px;
-      font-size: 18px;
-    }
-    .template-card {
-      border: 1px solid #ddd;
-      background: #fff;
-      padding: 10px;
-      margin-right: 10px;
-      display: inline-block;
-      width: 180px;
-    }
-    .template-card img {
-      width: 100%;
-      height: auto;
-    }
-  </style>
 </head>
 <body>
   <h1>Muscat 관리자 대시보드</h1>
@@ -41,9 +14,8 @@
   <div class="stat" id="storageUsage">이미지: --MB / HTML: --MB</div>
 
   <h2>인기 템플릿 Top 3</h2>
-  <div id="topTemplates"></div>
+  <div id="topTemplates" class="card-box"></div>
 
-  <!-- ✅ 수정된 경로 -->
   <script type="module" src="/muscat/admin/js/admin-index.js"></script>
 </body>
 </html>
