@@ -1,13 +1,14 @@
-// ✅ import 구문 제거 → window 객체에서 직접 참조
+// ✅ Firebase 전역 객체에서 참조
 const auth = window.auth;
 const db = window.db;
-const firebaseCreateUser = window.firebaseCreateUserWithEmailAndPassword || firebaseCreateUserWithEmailAndPassword;
-const firebaseSignIn = window.firebaseSignInWithEmailAndPassword || signInWithEmailAndPassword;
-const firebaseSignOut = window.firebaseSignOut || signOut;
-const firebaseSignInWithPopup = window.firebaseSignInWithPopup || signInWithPopup;
-const firebaseGoogleAuthProvider = new window.GoogleAuthProvider();
 
-// ❗ Firebase Auth 이벤트 구독
+const firebaseCreateUser = window.firebaseCreateUserWithEmailAndPassword;
+const firebaseSignIn = window.firebaseSignInWithEmailAndPassword;
+const firebaseSignOut = window.firebaseSignOut;
+const firebaseSignInWithPopup = window.firebaseSignInWithPopup;
+const firebaseGoogleAuthProvider = window.GoogleAuthProvider;
+
+// ✅ 로그인 상태 감지
 let currentUser = null;
 window.firebaseOnAuthStateChanged(auth, (user) => {
   currentUser = user;
@@ -23,19 +24,18 @@ window.firebaseOnAuthStateChanged(auth, (user) => {
   }
 });
 
-// Firestore에 사용자 정보 저장
+// ✅ Firestore에 사용자 정보 저장
 async function saveUserToFirestore(user) {
   if (!user) return;
-
-  const userRef = window.firebaseDoc(db, "users", user.uid);
-  await window.firebaseSetDoc(userRef, {
+  const userRef = window.firebaseDoc("users", user.uid);
+  await userRef.set({
     email: user.email,
     provider: user.providerData[0]?.providerId || "unknown",
     createdAt: window.firebaseServerTimestamp()
   }, { merge: true });
 }
 
-// 회원가입
+// ✅ 회원가입
 window.signUp = function () {
   const email = document.getElementById("signup-email")?.value;
   const password = document.getElementById("signup-password")?.value;
@@ -51,7 +51,7 @@ window.signUp = function () {
     });
 }
 
-// 로그인
+// ✅ 로그인
 window.signIn = function () {
   const email = document.getElementById("login-email")?.value;
   const password = document.getElementById("login-password")?.value;
@@ -66,7 +66,7 @@ window.signIn = function () {
     });
 }
 
-// 구글 로그인
+// ✅ 구글 로그인
 window.signInWithGoogle = function () {
   firebaseSignInWithPopup(auth, firebaseGoogleAuthProvider)
     .then((result) => {
@@ -79,7 +79,7 @@ window.signInWithGoogle = function () {
     });
 }
 
-// 로그아웃
+// ✅ 로그아웃
 window.logout = function () {
   firebaseSignOut(auth).then(() => {
     resetUIAfterLogout();
@@ -87,7 +87,7 @@ window.logout = function () {
   });
 }
 
-// 로그인 후 UI 변경
+// ✅ 로그인 후 UI 변경
 window.updateUIAfterLogin = function (user) {
   const loginBtn = document.getElementById("login-btn");
   const mypageBtn = document.getElementById("btn-mypage") || document.getElementById("mypage-btn");
@@ -96,7 +96,7 @@ window.updateUIAfterLogin = function (user) {
   if (mypageBtn) mypageBtn.style.display = "inline-block";
 }
 
-// 로그아웃 후 UI 초기화
+// ✅ 로그아웃 후 UI 초기화
 window.resetUIAfterLogout = function () {
   const loginBtn = document.getElementById("login-btn");
   const mypageBtn = document.getElementById("btn-mypage") || document.getElementById("mypage-btn");
@@ -105,7 +105,7 @@ window.resetUIAfterLogout = function () {
   if (mypageBtn) mypageBtn.style.display = "none";
 }
 
-// 모달 닫기
+// ✅ 모달 닫기
 window.closeModal = function () {
   const loginModal = document.getElementById("login-modal");
   const signupModal = document.getElementById("signup-modal");
@@ -117,7 +117,7 @@ window.closeModal = function () {
   if (placeholder) placeholder.innerHTML = "";
 }
 
-// 템플릿 상세 진입 전 로그인 확인
+// ✅ 템플릿 진입 시 로그인 확인
 window.goToTemplate = function (templateUrl) {
   if (currentUser) {
     window.location.href = "templates/templates-design/" + templateUrl;
@@ -127,7 +127,7 @@ window.goToTemplate = function (templateUrl) {
   }
 }
 
-// 마이페이지 진입 전 로그인 확인
+// ✅ 마이페이지 진입 시 로그인 확인
 window.goToMypage = function () {
   if (currentUser) {
     window.location.href = "mypage/mypage-index.html";
@@ -136,7 +136,7 @@ window.goToMypage = function () {
   }
 }
 
-// 로그인 유도 모달 열기
+// ✅ 로그인 유도 모달 열기
 window.openLoginFromRedirect = function () {
   closeModal();
   fetch("common/login-modal.html")
