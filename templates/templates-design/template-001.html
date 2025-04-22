@@ -14,13 +14,11 @@
       height: 100%;
       margin: 0;
       overflow-y: scroll;
-      scrollbar-width: none; /* Firefox */
+      scrollbar-width: none;
     }
     body::-webkit-scrollbar {
-      display: none; /* Chrome, Safari */
+      display: none;
     }
-
-    /* 로딩 오버레이 스타일 */
     .loading-overlay {
       position: fixed;
       top: 0;
@@ -33,7 +31,6 @@
       align-items: center;
       justify-content: center;
     }
-
     .loading-spinner {
       width: 48px;
       height: 48px;
@@ -42,20 +39,17 @@
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
-
     @keyframes spin {
       to {
         transform: rotate(360deg);
       }
     }
-
     .loading-overlay.active {
       display: flex;
     }
   </style>
 </head>
 <body class="template-page">
-  <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
@@ -78,7 +72,6 @@
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 
   <script>
-    // 페이지 로드 시 초기 데이터 설정
     window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
       const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
@@ -86,27 +79,8 @@
       const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
 
       updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
-
-      // 저장 버튼에 로딩 처리 추가
-      const saveBtn = document.getElementById("saveTemplateBtn");
-      const loadingOverlay = document.getElementById("loadingOverlay");
-      
-      if (saveBtn) {
-        const originalOnClick = saveBtn.onclick;
-        saveBtn.onclick = async function(e) {
-          loadingOverlay.classList.add("active");
-          if (originalOnClick) {
-            try {
-              await originalOnClick.call(this, e);
-            } finally {
-              // 저장 완료 후 로딩 숨기기는 save-template-server.js에서 처리
-            }
-          }
-        };
-      }
     });
 
-    // 부모 창으로부터의 메시지 수신
     window.addEventListener("message", (event) => {
       const data = event.data;
       if (data.type === 'updateTemplate') {
@@ -114,7 +88,6 @@
       }
     });
 
-    // 템플릿 내용 업데이트 함수
     function updateTemplateContent(data) {
       const brandEl = document.querySelector(".brand-name");
       const sloganEl = document.querySelector(".brand-slogan");
@@ -127,7 +100,6 @@
       if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
     }
 
-    // 전역 함수로 로딩 상태 제어 함수 추가
     window.showLoading = function() {
       document.getElementById("loadingOverlay").classList.add("active");
     };
