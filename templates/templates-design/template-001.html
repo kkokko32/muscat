@@ -19,18 +19,17 @@
     body::-webkit-scrollbar {
       display: none;
     }
+
     .loading-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.7);
       z-index: 9999;
       display: none;
       align-items: center;
       justify-content: center;
     }
+
     .loading-spinner {
       width: 48px;
       height: 48px;
@@ -39,17 +38,20 @@
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
+
     @keyframes spin {
       to {
         transform: rotate(360deg);
       }
     }
+
     .loading-overlay.active {
       display: flex;
     }
   </style>
 </head>
 <body class="template-page">
+  <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
@@ -100,20 +102,14 @@
       if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
     }
 
-    window.showLoading = function() {
+    // 전역 함수로 로딩 상태 제어
+    window.showLoading = () => {
       document.getElementById("loadingOverlay").classList.add("active");
     };
 
-    window.hideLoading = function() {
+    window.hideLoading = () => {
       document.getElementById("loadingOverlay").classList.remove("active");
     };
   </script>
-
-<script>
-  document.getElementById("saveTemplateBtn")?.addEventListener("click", () => {
-    console.log("✅ 저장 버튼 클릭됨");
-  });
-</script>
-
 </body>
 </html>

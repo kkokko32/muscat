@@ -11,7 +11,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 import html2canvas from "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
 
-const saveBtn = document.getElementById("saveTemplateBtn");
 let savedDocId = null;
 
 function waitForImageLoad(imageElement) {
@@ -43,9 +42,7 @@ async function handleSave() {
     console.log("✅ 로그인 사용자 확인:", user.email);
 
     const frame = document.querySelector(".template-frame");
-    if (!frame) {
-      throw new Error("template-frame이 존재하지 않음");
-    }
+    if (!frame) throw new Error("template-frame이 존재하지 않음");
 
     const logo = frame.querySelector(".logo-preview");
     const image = frame.querySelector(".main-preview");
@@ -111,4 +108,12 @@ async function handleSave() {
   }
 }
 
-saveBtn?.addEventListener("click", handleSave);
+// ✅ 버튼 연결은 DOM 로드 이후에 실행
+window.addEventListener("DOMContentLoaded", () => {
+  const saveBtn = document.getElementById("saveTemplateBtn");
+  if (saveBtn) {
+    saveBtn.addEventListener("click", handleSave);
+  } else {
+    console.warn("⚠️ 저장 버튼을 찾을 수 없습니다.");
+  }
+});
