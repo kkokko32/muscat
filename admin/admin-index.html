@@ -8,10 +8,16 @@
 </head>
 <body>
   <h1>Muscat 관리자 대시보드</h1>
+  <nav class="admin-menu">
+    <a href="/muscat/admin/admin-index.html">대시보드</a>
+    <a href="/muscat/admin/admin-users.html">사용자</a>
+    <a href="/muscat/admin/admin-downloads.html">다운로드</a>
+    <a href="/muscat/admin/admin-templates.html">템플릿 관리</a>
+  </nav>
 
   <div class="stat">총 가입자 수: <span id="userCount">--명</span></div>
   <div class="stat">총 다운로드 수: <span id="downloadCount">--건</span></div>
-  <div class="stat" id="storageUsage">이미지: --MB / HTML: --MB</div>
+  <div class="stat">Storage 사용량: <span id="storageUsage">--</span></div>
 
   <h2>인기 템플릿 Top 3</h2>
   <div id="topTemplates" class="card-box"></div>

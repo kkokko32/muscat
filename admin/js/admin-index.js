@@ -1,76 +1,65 @@
-import { db } from '/muscat/common/firebase-init.js';
+import { db, storage } from "/muscat/common/firebase-init.js";
 import {
   collection,
-  getDocs
-} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-
+  getDocs,
+  query,
+  orderBy,
+  limit,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
-  getStorage,
   ref,
   listAll,
   getMetadata
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-const storage = getStorage();
-
-async function getFolderSize(path) {
-  const folderRef = ref(storage, path);
-  const list = await listAll(folderRef);
-  let totalBytes = 0;
-
-  for (const item of list.items) {
-    const meta = await getMetadata(item);
-    totalBytes += meta.size;
-  }
-
-  return (totalBytes / (1024 * 1024)).toFixed(2); // MB
+async function getUserCount() {
+  const snapshot = await getDocs(collection(db, "users"));
+  document.getElementById("userCount").textContent = `${snapshot.size}명`;
 }
 
-async function loadDashboardData() {
-  // 총 가입자 수
-  const usersSnap = await getDocs(collection(db, 'users'));
-  const userCount = usersSnap.size;
-  document.getElementById('userCount').innerText = userCount + '명';
+async function getDownloadCount() {
+  const snapshot = await getDocs(collection(db, "downloads"));
+  document.getElementById("downloadCount").textContent = `${snapshot.size}건`;
+}
 
-  // 총 다운로드 수
-  const downloadsSnap = await getDocs(collection(db, 'downloads'));
-  const downloadCount = downloadsSnap.size;
-  document.getElementById('downloadCount').innerText = downloadCount + '건';
+async function calculateStorageUsage() {
+  let totalBytes = 0;
+  const paths = ["savedTemplates/images", "savedTemplates/htmls"];
 
-  // 인기 템플릿 Top 3
-  const templateMap = {};
-  downloadsSnap.forEach(doc => {
-    const { templateId } = doc.data();
-    if (templateId) {
-      templateMap[templateId] = (templateMap[templateId] || 0) + 1;
-    }
+  for (const path of paths) {
+    const listRef = ref(storage, path);
+    const res = await listAll(listRef);
+    const sizes = await Promise.all(res.items.map(item => getMetadata(item).then(meta => meta.size || 0)));
+    totalBytes += sizes.reduce((a, b) => a + b, 0);
+  }
+
+  const mb = (totalBytes / 1024 / 1024).toFixed(2);
+  document.getElementById("storageUsage").textContent = `${mb}MB`;
+}
+
+async function loadTopTemplates() {
+  const snapshot = await getDocs(query(collection(db, "downloads"), orderBy("templateId")));
+  const counts = {};
+  snapshot.forEach(doc => {
+    const t = doc.data().templateId;
+    counts[t] = (counts[t] || 0) + 1;
   });
 
-  const sortedTemplates = Object.entries(templateMap)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3);
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  const container = document.getElementById("topTemplates");
+  container.innerHTML = "";
 
-  const topContainer = document.getElementById('topTemplates');
-  topContainer.innerHTML = '';
-
-  for (const [templateId, count] of sortedTemplates) {
-    const card = document.createElement('div');
-    card.className = 'template-card';
-    card.innerHTML = `
-      <img src="https://via.placeholder.com/180x240?text=${templateId}" alt="썸네일" />
-      <p>ID: ${templateId}</p>
-      <p>${count}회 다운로드</p>
-    `;
-    topContainer.appendChild(card);
-  }
-
-  // Storage 사용량 표시
-  const imageSize = await getFolderSize("savedTemplates/images");
-  const htmlSize = await getFolderSize("savedTemplates/htmls");
-  const storageElem = document.getElementById("storageUsage");
-  if (storageElem) {
-    storageElem.innerText = `이미지: ${imageSize}MB / HTML: ${htmlSize}MB`;
+  for (const [templateId, count] of sorted) {
+    const card = document.createElement("div");
+    card.className = "template-card";
+    card.innerHTML = `<strong>${templateId}</strong><br>다운로드 수: ${count}`;
+    container.appendChild(card);
   }
 }
 
-window.addEventListener('DOMContentLoaded', loadDashboardData);
+document.addEventListener("DOMContentLoaded", () => {
+  getUserCount().catch(console.error);
+  getDownloadCount().catch(console.error);
+  calculateStorageUsage().catch(console.error);
+  loadTopTemplates().catch(console.error);
+});

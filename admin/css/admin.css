@@ -1,25 +1,54 @@
-/* admin/css/admin.css */
 body {
   font-family: 'Pretendard', sans-serif;
-  background: #f8f8f8;
+  background-color: #f8f8f8;
   padding: 40px;
+  margin: 0;
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 26px;
+  font-weight: bold;
   margin-bottom: 30px;
 }
 
-.card-box {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 40px;
+.stat {
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  display: inline-block;
+  width: 240px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.card {
-  flex: 1;
-  padding: 20px;
-  background: #eee;
+#topTemplates {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.template-card {
+  background: #fff;
   border: 1px solid #ddd;
+  padding: 10px;
+  width: 200px;
   border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+}
+
+.template-card img {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.admin-menu {
+  margin-bottom: 40px;
+  display: flex;
+  gap: 20px;
+}
+
+.admin-menu a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
 }
