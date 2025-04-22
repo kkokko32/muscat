@@ -3,8 +3,9 @@ import { db } from "/muscat/common/firebase-init.js";
 import {
   collection,
   getDocs,
+  getDoc,
   deleteDoc,
-  doc,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
   getStorage,
@@ -41,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
           const docRef = doc(db, "savedTemplates", docId);
-          const docSnap = await getDocs(docRef);
+          const docSnap = await getDoc(docRef);
           const data = docSnap.data();
           const storage = getStorage();
 
