@@ -6,10 +6,9 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; }
     h1 { font-size: 24px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-    .download-list { margin-top: 20px; background: #f9f9f9; padding: 15px; }
-    .download-item { margin-bottom: 10px; }
+    .user-list { margin-top: 20px; }
+    .user-card { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 8px; }
+    .user-card p { margin: 5px 0; }
   </style>
 </head>
 <body>
@@ -19,31 +18,32 @@
     <a href="admin-users.html" style="margin-right: 20px; text-decoration: none; color: #333;">사용자 관리</a>
     <a href="admin-downloads.html" style="text-decoration: none; color: #333;">다운로드 관리</a>
   </nav>
+
   <h1>사용자 관리</h1>
+  <div id="userList" class="user-list"></div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>이메일</th>
-        <th>가입일</th>
-        <th>저장 템플릿 수</th>
-        <th>자세히 보기</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>user1@example.com</td>
-        <td>2025-04-01</td>
-        <td>5</td>
-        <td><button onclick="alert('다운로드 내역 표시')">보기</button></td>
-      </tr>
-    </tbody>
-  </table>
+  <script type="module">
+    import { db } from '/muscat/common/firebase-init.js';
+    import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-  <div class="download-list">
-    <h3>다운로드 내역</h3>
-    <div class="download-item">template-001 / 무스캣카페 / 2025-04-21</div>
-    <div class="download-item">template-002 / 서울분식 / 2025-04-20</div>
-  </div>
+    const userListEl = document.getElementById('userList');
+
+    async function fetchUsers() {
+      const snapshot = await getDocs(collection(db, 'users'));
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const card = document.createElement('div');
+        card.className = 'user-card';
+        card.innerHTML = `
+          <p><strong>이메일:</strong> ${data.email || '-'}</p>
+          <p><strong>이름:</strong> ${data.name || '-'}</p>
+          <p><strong>가입일:</strong> ${new Date(data.createdAt?.toDate()).toLocaleDateString() || '-'}</p>
+        `;
+        userListEl.appendChild(card);
+      });
+    }
+
+    fetchUsers();
+  </script>
 </body>
 </html>
