@@ -172,6 +172,7 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
   const storageRef = firebaseRef(storage, storagePath);
   const snapshot = await firebaseUploadBytes(storageRef, file);
   const downloadURL = await firebaseGetDownloadURL(snapshot.ref);
+
   const img = document.getElementById(imgElementId);
   if (img) {
     img.src = downloadURL;

@@ -1,4 +1,3 @@
-import { auth } from '/muscat/common/firebase-init.js';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -8,8 +7,15 @@ import {
   GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-import { db } from "/muscat/common/firebase-init.js";
-import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import {
+  doc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// ✅ window에서 가져온 전역 Firebase 객체들
+const auth = window.auth;
+const db = window.db;
 
 let currentUser = null;
 

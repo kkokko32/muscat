@@ -1,20 +1,16 @@
-import {
-  getStorage,
-  ref,
-  deleteObject
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-
-import { db, auth } from "/muscat/common/firebase-init.js";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  getDoc,
-  deleteDoc,
-  doc,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+const db = window.db;
+const auth = window.auth;
+const storage = window.storage;
+const firebaseDoc = window.firebaseDoc;
+const firebaseGetDoc = window.firebaseGetDoc;
+const firebaseDeleteDoc = window.firebaseDeleteDoc;
+const firebaseCollection = window.firebaseCollection;
+const firebaseQuery = window.firebaseQuery;
+const firebaseWhere = window.firebaseWhere;
+const firebaseGetDocs = window.firebaseGetDocs;
+const firebaseOrderBy = window.firebaseOrderBy;
+const firebaseStorageRef = window.firebaseStorageRef;
+const firebaseDeleteObject = window.firebaseDeleteObject;
 
 let isManaging = false;
 
@@ -28,13 +24,13 @@ async function loadMyTemplates() {
   const user = auth.currentUser;
   if (!user) return;
 
-  const q = query(
-    collection(db, "savedTemplates"),
-    where("uid", "==", user.uid),
-    orderBy("createdAt", "desc")
+  const q = firebaseQuery(
+    firebaseCollection(db, "savedTemplates"),
+    firebaseWhere("uid", "==", user.uid),
+    firebaseOrderBy("createdAt", "desc")
   );
 
-  const snapshot = await getDocs(q);
+  const snapshot = await firebaseGetDocs(q);
   const container = document.getElementById("templateList");
   const countText = document.getElementById("template-count");
   const deleteBtn = document.getElementById("deleteSelectedBtn");
@@ -147,12 +143,11 @@ async function handleDelete() {
     if (docId) {
       console.log("삭제 시작: ", docId);
 
-      const docRef = doc(db, "savedTemplates", docId);
-      const docSnap = await getDoc(docRef);
+      const docRef = firebaseDoc(db, "savedTemplates", docId);
+      const docSnap = await firebaseGetDoc(docRef);
       const data = docSnap?.data();
 
       if (data) {
-        const storage = getStorage();
         const filesToDelete = [
           data.thumbnailUrl,
           data.htmlUrl,
@@ -164,8 +159,8 @@ async function handleDelete() {
           if (fileUrl) {
             try {
               const path = decodeURIComponent(new URL(fileUrl).pathname.split("/o/")[1].split("?alt=")[0]);
-              const fileRef = ref(storage, path);
-              await deleteObject(fileRef);
+              const fileRef = firebaseStorageRef(storage, path);
+              await firebaseDeleteObject(fileRef);
               console.log("Storage 삭제됨:", path);
             } catch (err) {
               console.warn("Storage 삭제 실패:", err.message);
@@ -174,7 +169,7 @@ async function handleDelete() {
         }
       }
 
-      await deleteDoc(docRef);
+      await firebaseDeleteDoc(docRef);
       console.log("Firestore 문서 삭제 완료:", docId);
     }
   }
