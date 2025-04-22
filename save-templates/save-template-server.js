@@ -39,7 +39,6 @@ async function handleSave() {
       console.log("🚫 로그인 사용자 없음");
       return;
     }
-    console.log("✅ 로그인 사용자 확인:", user.email);
 
     const frame = document.querySelector(".template-frame");
     if (!frame) throw new Error("template-frame이 존재하지 않음");
@@ -50,18 +49,12 @@ async function handleSave() {
     const slogan = frame.querySelector(".brand-slogan")?.innerText || "";
     const templateId = document.body.dataset.templateId || "template-001";
 
-    console.log("📌 브랜드명:", brand);
-    console.log("📌 슬로건:", slogan);
-
     await Promise.all([
       waitForImageLoad(logo),
       waitForImageLoad(image)
     ]);
-    console.log("✅ 이미지 로드 완료");
 
     const canvas = await html2canvas(frame);
-    console.log("✅ 썸네일 캔버스 생성 완료");
-
     const thumbnailBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
     const htmlContent = frame.outerHTML;
     const htmlBlob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
@@ -71,17 +64,14 @@ async function handleSave() {
     const thumbRef = ref(storage, `savedTemplates/thumbnails/${timestamp}.png`);
     const htmlRef = ref(storage, `savedTemplates/htmls/${timestamp}.html`);
 
-    console.log("🛰️ Firebase Storage 업로드 시작...");
     await Promise.all([
       uploadBytes(thumbRef, thumbnailBlob),
       uploadBytes(htmlRef, htmlBlob)
     ]);
-    console.log("✅ Storage 업로드 완료");
 
     const thumbnailUrl = `https://firebasestorage.googleapis.com/v0/b/${storage.app.options.storageBucket}/o/${encodeURIComponent(thumbRef.fullPath)}?alt=media`;
     const htmlUrl = `https://firebasestorage.googleapis.com/v0/b/${storage.app.options.storageBucket}/o/${encodeURIComponent(htmlRef.fullPath)}?alt=media`;
 
-    console.log("📝 Firestore에 저장 시작...");
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
       brand,
@@ -94,26 +84,53 @@ async function handleSave() {
     });
 
     savedDocId = docRef.id;
-    console.log("✅ Firestore 저장 완료:", savedDocId);
-
     alert("저장 완료!");
   } catch (err) {
     console.error("❌ 저장 중 오류 발생:", err);
     alert("저장 중 문제가 발생했습니다.");
   } finally {
-    if (document.getElementById("loadingOverlay")) {
-      document.getElementById("loadingOverlay").classList.remove("active");
-      console.log("🟢 로딩 오버레이 제거됨");
-    }
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) overlay.classList.remove("active");
   }
 }
 
-// ✅ 버튼 연결은 DOM 로드 이후에 실행
+// 다운로드 기능
+async function handleDownload() {
+  const frame = document.querySelector(".template-frame");
+  if (!frame) return;
+
+  const canvas = await html2canvas(frame);
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = "template.png";
+  link.click();
+}
+
+// 삭제 기능 (알림만)
+function handleDelete() {
+  const confirmDelete = confirm("정말 삭제하시겠습니까?");
+  if (!confirmDelete) return;
+  alert("❌ 현재 페이지에서 삭제 기능은 미구현 상태입니다.");
+}
+
+// 이벤트 연결
 window.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("saveTemplateBtn");
+  const deleteBtn = document.getElementById("deleteTemplateBtn");
+  const downloadBtn = document.getElementById("downloadBtn");
+
   if (saveBtn) {
     saveBtn.addEventListener("click", handleSave);
+    console.log("✅ 저장 버튼 연결 완료");
   } else {
-    console.warn("⚠️ 저장 버튼을 찾을 수 없습니다.");
+    console.warn("⚠️ 저장 버튼 없음");
+  }
+
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", handleDelete);
+  }
+
+  if (downloadBtn) {
+    downloadBtn.addEventListener("click", handleDownload);
   }
 });
