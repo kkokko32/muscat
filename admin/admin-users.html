@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>사용자 관리</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    h1 { font-size: 24px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    .download-list { margin-top: 20px; background: #f9f9f9; padding: 15px; }
+    .download-item { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>사용자 관리</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>이메일</th>
+        <th>가입일</th>
+        <th>저장 템플릿 수</th>
+        <th>자세히 보기</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>user1@example.com</td>
+        <td>2025-04-01</td>
+        <td>5</td>
+        <td><button onclick="alert('다운로드 내역 표시')">보기</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="download-list">
+    <h3>다운로드 내역</h3>
+    <div class="download-item">template-001 / 무스캣카페 / 2025-04-21</div>
+    <div class="download-item">template-002 / 서울분식 / 2025-04-20</div>
+  </div>
+</body>
+</html>
