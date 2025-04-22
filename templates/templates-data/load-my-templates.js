@@ -1,4 +1,3 @@
-
 import {
   getStorage,
   ref,
@@ -11,6 +10,7 @@ import {
   query,
   where,
   getDocs,
+  getDoc,
   deleteDoc,
   doc,
   orderBy
@@ -42,18 +42,15 @@ async function loadMyTemplates() {
   if (!container) return;
   container.innerHTML = "";
 
-  // ✅ Masonry 기준 grid-sizer 삽입
   const gridSizer = document.createElement("div");
   gridSizer.className = "grid-sizer";
   container.appendChild(gridSizer);
 
-  // ✅ 저장 개수 텍스트
   if (countText) {
     const count = snapshot.docs.length;
     countText.innerHTML = `총 <span class="highlight-number">${count}</span>개의 디자인을 저장했어요`;
   }
 
-  // ✅ 공개 디자인 개수 텍스트 (포트폴리오용)
   const portfolioText = document.getElementById("portfolio-count");
   if (portfolioText) {
     const publicCount = snapshot.docs.filter(doc => !!doc.data().public).length;
@@ -67,8 +64,6 @@ async function loadMyTemplates() {
   }
 
   const fragment = document.createDocumentFragment();
-
-  // ✅ 현재 페이지가 마이페이지 홈인지 확인
   const isMyPage = location.pathname.includes("mypage-index.html");
   const maxItems = isMyPage ? 4 : Infinity;
 
@@ -141,38 +136,46 @@ async function loadMyTemplates() {
   }
 }
 
-// ✅ 삭제 기능
 async function handleDelete() {
   const confirmDelete = confirm("선택한 템플릿을 삭제하시겠습니까?");
   if (!confirmDelete) return;
 
   const checkboxes = document.querySelectorAll(".select-checkbox:checked");
+
   for (const cb of checkboxes) {
     const docId = cb.getAttribute("data-id");
     if (docId) {
-      
-    // ✅ Firestore 문서 삭제 전에 Storage 파일 제거
-    const docRef = doc(db, "savedTemplates", docId);
-    const docSnap = await getDoc(docRef);
-    const data = docSnap?.data();
-    if (data) {
-      const storage = getStorage();
-      const filesToDelete = [
-        data.thumbnailUrl,
-        data.htmlUrl,
-        data.imageUrl,
-        data.logoUrl
-      ];
-      for (const fileUrl of filesToDelete) {
-        if (fileUrl) {
-          const path = decodeURIComponent(new URL(fileUrl).pathname.split("/o/")[1].split("?alt=")[0]);
-          const fileRef = ref(storage, path);
-          await deleteObject(fileRef).catch(() => {});
+      console.log("삭제 시작: ", docId);
+
+      const docRef = doc(db, "savedTemplates", docId);
+      const docSnap = await getDoc(docRef);
+      const data = docSnap?.data();
+
+      if (data) {
+        const storage = getStorage();
+        const filesToDelete = [
+          data.thumbnailUrl,
+          data.htmlUrl,
+          data.imageUrl,
+          data.logoUrl
+        ];
+
+        for (const fileUrl of filesToDelete) {
+          if (fileUrl) {
+            try {
+              const path = decodeURIComponent(new URL(fileUrl).pathname.split("/o/")[1].split("?alt=")[0]);
+              const fileRef = ref(storage, path);
+              await deleteObject(fileRef);
+              console.log("Storage 삭제됨:", path);
+            } catch (err) {
+              console.warn("Storage 삭제 실패:", err.message);
+            }
+          }
         }
       }
-    }
 
-    await deleteDoc(docRef);
+      await deleteDoc(docRef);
+      console.log("Firestore 문서 삭제 완료:", docId);
     }
   }
 
@@ -180,14 +183,13 @@ async function handleDelete() {
   loadMyTemplates();
 }
 
-// ✅ Masonry 적용 (이미지 로드 후)
 function applyMasonryLayout() {
   const container = document.querySelector(".template-list");
   if (!container) return;
 
   imagesLoaded(container).on("always", () => {
     if (window.masonryInstance) {
-      window.masonryInstance.destroy(); // 기존 인스턴스 제거
+      window.masonryInstance.destroy();
     }
 
     window.masonryInstance = new Masonry(container, {
@@ -200,7 +202,6 @@ function applyMasonryLayout() {
   });
 }
 
-// ✅ DOM 로드 후 실행
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
