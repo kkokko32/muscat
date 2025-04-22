@@ -16,12 +16,14 @@
   </style>
 </head>
 <body>
+  <!-- ✅ 공통 메뉴 -->
   <nav style="background: #f0f0f0; padding: 10px 20px; margin-bottom: 30px; border-radius: 8px;">
     <a href="admin-index.html" style="margin-right: 20px; text-decoration: none; color: #333;">대시보드</a>
     <a href="admin-templates.html" style="margin-right: 20px; text-decoration: none; color: #333;">템플릿 관리</a>
     <a href="admin-users.html" style="margin-right: 20px; text-decoration: none; color: #333;">사용자 관리</a>
     <a href="admin-downloads.html" style="text-decoration: none; color: #333;">다운로드 관리</a>
   </nav>
+
   <h1>관리자 대시보드</h1>
 
   <div class="card-box">
@@ -51,7 +53,7 @@
     <div class="chart-placeholder">[ 7일 다운로드 추이 그래프 자리 ]</div>
   </div>
 
-  <script type="module" src="./admin/js/admin-index.js"></script>
-  <!-- <script type="module" src="/muscat/admin/js/admin-index.js"></script> -->
+  <!-- ✅ Firebase 초기화 + 데이터 연동 -->
+  <script type="module" src="/muscat/admin/js/admin-index.js"></script>
 </body>
 </html>

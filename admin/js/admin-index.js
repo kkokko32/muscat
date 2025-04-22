@@ -1,76 +1,36 @@
 import { db } from '/muscat/common/firebase-init.js';
-import {
-  collection,
-  getDocs
-} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { collection, getCountFromServer, query, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-import {
-  getStorage,
-  ref,
-  listAll,
-  getMetadata
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+const userCountEl = document.getElementById('userCount');
+const downloadCountEl = document.getElementById('downloadCount');
+const storageUsageEl = document.getElementById('storageUsage');
+const topTemplatesEl = document.getElementById('topTemplates');
 
-const storage = getStorage();
+async function fetchStats() {
+  const userSnap = await getCountFromServer(collection(db, 'users'));
+  const downloadSnap = await getCountFromServer(collection(db, 'downloads'));
 
-async function getFolderSize(path) {
-  const folderRef = ref(storage, path);
-  const list = await listAll(folderRef);
-  let totalBytes = 0;
-
-  for (const item of list.items) {
-    const meta = await getMetadata(item);
-    totalBytes += meta.size;
-  }
-
-  return (totalBytes / (1024 * 1024)).toFixed(2); // MB
+  userCountEl.textContent = `${userSnap.data().count}명`;
+  downloadCountEl.textContent = `${downloadSnap.data().count}건`;
+  storageUsageEl.innerHTML = `이미지: --MB<br>HTML: --MB`; // 추후 Storage API로 추가
 }
 
-async function loadDashboardData() {
-  // 총 가입자 수
-  const usersSnap = await getDocs(collection(db, 'users'));
-  const userCount = usersSnap.size;
-  document.getElementById('userCount').innerText = userCount + '명';
-
-  // 총 다운로드 수
-  const downloadsSnap = await getDocs(collection(db, 'downloads'));
-  const downloadCount = downloadsSnap.size;
-  document.getElementById('downloadCount').innerText = downloadCount + '건';
-
-  // 인기 템플릿 Top 3
-  const templateMap = {};
-  downloadsSnap.forEach(doc => {
-    const { templateId } = doc.data();
-    if (templateId) {
-      templateMap[templateId] = (templateMap[templateId] || 0) + 1;
-    }
-  });
-
-  const sortedTemplates = Object.entries(templateMap)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3);
-
-  const topContainer = document.getElementById('topTemplates');
-  topContainer.innerHTML = '';
-
-  for (const [templateId, count] of sortedTemplates) {
+async function fetchTopTemplates() {
+  const q = query(collection(db, 'downloads'), orderBy('createdAt', 'desc'), limit(3));
+  const snapshot = await getDocs(q);
+  snapshot.forEach(doc => {
+    const data = doc.data();
     const card = document.createElement('div');
     card.className = 'template-card';
     card.innerHTML = `
-      <img src="https://via.placeholder.com/180x240?text=${templateId}" alt="썸네일" />
-      <p>ID: ${templateId}</p>
-      <p>${count}회 다운로드</p>
+      <img src="${data.thumbnail}" alt="썸네일" />
+      <p>${data.templateId}</p>
+      <p>브랜드: ${data.brandName || '-'}</p>
+      <p>${new Date(data.createdAt).toLocaleDateString()}</p>
     `;
-    topContainer.appendChild(card);
-  }
-
-  // Storage 사용량 표시
-  const imageSize = await getFolderSize("savedTemplates/images");
-  const htmlSize = await getFolderSize("savedTemplates/htmls");
-  const storageElem = document.getElementById("storageUsage");
-  if (storageElem) {
-    storageElem.innerText = `이미지: ${imageSize}MB / HTML: ${htmlSize}MB`;
-  }
+    topTemplatesEl.appendChild(card);
+  });
 }
 
-window.addEventListener('DOMContentLoaded', loadDashboardData);
+fetchStats();
+fetchTopTemplates();
