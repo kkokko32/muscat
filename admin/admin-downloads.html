@@ -12,23 +12,20 @@
   </style>
 </head>
 <body>
+  <!-- 공통 메뉴 -->
   <nav style="background: #f0f0f0; padding: 10px 20px; margin-bottom: 30px; border-radius: 8px;">
     <a href="admin-index.html" style="margin-right: 20px; text-decoration: none; color: #333;">대시보드</a>
     <a href="admin-templates.html" style="margin-right: 20px; text-decoration: none; color: #333;">템플릿 관리</a>
     <a href="admin-users.html" style="margin-right: 20px; text-decoration: none; color: #333;">사용자 관리</a>
     <a href="admin-downloads.html" style="text-decoration: none; color: #333;">다운로드 관리</a>
   </nav>
+
   <h1>다운로드된 템플릿 리스트</h1>
 
-  <div class="template-list">
-    <div class="template-card">
-      <img src="https://via.placeholder.com/200x300" alt="썸네일" />
-      <p><strong>template-001</strong></p>
-      <p>브랜드: 무스캣커피</p>
-      <p>사용자: user1@example.com</p>
-      <p>2025-04-21</p>
-      <button>삭제</button>
-    </div>
-  </div>
+  <!-- ✅ 실데이터가 들어갈 영역 -->
+  <div id="downloadCardArea" class="template-list"></div>
+
+  <!-- ✅ 실데이터 JS 연결 -->
+  <script type="module" src="/muscat/admin/js/admin-downloads.js"></script>
 </body>
 </html>
