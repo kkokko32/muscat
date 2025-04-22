@@ -1,4 +1,4 @@
-// admin-downloads.js
+
 import { db } from "/muscat/common/firebase-init.js";
 import {
   collection,
@@ -31,25 +31,38 @@ document.addEventListener("DOMContentLoaded", async () => {
         <p>${data.createdAt?.toDate().toISOString().slice(0, 10) || "-"}</p>
         <button data-doc="${docSnap.id}" class="deleteBtn">삭제</button>
       `;
+
+      // ✅ 카드 클릭 시 htmlUrl 열기
+      if (data.htmlUrl) {
+        card.style.cursor = "pointer";
+        card.addEventListener("click", (e) => {
+          if (!e.target.classList.contains("deleteBtn")) {
+            window.open(data.htmlUrl, "_blank");
+          }
+        });
+      }
+
       listArea.appendChild(card);
     }
 
     document.querySelectorAll(".deleteBtn").forEach((btn) => {
-      btn.addEventListener("click", async () => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation(); // 카드 클릭 방지
         const docId = btn.dataset.doc;
         if (!confirm("정말 삭제하시겠습니까?")) return;
 
         try {
           const docRef = doc(db, "savedTemplates", docId);
-          const docSnap = await getDocs(docRef);
-          const data = docSnap.data();
+          const snapshot = await getDocs(collection(db, "savedTemplates"));
+          const docSnap = snapshot.docs.find(d => d.id === docId);
+          const data = docSnap?.data();
           const storage = getStorage();
 
           await Promise.all([
-            deleteObject(ref(storage, data.imageUrl)),
-            deleteObject(ref(storage, data.logoUrl)),
-            deleteObject(ref(storage, data.thumbnailUrl)),
-            deleteObject(ref(storage, data.htmlUrl)),
+            deleteObject(ref(storage, data.imageUrl)).catch(() => {}),
+            deleteObject(ref(storage, data.logoUrl)).catch(() => {}),
+            deleteObject(ref(storage, data.thumbnailUrl)).catch(() => {}),
+            deleteObject(ref(storage, data.htmlUrl)).catch(() => {}),
             deleteDoc(docRef)
           ]);
 
