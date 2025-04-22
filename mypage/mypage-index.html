@@ -14,10 +14,10 @@
     <link rel="stylesheet" href="/muscat/mypage/mypage.css"/>
   
     <!-- ✅ Firebase SDK CDN (순서 중요) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
   
     <!-- ✅ Firebase 전역 등록 스크립트 -->
     <script src="/muscat/common/firebase-init.js"></script>
@@ -98,8 +98,8 @@
     });
 </script>
 
-<script type="module" src="/muscat/common/firebase-init.js"></script>
-<script type="module" src="/muscat/common/utils-auth.js"></script>
+<script src="/muscat/common/firebase-init.js"></script>
+<script src="/muscat/common/utils-auth.js"></script>
 <script type="module" src="/muscat/templates/templates-data/load-my-templates.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="/muscat/common/image-fit.js"></script>
