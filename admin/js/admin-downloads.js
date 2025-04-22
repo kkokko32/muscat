@@ -46,13 +46,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           const data = docSnap.data();
           const storage = getStorage();
 
-          await Promise.all([
-            deleteObject(ref(storage, data.imageUrl)),
-            deleteObject(ref(storage, data.logoUrl)),
-            deleteObject(ref(storage, data.thumbnailUrl)),
-            deleteObject(ref(storage, data.htmlUrl)),
-            deleteDoc(docRef)
-          ]);
+          const deletes = [];
+          if (data.imageUrl) deletes.push(deleteObject(ref(storage, data.imageUrl)));
+          if (data.logoUrl) deletes.push(deleteObject(ref(storage, data.logoUrl)));
+          if (data.thumbnailUrl) deletes.push(deleteObject(ref(storage, data.thumbnailUrl)));
+          if (data.htmlUrl) deletes.push(deleteObject(ref(storage, data.htmlUrl)));
+
+          await Promise.all([...deletes, deleteDoc(docRef)]);
 
           alert("삭제 완료");
           window.location.reload();
