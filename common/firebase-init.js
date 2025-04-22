@@ -1,9 +1,7 @@
 // Firebase SDK 모듈 import
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 import {
+  getFirestore,
   collection,
   addDoc,
   deleteDoc,
@@ -11,6 +9,13 @@ import {
   doc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 // ✅ Firebase 프로젝트 설정
 const firebaseConfig = {
@@ -26,12 +31,17 @@ const firebaseConfig = {
 // ✅ Firebase 앱 초기화
 const app = initializeApp(firebaseConfig);
 
-// ✅ Firebase 서비스 가져오기 및 전역 등록
-window.db = getFirestore(app);
-window.auth = getAuth(app);
-window.storage = getStorage(app);
+// ✅ 서비스 인스턴스 생성
+const db = getFirestore(app);
+const auth = getAuth(app);
+const storage = getStorage(app);
 
-// ✅ Firestore 함수 전역 등록 (선택적)
+// ✅ window 전역 등록
+window.db = db;
+window.auth = auth;
+window.storage = storage;
+
+// ✅ Firestore 관련 함수 전역 등록
 window.firebaseCollection = collection;
 window.firebaseAddDoc = addDoc;
 window.firebaseDeleteDoc = deleteDoc;
@@ -39,7 +49,7 @@ window.firebaseGetDocs = getDocs;
 window.firebaseDoc = doc;
 window.firebaseServerTimestamp = serverTimestamp;
 
-// ✅ Storage 함수 전역 등록 (선택적)
+// ✅ Storage 관련 함수 전역 등록
 window.firebaseStorageRef = ref;
 window.firebaseUploadBytes = uploadBytes;
 window.firebaseGetDownloadURL = getDownloadURL;

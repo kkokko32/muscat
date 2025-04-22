@@ -7,19 +7,21 @@ import {
   signInWithPopup,
   GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
 import { db } from "/muscat/common/firebase-init.js";
 import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let currentUser = null;
+
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
   if (user) {
-    console.log("로그인 중:", user.email);
+    console.log("✅ 로그인 중:", user.email);
     saveUserToFirestore(user);
     document.body.classList.add("logged-in");
     updateUIAfterLogin(user);
   } else {
-    console.log("로그아웃 상태");
+    console.log("🚫 로그아웃 상태");
     document.body.classList.remove("logged-in");
     resetUIAfterLogout();
   }
@@ -39,8 +41,8 @@ async function saveUserToFirestore(user) {
 
 // 회원가입
 window.signUp = function () {
-  const email = document.getElementById("signup-email").value;
-  const password = document.getElementById("signup-password").value;
+  const email = document.getElementById("signup-email")?.value;
+  const password = document.getElementById("signup-password")?.value;
 
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
@@ -55,8 +57,8 @@ window.signUp = function () {
 
 // 로그인
 window.signIn = function () {
-  const email = document.getElementById("login-email").value;
-  const password = document.getElementById("login-password").value;
+  const email = document.getElementById("login-email")?.value;
+  const password = document.getElementById("login-password")?.value;
 
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
@@ -90,7 +92,7 @@ window.logout = function () {
   });
 }
 
-// 로그인 후 UI 변경 함수
+// 로그인 후 UI 변경
 window.updateUIAfterLogin = function (user) {
   const loginBtn = document.getElementById("login-btn");
   const mypageBtn = document.getElementById("btn-mypage") || document.getElementById("mypage-btn");
@@ -112,13 +114,15 @@ window.resetUIAfterLogout = function () {
 window.closeModal = function () {
   const loginModal = document.getElementById("login-modal");
   const signupModal = document.getElementById("signup-modal");
+
   if (loginModal) loginModal.style.display = "none";
   if (signupModal) signupModal.style.display = "none";
+
   const placeholder = document.getElementById("modal-placeholder");
   if (placeholder) placeholder.innerHTML = "";
 }
 
-// 템플릿 상세 페이지 이동 전 로그인 확인
+// 템플릿 상세 진입 전 로그인 확인
 window.goToTemplate = function (templateUrl) {
   if (currentUser) {
     window.location.href = "templates/templates-design/" + templateUrl;
@@ -128,7 +132,7 @@ window.goToTemplate = function (templateUrl) {
   }
 }
 
-// 마이페이지 접근 전 로그인 확인
+// 마이페이지 진입 전 로그인 확인
 window.goToMypage = function () {
   if (currentUser) {
     window.location.href = "mypage/mypage-index.html";
@@ -137,7 +141,7 @@ window.goToMypage = function () {
   }
 }
 
-// 로그인 유도 후 모달 열기
+// 로그인 유도 모달 열기
 window.openLoginFromRedirect = function () {
   closeModal();
   fetch("common/login-modal.html")
@@ -145,8 +149,10 @@ window.openLoginFromRedirect = function () {
     .then(html => {
       const placeholder = document.getElementById("modal-placeholder");
       if (placeholder) placeholder.innerHTML = html;
+
       const loginModal = document.getElementById("login-modal");
       if (loginModal) loginModal.style.display = "flex";
+
       const requiredModal = document.getElementById("login-required-modal");
       if (requiredModal) requiredModal.style.display = "none";
     });

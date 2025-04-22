@@ -1,7 +1,9 @@
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-import { storage } from "/muscat/common/firebase-init.js";
+// ✅ firebase-init.js를 통해 등록된 전역 객체 사용
+const storage = window.storage;
+const firebaseRef = window.firebaseStorageRef;
+const firebaseUploadBytes = window.firebaseUploadBytes;
+const firebaseGetDownloadURL = window.firebaseGetDownloadURL;
 
-// ✅ 로딩 오버레이 제어 함수
 function showLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
@@ -167,9 +169,9 @@ function syncInputToIframe(id, value) {
 }
 
 async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessionKey) {
-  const storageRef = ref(storage, storagePath);
-  const snapshot = await uploadBytes(storageRef, file);
-  const downloadURL = await getDownloadURL(snapshot.ref);
+  const storageRef = firebaseRef(storage, storagePath);
+  const snapshot = await firebaseUploadBytes(storageRef, file);
+  const downloadURL = await firebaseGetDownloadURL(snapshot.ref);
   const img = document.getElementById(imgElementId);
   if (img) {
     img.src = downloadURL;
@@ -178,6 +180,7 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
     console.warn(`[경고] id='${imgElementId}' 요소를 찾을 수 없습니다.`);
   }
   sessionStorage.setItem(sessionKey, downloadURL);
+
   const iframes = document.querySelectorAll(".template-card.visible iframe");
   iframes.forEach(iframe => {
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
