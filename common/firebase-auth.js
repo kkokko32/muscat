@@ -7,12 +7,15 @@ import {
   signInWithPopup,
   GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { db } from "/muscat/common/firebase-init.js";
+import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let currentUser = null;
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
   if (user) {
     console.log("로그인 중:", user.email);
+    saveUserToFirestore(user);
     document.body.classList.add("logged-in");
     updateUIAfterLogin(user);
   } else {
@@ -22,6 +25,18 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+// Firestore에 사용자 정보 저장
+async function saveUserToFirestore(user) {
+  if (!user) return;
+
+  const userRef = doc(db, "users", user.uid);
+  await setDoc(userRef, {
+    email: user.email,
+    provider: user.providerData[0]?.providerId || "unknown",
+    createdAt: serverTimestamp()
+  }, { merge: true });
+}
+
 // 회원가입
 window.signUp = function () {
   const email = document.getElementById("signup-email").value;
@@ -29,6 +44,7 @@ window.signUp = function () {
 
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
+      saveUserToFirestore(userCredential.user);
       closeModal();
       updateUIAfterLogin(userCredential.user);
     })
@@ -57,6 +73,7 @@ window.signInWithGoogle = function () {
   const provider = new GoogleAuthProvider();
   signInWithPopup(auth, provider)
     .then((result) => {
+      saveUserToFirestore(result.user);
       closeModal();
       updateUIAfterLogin(result.user);
     })
