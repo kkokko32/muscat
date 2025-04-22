@@ -14,7 +14,6 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-// ✅ 로딩 오버레이 제어 함수
 function showLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
@@ -25,7 +24,6 @@ function hideLoading() {
   if (overlay) overlay.style.display = "none";
 }
 
-// 버튼 요소
 const saveBtn = document.getElementById("saveTemplateBtn");
 const deleteBtn = document.getElementById("deleteTemplateBtn");
 const downloadBtn = document.getElementById("downloadBtn");
@@ -36,47 +34,11 @@ let savedDocId = null;
 
 console.log("✅ save-template-server.js 연결됨");
 
-// ✅ 템플릿 불러오기 기능
-async function loadTemplate() {
-  if (!currentDocId) return;
-
-  try {
-    const ref = doc(db, "savedTemplates", currentDocId);
-    const snapshot = await getDoc(ref);
-    if (!snapshot.exists()) return;
-
-    const data = snapshot.data();
-    const response = await fetch(data.htmlUrl);
-    const htmlText = await response.text();
-
-    const wrapper = document.getElementById("templateFrame");
-    const tempDom = document.createElement("div");
-    tempDom.innerHTML = htmlText;
-
-    const newFrame = tempDom.querySelector(".template-frame");
-    if (newFrame && wrapper) {
-      const brand = newFrame.querySelector(".brand-name")?.innerText || "";
-      const slogan = newFrame.querySelector(".brand-slogan")?.innerText || "";
-      const logo = newFrame.querySelector(".logo-preview")?.src || "";
-      const image = newFrame.querySelector(".main-preview")?.src || "";
-
-      if (wrapper.querySelector(".brand-name")) wrapper.querySelector(".brand-name").innerText = brand;
-      if (wrapper.querySelector(".brand-slogan")) wrapper.querySelector(".brand-slogan").innerText = slogan;
-      if (wrapper.querySelector(".logo-preview")) wrapper.querySelector(".logo-preview").src = logo;
-      if (wrapper.querySelector(".main-preview")) wrapper.querySelector(".main-preview").src = image;
-    }
-  } catch (e) {
-    console.error("템플릿 로드 실패:", e);
-  }
-}
-
 function waitForImageLoad(imageElement) {
   return new Promise(resolve => {
-    if (!imageElement || !imageElement.src) {
-      resolve();
-    } else if (imageElement.complete && imageElement.naturalHeight !== 0) {
-      resolve();
-    } else {
+    if (!imageElement || !imageElement.src) resolve();
+    else if (imageElement.complete && imageElement.naturalHeight !== 0) resolve();
+    else {
       imageElement.onload = () => resolve();
       imageElement.onerror = () => resolve();
     }
@@ -90,6 +52,10 @@ function getImageExtension(dataUrl) {
   return "jpg";
 }
 
+function isDataUrl(url) {
+  return url.startsWith("data:");
+}
+
 async function uploadImageToStorage(base64Data, path) {
   const storageRef = ref(storage, path);
   await uploadString(storageRef, base64Data, 'data_url');
@@ -99,34 +65,8 @@ async function uploadImageToStorage(base64Data, path) {
 async function uploadHTMLToStorage(htmlString, path) {
   const blob = new Blob([htmlString], { type: 'text/html' });
   const storageRef = ref(storage, path);
-  try {
-    const snapshot = await uploadBytes(storageRef, blob);
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    
-    // 저장 성공 알림
-    alert("템플릿이 저장되었습니다.");
-    
-    // 로딩 숨기기
-    if (window.hideLoading) {
-      window.hideLoading();
-    }
-    
-    return downloadURL;
-  } catch (error) {
-    console.error("Error uploading template:", error);
-    alert("템플릿 저장에 실패했습니다.");
-    
-    // 에러 발생 시에도 로딩 숨기기
-    if (window.hideLoading) {
-      window.hideLoading();
-    }
-    
-    throw error;
-  }
-}
-
-function isDataUrl(url) {
-  return url.startsWith("data:");
+  const snapshot = await uploadBytes(storageRef, blob);
+  return await getDownloadURL(snapshot.ref);
 }
 
 async function handleSaveTemplate() {
@@ -136,7 +76,7 @@ async function handleSaveTemplate() {
     return;
   }
 
-  showLoading(); // ✅ 로딩 시작
+  showLoading();
 
   const frame = document.querySelector(".template-frame");
   if (!frame) {
@@ -156,12 +96,6 @@ async function handleSaveTemplate() {
       waitForImageLoad(imageImg)
     ]);
 
-    if (typeof html2canvas !== "function") {
-      alert("html2canvas가 로드되지 않았습니다.");
-      hideLoading();
-      return;
-    }
-
     const frameHTML = frame.outerHTML;
     const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
 
@@ -175,26 +109,23 @@ async function handleSaveTemplate() {
     const thumbnailDataUrl = resizedCanvas.toDataURL("image/jpeg", 0.4);
 
     const timestamp = Date.now();
-    const basePath = `users/${user.uid}/${timestamp}`;
-    const logoExt = getImageExtension(logoImg?.src || "");
-    const imageExt = getImageExtension(imageImg?.src || "");
+    const htmlPath = `savedTemplates/htmls/${timestamp}.html`;
+    const imagePath = `savedTemplates/images/${timestamp}.png`;
+    const logoPath = `savedTemplates/images/${timestamp}-logo.png`;
+    const thumbnailPath = `savedTemplates/images/${timestamp}-thumb.jpg`;
 
     let logoUrl = "";
-    if (logoImg?.src) {
-      logoUrl = isDataUrl(logoImg.src)
-        ? await uploadImageToStorage(logoImg.src, `${basePath}/logo.${logoExt}`)
-        : logoImg.src;
+    if (logoImg?.src && isDataUrl(logoImg.src)) {
+      logoUrl = await uploadImageToStorage(logoImg.src, logoPath);
     }
 
     let imageUrl = "";
-    if (imageImg?.src) {
-      imageUrl = isDataUrl(imageImg.src)
-        ? await uploadImageToStorage(imageImg.src, `${basePath}/main.${imageExt}`)
-        : imageImg.src;
+    if (imageImg?.src && isDataUrl(imageImg.src)) {
+      imageUrl = await uploadImageToStorage(imageImg.src, imagePath);
     }
 
-    const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
-    const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
+    const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, thumbnailPath);
+    const htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
@@ -213,7 +144,7 @@ async function handleSaveTemplate() {
     console.error("저장 실패:", e.message || e);
     alert("저장 중 오류가 발생했습니다.\n" + (e.message || e));
   } finally {
-    hideLoading(); // ✅ 로딩 종료
+    hideLoading();
   }
 }
 
@@ -263,7 +194,6 @@ function setupDownload() {
 auth.onAuthStateChanged(user => {
   if (user) {
     setupDownload();
-    loadTemplate();
   }
 });
 
