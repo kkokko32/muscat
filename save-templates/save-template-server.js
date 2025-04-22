@@ -1,6 +1,7 @@
 const db = window.db;
 const auth = window.auth;
 const storage = window.storage;
+const html2canvas = window.html2canvas;
 
 let savedDocId = null;
 
@@ -27,35 +28,34 @@ async function handleSave() {
     }
 
     const frame = document.querySelector(".template-frame");
+    if (!frame) throw new Error("template-frame이 존재하지 않음");
+
     const logo = frame.querySelector(".logo-preview");
     const image = frame.querySelector(".main-preview");
     const brand = frame.querySelector(".brand-name")?.innerText || "";
     const slogan = frame.querySelector(".brand-slogan")?.innerText || "";
     const templateId = document.body.dataset.templateId || "template-001";
 
-    await Promise.all([
-      waitForImageLoad(logo),
-      waitForImageLoad(image)
-    ]);
+    await Promise.all([waitForImageLoad(logo), waitForImageLoad(image)]);
 
-    const canvas = await window.html2canvas(frame);
+    const canvas = await html2canvas(frame);
     const thumbnailBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
     const htmlContent = frame.outerHTML;
     const htmlBlob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
     const timestamp = Date.now();
 
-    const thumbRef = window.firebase.storage().ref(`savedTemplates/thumbnails/${timestamp}.png`);
-    const htmlRef = window.firebase.storage().ref(`savedTemplates/htmls/${timestamp}.html`);
+    const thumbRef = window.firebaseStorageRef(storage, `savedTemplates/thumbnails/${timestamp}.png`);
+    const htmlRef = window.firebaseStorageRef(storage, `savedTemplates/htmls/${timestamp}.html`);
 
     await Promise.all([
-      thumbRef.put(thumbnailBlob),
-      htmlRef.put(htmlBlob)
+      window.firebaseUploadBytes(thumbRef, thumbnailBlob),
+      window.firebaseUploadBytes(htmlRef, htmlBlob)
     ]);
 
-    const thumbnailUrl = await thumbRef.getDownloadURL();
-    const htmlUrl = await htmlRef.getDownloadURL();
+    const thumbnailUrl = await window.firebaseGetDownloadURL(thumbRef);
+    const htmlUrl = await window.firebaseGetDownloadURL(htmlRef);
 
-    const docRef = await db.collection("savedTemplates").add({
+    const docRef = await window.firebaseAddDoc(window.firebaseCollection(db, "savedTemplates"), {
       uid: user.uid,
       brand,
       slogan,
@@ -63,7 +63,7 @@ async function handleSave() {
       thumbnailUrl,
       htmlUrl,
       userEmail: user.email,
-      createdAt: window.firebase.firestore.FieldValue.serverTimestamp()
+      createdAt: window.firebaseServerTimestamp()
     });
 
     savedDocId = docRef.id;
@@ -80,7 +80,7 @@ async function handleDownload() {
   const frame = document.querySelector(".template-frame");
   if (!frame) return;
 
-  const canvas = await window.html2canvas(frame);
+  const canvas = await html2canvas(frame);
   canvas.toBlob(blob => {
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);

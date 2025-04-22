@@ -64,11 +64,13 @@
     </div>
   </div>
 
-  <!-- ✅ html2canvas는 전역으로 불러오기 -->
+  <!-- html2canvas는 전역으로 불러오기 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-  <!-- ✅ 저장/삭제/다운로드 이벤트 처리 -->
-  <script src="/muscat/save-templates/save-template-server.js"></script>
+  <!-- ✅ Firebase 및 이벤트 핸들러 모듈 불러오기 -->
+  <script type="module" src="/muscat/common/firebase-init.js"></script>
+  <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
+
 
   <!-- ✅ 미리보기 내용 반영 -->
   <script>
