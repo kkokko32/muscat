@@ -63,6 +63,11 @@ function loadTemplatesToIframes() {
   let loadedCount = 0;
   const total = iframes.length;
 
+  if (total === 0) {
+    hideLoading();
+    return;
+  }
+
   iframes.forEach(iframe => {
     let templatePath = iframe.dataset.template;
     if (!templatePath.startsWith('/')) {
@@ -97,13 +102,27 @@ function loadTemplatesToIframes() {
       resizeSingleIframe(iframe);
       loadedCount++;
       if (loadedCount === total) {
-        setTimeout(hideLoading, 300);
+        setTimeout(hideLoading, 400);
       }
     };
 
     iframe.onload = onIframeDone;
-    iframe.onerror = onIframeDone;
+    iframe.onerror = () => {
+      console.warn("iframe 로딩 실패:", iframe.dataset.template);
+      loadedCount++;
+      if (loadedCount === total) {
+        setTimeout(hideLoading, 400);
+      }
+    };
   });
+
+  // ✅ 예외 처리: 너무 오래 걸리면 로딩 강제 종료
+  setTimeout(() => {
+    if (loadedCount < total) {
+      console.warn("일부 iframe이 너무 오래 걸림 → 로딩 종료 강제 실행");
+      hideLoading();
+    }
+  }, 10000);
 }
 
 function selectIndustry(button) {
