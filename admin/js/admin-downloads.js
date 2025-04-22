@@ -9,7 +9,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
   getStorage,
-  ref,
+  ref as refFromURL,
   deleteObject
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
@@ -47,10 +47,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           const storage = getStorage();
 
           const deletes = [];
-          if (data.imageUrl) deletes.push(deleteObject(ref(storage, data.imageUrl)));
-          if (data.logoUrl) deletes.push(deleteObject(ref(storage, data.logoUrl)));
-          if (data.thumbnailUrl) deletes.push(deleteObject(ref(storage, data.thumbnailUrl)));
-          if (data.htmlUrl) deletes.push(deleteObject(ref(storage, data.htmlUrl)));
+          try {
+            if (data.imageUrl?.startsWith("https://")) deletes.push(deleteObject(refFromURL(storage, data.imageUrl)));
+            if (data.logoUrl?.startsWith("https://")) deletes.push(deleteObject(refFromURL(storage, data.logoUrl)));
+            if (data.thumbnailUrl?.startsWith("https://")) deletes.push(deleteObject(refFromURL(storage, data.thumbnailUrl)));
+            if (data.htmlUrl?.startsWith("https://")) deletes.push(deleteObject(refFromURL(storage, data.htmlUrl)));
+          } catch (e) {
+            console.warn("Storage 삭제 URL 오류", e);
+          }
 
           await Promise.all([...deletes, deleteDoc(docRef)]);
 
