@@ -8,7 +8,7 @@ const topTemplatesEl = document.getElementById('topTemplates');
 
 async function fetchStats() {
   const userSnap = await getCountFromServer(collection(db, 'users'));
-  const downloadSnap = await getCountFromServer(collection(db, 'downloads'));
+  const downloadSnap = await getCountFromServer(collection(db, 'savedTemplates')); // 컬렉션 이름 변경
 
   userCountEl.textContent = `${userSnap.data().count}명`;
   downloadCountEl.textContent = `${downloadSnap.data().count}건`;
@@ -16,17 +16,17 @@ async function fetchStats() {
 }
 
 async function fetchTopTemplates() {
-  const q = query(collection(db, 'downloads'), orderBy('createdAt', 'desc'), limit(3));
+  const q = query(collection(db, 'savedTemplates'), orderBy('createdAt', 'desc'), limit(3)); // 컬렉션 이름 변경
   const snapshot = await getDocs(q);
   snapshot.forEach(doc => {
     const data = doc.data();
     const card = document.createElement('div');
     card.className = 'template-card';
     card.innerHTML = `
-      <img src="${data.thumbnail}" alt="썸네일" />
+      <img src="${data.thumbnailUrl}" alt="썸네일" />  <!-- 필드명 수정 -->
       <p>${data.templateId}</p>
-      <p>브랜드: ${data.brandName || '-'}</p>
-      <p>${new Date(data.createdAt).toLocaleDateString()}</p>
+      <p>브랜드: ${data.brand || '-'}</p>  <!-- 필드명 수정 -->
+      <p>${new Date(data.createdAt.toDate()).toLocaleDateString()}</p>  <!-- 날짜 형식 수정 -->
     `;
     topTemplatesEl.appendChild(card);
   });
