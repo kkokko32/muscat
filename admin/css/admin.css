@@ -19,7 +19,7 @@ h1 {
 .card {
   flex: 1;
   padding: 20px;
-  background: white;
+  background: #eee;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
