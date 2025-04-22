@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>디자인 시작</title>
-  
+
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
 
@@ -149,66 +149,54 @@
   <!-- ✅ sessionStorage 저장 및 템플릿 이동 -->
   <script type="module">
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-    import { storage } from "/muscat/common/firebase-init.js";
     import { resizeImage, handleImageLoading } from "/muscat/common/image-fit.js";
-  
+
+    const storage = window.storage;
+
     async function uploadImageAndSetPreview(file, imgId, storagePath, storageKey) {
       const img = document.getElementById(imgId);
-      
-      // 로컬 환경인지 확인 (localhost 또는 127.0.0.1)
       const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      
+
       if (isLocalhost) {
-        // 로컬 환경에서는 FileReader 사용
         const reader = new FileReader();
         reader.onload = function(e) {
           if (img) {
             img.src = e.target.result;
-            img.style.display = "none"; // 프리뷰는 숨김 처리
+            img.style.display = "none";
           }
           sessionStorage.setItem(storageKey, e.target.result);
-          
-          // 모든 템플릿 iframe에 이미지 업데이트 메시지 전송
           updateTemplateFrames();
         };
         reader.readAsDataURL(file);
         return;
       }
-      
+
       try {
-        // Firebase Storage 업로드 시도 (프로덕션 환경)
         const storageRef = ref(storage, storagePath);
         const snapshot = await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(snapshot.ref);
-        
+
         if (img) {
           img.src = downloadURL;
-          img.style.display = "none"; // 프리뷰는 숨김 처리
+          img.style.display = "none";
         }
         sessionStorage.setItem(storageKey, downloadURL);
-        
-        // 모든 템플릿 iframe에 이미지 업데이트 메시지 전송
         updateTemplateFrames();
       } catch (error) {
-        console.warn('Firebase Storage 업로드 실패, 로컬 폴백 사용:', error);
-        
-        // 에러 발생 시 로컬 폴백
+        console.warn('Firebase Storage 업로드 실패:', error);
         const reader = new FileReader();
         reader.onload = function(e) {
           if (img) {
             img.src = e.target.result;
-            img.style.display = "none"; // 프리뷰는 숨김 처리
+            img.style.display = "none";
           }
           sessionStorage.setItem(storageKey, e.target.result);
-          
-          // 모든 템플릿 iframe에 이미지 업데이트 메시지 전송
           updateTemplateFrames();
         };
         reader.readAsDataURL(file);
       }
     }
 
-    // iframe 업데이트 함수
     function updateTemplateFrames() {
       const iframes = document.querySelectorAll('.template-card iframe');
       const brand = document.getElementById("brandName")?.value || "";
@@ -229,24 +217,20 @@
       });
     }
 
-    // 텍스트 입력 시에도 실시간 업데이트
-    document.getElementById("brandName")?.addEventListener("input", updateTemplateFrames);
-    document.getElementById("brandDesc")?.addEventListener("input", updateTemplateFrames);
-  
-    function goToTemplate(path) {
+    window.goToTemplate = function(path) {
       const brand = document.getElementById("brandName")?.value || "";
       const slogan = document.getElementById("brandDesc")?.value || "";
       const logoUrl = document.getElementById("logoPreview")?.src || "";
       const mainUrl = document.getElementById("mainPreview")?.src || "";
-  
+
       sessionStorage.setItem("tempBrand", brand);
       sessionStorage.setItem("tempSlogan", slogan);
       sessionStorage.setItem("tempLogo", logoUrl);
       sessionStorage.setItem("tempMain", mainUrl);
-  
+
       window.location.href = `/muscat/templates/templates-design/${path}`;
     }
-  
+
     document.getElementById("logoInput")?.addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -254,7 +238,7 @@
         await uploadImageAndSetPreview(file, "logoPreview", filename, "tempLogo");
       }
     });
-  
+
     document.getElementById("mainImageInput")?.addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -262,32 +246,30 @@
         await uploadImageAndSetPreview(file, "mainPreview", filename, "tempMain");
       }
     });
-  
+
     window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand");
       const slogan = sessionStorage.getItem("tempSlogan");
       const logo = sessionStorage.getItem("tempLogo");
       const main = sessionStorage.getItem("tempMain");
-  
+
       const brandInput = document.getElementById("brandName");
       const sloganInput = document.getElementById("brandDesc");
       const logoImg = document.getElementById("logoPreview");
       const mainImg = document.getElementById("mainPreview");
-  
+
       if (brand && brandInput) brandInput.value = brand;
       if (slogan && sloganInput) sloganInput.value = slogan;
-  
       if (logo && logoImg) {
         logoImg.src = logo;
-        logoImg.style.display = "block"; // 이미지를 보이게 설정
+        logoImg.style.display = "block";
       }
-  
       if (main && mainImg) {
         mainImg.src = main;
-        mainImg.style.display = "block"; // 이미지를 보이게 설정
+        mainImg.style.display = "block";
       }
     });
-  </script>  
+  </script>
 
   <script>
     fetch("/muscat/components/header.html")
@@ -302,8 +284,8 @@
       });
   </script>
 
-  <script type="module" src="/muscat/start/select-recommend.js"></script> 
-  <script type="module" src="/muscat/common/firebase-init.js"></script>
+  <script src="/muscat/start/select-recommend.js"></script>
+  <script src="/muscat/common/firebase-init.js"></script>
   <script src="/muscat/common/utils-auth.js"></script>
 
   <div id="modal-placeholder"></div>

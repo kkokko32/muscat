@@ -1,25 +1,15 @@
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut,
-  signInWithPopup,
-  GoogleAuthProvider
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-import {
-  doc,
-  setDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// ✅ window에서 가져온 전역 Firebase 객체들
+// ✅ import 구문 제거 → window 객체에서 직접 참조
 const auth = window.auth;
 const db = window.db;
+const firebaseCreateUser = window.firebaseCreateUserWithEmailAndPassword || firebaseCreateUserWithEmailAndPassword;
+const firebaseSignIn = window.firebaseSignInWithEmailAndPassword || signInWithEmailAndPassword;
+const firebaseSignOut = window.firebaseSignOut || signOut;
+const firebaseSignInWithPopup = window.firebaseSignInWithPopup || signInWithPopup;
+const firebaseGoogleAuthProvider = new window.GoogleAuthProvider();
 
+// ❗ Firebase Auth 이벤트 구독
 let currentUser = null;
-
-onAuthStateChanged(auth, (user) => {
+window.firebaseOnAuthStateChanged(auth, (user) => {
   currentUser = user;
   if (user) {
     console.log("✅ 로그인 중:", user.email);
@@ -37,11 +27,11 @@ onAuthStateChanged(auth, (user) => {
 async function saveUserToFirestore(user) {
   if (!user) return;
 
-  const userRef = doc(db, "users", user.uid);
-  await setDoc(userRef, {
+  const userRef = window.firebaseDoc(db, "users", user.uid);
+  await window.firebaseSetDoc(userRef, {
     email: user.email,
     provider: user.providerData[0]?.providerId || "unknown",
-    createdAt: serverTimestamp()
+    createdAt: window.firebaseServerTimestamp()
   }, { merge: true });
 }
 
@@ -50,7 +40,7 @@ window.signUp = function () {
   const email = document.getElementById("signup-email")?.value;
   const password = document.getElementById("signup-password")?.value;
 
-  createUserWithEmailAndPassword(auth, email, password)
+  firebaseCreateUser(auth, email, password)
     .then((userCredential) => {
       saveUserToFirestore(userCredential.user);
       closeModal();
@@ -66,7 +56,7 @@ window.signIn = function () {
   const email = document.getElementById("login-email")?.value;
   const password = document.getElementById("login-password")?.value;
 
-  signInWithEmailAndPassword(auth, email, password)
+  firebaseSignIn(auth, email, password)
     .then((userCredential) => {
       closeModal();
       updateUIAfterLogin(userCredential.user);
@@ -78,8 +68,7 @@ window.signIn = function () {
 
 // 구글 로그인
 window.signInWithGoogle = function () {
-  const provider = new GoogleAuthProvider();
-  signInWithPopup(auth, provider)
+  firebaseSignInWithPopup(auth, firebaseGoogleAuthProvider)
     .then((result) => {
       saveUserToFirestore(result.user);
       closeModal();
@@ -92,7 +81,7 @@ window.signInWithGoogle = function () {
 
 // 로그아웃
 window.logout = function () {
-  signOut(auth).then(() => {
+  firebaseSignOut(auth).then(() => {
     resetUIAfterLogout();
     window.location.href = "index.html";
   });

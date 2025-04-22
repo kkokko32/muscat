@@ -280,3 +280,4 @@ document.addEventListener("DOMContentLoaded", () => {
 window.selectIndustry = selectIndustry;
 window.selectConcept = selectConcept;
 window.selectStyle = selectStyle;
+window.goToTemplate = goToTemplate;
