@@ -15,11 +15,9 @@ let savedDocId = null;
 
 function waitForImageLoad(imageElement) {
   return new Promise(resolve => {
-    if (!imageElement || !imageElement.src) {
-      resolve();
-    } else if (imageElement.complete && imageElement.naturalHeight !== 0) {
-      resolve();
-    } else {
+    if (!imageElement || !imageElement.src) resolve();
+    else if (imageElement.complete && imageElement.naturalHeight !== 0) resolve();
+    else {
       imageElement.onload = () => resolve();
       imageElement.onerror = () => resolve();
     }
@@ -49,10 +47,7 @@ async function handleSave() {
     const slogan = frame.querySelector(".brand-slogan")?.innerText || "";
     const templateId = document.body.dataset.templateId || "template-001";
 
-    await Promise.all([
-      waitForImageLoad(logo),
-      waitForImageLoad(image)
-    ]);
+    await Promise.all([waitForImageLoad(logo), waitForImageLoad(image)]);
 
     const canvas = await html2canvas(frame);
     const thumbnailBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
@@ -94,11 +89,9 @@ async function handleSave() {
   }
 }
 
-// 다운로드 기능
 async function handleDownload() {
   const frame = document.querySelector(".template-frame");
   if (!frame) return;
-
   const canvas = await html2canvas(frame);
   const link = document.createElement("a");
   link.href = canvas.toDataURL("image/png");
@@ -106,31 +99,35 @@ async function handleDownload() {
   link.click();
 }
 
-// 삭제 기능 (알림만)
 function handleDelete() {
   const confirmDelete = confirm("정말 삭제하시겠습니까?");
   if (!confirmDelete) return;
   alert("❌ 현재 페이지에서 삭제 기능은 미구현 상태입니다.");
 }
 
-// 이벤트 연결
 window.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("saveTemplateBtn");
   const deleteBtn = document.getElementById("deleteTemplateBtn");
   const downloadBtn = document.getElementById("downloadBtn");
 
   if (saveBtn) {
-    saveBtn.addEventListener("click", handleSave);
-    console.log("✅ 저장 버튼 연결 완료");
-  } else {
-    console.warn("⚠️ 저장 버튼 없음");
+    saveBtn.addEventListener("click", () => {
+      console.log("✅ 저장 버튼 클릭됨");
+      handleSave();
+    });
   }
 
   if (deleteBtn) {
-    deleteBtn.addEventListener("click", handleDelete);
+    deleteBtn.addEventListener("click", () => {
+      console.log("🗑️ 삭제 버튼 클릭됨");
+      handleDelete();
+    });
   }
 
   if (downloadBtn) {
-    downloadBtn.addEventListener("click", handleDownload);
+    downloadBtn.addEventListener("click", () => {
+      console.log("📥 다운로드 버튼 클릭됨");
+      handleDownload();
+    });
   }
 });
