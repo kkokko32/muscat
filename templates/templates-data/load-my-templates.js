@@ -1,4 +1,4 @@
-import { db, auth } from "/muscat/common/firebase-init.js";
+import { db, auth, storage } from "/muscat/common/firebase-init.js";
 import {
   collection,
   query,
@@ -6,8 +6,13 @@ import {
   getDocs,
   deleteDoc,
   doc,
-  orderBy
+  orderBy,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import {
+  ref as storageRef,
+  deleteObject
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 let isManaging = false;
 
@@ -35,18 +40,15 @@ async function loadMyTemplates() {
   if (!container) return;
   container.innerHTML = "";
 
-  // ✅ Masonry 기준 grid-sizer 삽입
   const gridSizer = document.createElement("div");
   gridSizer.className = "grid-sizer";
   container.appendChild(gridSizer);
 
-  // ✅ 저장 개수 텍스트
   if (countText) {
     const count = snapshot.docs.length;
     countText.innerHTML = `총 <span class="highlight-number">${count}</span>개의 디자인을 저장했어요`;
   }
 
-  // ✅ 공개 디자인 개수 텍스트 (포트폴리오용)
   const portfolioText = document.getElementById("portfolio-count");
   if (portfolioText) {
     const publicCount = snapshot.docs.filter(doc => !!doc.data().public).length;
@@ -60,8 +62,6 @@ async function loadMyTemplates() {
   }
 
   const fragment = document.createDocumentFragment();
-
-  // ✅ 현재 페이지가 마이페이지 홈인지 확인
   const isMyPage = location.pathname.includes("mypage-index.html");
   const maxItems = isMyPage ? 4 : Infinity;
 
@@ -134,7 +134,19 @@ async function loadMyTemplates() {
   }
 }
 
-// ✅ 삭제 기능
+// ✅ Storage 경로 추출 및 삭제 함수
+async function deleteFromStorage(url) {
+  if (!url.includes("firebasestorage.googleapis.com")) return;
+  const path = decodeURIComponent(new URL(url).pathname.split("/o/")[1]).split("?")[0];
+  const ref = storageRef(storage, path);
+  try {
+    await deleteObject(ref);
+  } catch (e) {
+    console.warn("Storage 삭제 실패 (무시):", e.message);
+  }
+}
+
+// ✅ Firestore + Storage 통합 삭제 기능
 async function handleDelete() {
   const confirmDelete = confirm("선택한 템플릿을 삭제하시겠습니까?");
   if (!confirmDelete) return;
@@ -143,7 +155,20 @@ async function handleDelete() {
   for (const cb of checkboxes) {
     const docId = cb.getAttribute("data-id");
     if (docId) {
-      await deleteDoc(doc(db, "savedTemplates", docId));
+      const docRef = doc(db, "savedTemplates", docId);
+      const snapshot = await getDoc(docRef);
+      const data = snapshot.exists() ? snapshot.data() : null;
+
+      if (data) {
+        await Promise.all([
+          deleteFromStorage(data.logoUrl),
+          deleteFromStorage(data.imageUrl),
+          deleteFromStorage(data.thumbnailUrl),
+          deleteFromStorage(data.htmlUrl)
+        ]);
+      }
+
+      await deleteDoc(docRef);
     }
   }
 
@@ -151,14 +176,13 @@ async function handleDelete() {
   loadMyTemplates();
 }
 
-// ✅ Masonry 적용 (이미지 로드 후)
 function applyMasonryLayout() {
   const container = document.querySelector(".template-list");
   if (!container) return;
 
   imagesLoaded(container).on("always", () => {
     if (window.masonryInstance) {
-      window.masonryInstance.destroy(); // 기존 인스턴스 제거
+      window.masonryInstance.destroy();
     }
 
     window.masonryInstance = new Masonry(container, {
@@ -171,7 +195,6 @@ function applyMasonryLayout() {
   });
 }
 
-// ✅ DOM 로드 후 실행
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
