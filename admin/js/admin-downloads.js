@@ -13,12 +13,6 @@ import {
   deleteObject
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-const canvas = await window.html2canvas(template, {
-  useCORS: true,
-  backgroundColor: null,
-  scale: 3
-});
-
 document.addEventListener("DOMContentLoaded", async () => {
   const listArea = document.getElementById("downloadCardArea");
 
@@ -98,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           template.style.left = "-9999px";
           document.body.appendChild(template);
 
-          const canvas = await html2canvas(template, {
+          const canvas = await window.html2canvas(template, {
             useCORS: true,
             backgroundColor: null,
             scale: 3
