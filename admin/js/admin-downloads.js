@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    // ✅ 썸네일 클릭 → 원본 템플릿 다운로드 (iframe 방식)
+    // ✅ 썸네일 클릭 → 원본 템플릿 다운로드 (iframe.src 방식)
     document.querySelectorAll(".previewImg").forEach((img) => {
       img.addEventListener("click", async () => {
         const docId = img.dataset.doc;
@@ -78,21 +78,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           const data = snapshot.data();
           if (!data?.htmlUrl) return alert("원본 HTML이 없습니다.");
 
-          const response = await fetch(data.htmlUrl);
-          const htmlText = await response.text();
-
-          // ✅ iframe 삽입
+          // ✅ iframe 생성
           const iframe = document.createElement("iframe");
           iframe.style.position = "absolute";
           iframe.style.left = "-9999px";
           iframe.style.top = "0";
-          iframe.style.width = "4000px";
-          iframe.style.height = "6000px";
+          iframe.style.width = "5000px"; // 충분히 넉넉하게
+          iframe.style.height = "7000px";
           iframe.style.border = "none";
-          document.body.appendChild(iframe);
-
-          iframe.srcdoc = htmlText;
-
           iframe.onload = async () => {
             try {
               const frameDoc = iframe.contentDocument || iframe.contentWindow.document;
@@ -121,6 +114,9 @@ document.addEventListener("DOMContentLoaded", async () => {
               document.body.removeChild(iframe);
             }
           };
+
+          iframe.src = data.htmlUrl; // ✅ src 방식으로 외부 CSS까지 반영됨
+          document.body.appendChild(iframe);
         } catch (e) {
           console.error("다운로드 실패", e);
           alert("다운로드 중 오류 발생");
