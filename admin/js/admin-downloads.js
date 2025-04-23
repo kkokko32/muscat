@@ -66,61 +66,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    // ✅ 썸네일 클릭 → 원본 템플릿 다운로드 (iframe.src 방식)
+    // ✅ 썸네일 클릭 → 상세 페이지로 이동
     document.querySelectorAll(".previewImg").forEach((img) => {
-      img.addEventListener("click", async () => {
+      img.addEventListener("click", () => {
         const docId = img.dataset.doc;
         if (!docId) return;
 
-        try {
-          const docRef = doc(db, "savedTemplates", docId);
-          const snapshot = await getDoc(docRef);
-          const data = snapshot.data();
-          if (!data?.htmlUrl) return alert("원본 HTML이 없습니다.");
-
-          // ✅ iframe 생성
-          const iframe = document.createElement("iframe");
-          iframe.style.position = "absolute";
-          iframe.style.left = "-9999px";
-          iframe.style.top = "0";
-          iframe.style.width = "5000px"; // 충분히 넉넉하게
-          iframe.style.height = "7000px";
-          iframe.style.border = "none";
-          iframe.onload = async () => {
-            try {
-              const frameDoc = iframe.contentDocument || iframe.contentWindow.document;
-              const template = frameDoc.querySelector(".template-frame");
-
-              if (!template) {
-                alert("템플릿 프레임이 없습니다.");
-                document.body.removeChild(iframe);
-                return;
-              }
-
-              const canvas = await window.html2canvas(template, {
-                useCORS: true,
-                backgroundColor: null,
-                scale: 3
-              });
-
-              const link = document.createElement("a");
-              link.download = `${data.brand || "template"}.png`;
-              link.href = canvas.toDataURL("image/png");
-              link.click();
-            } catch (e) {
-              console.error("캡처 실패", e);
-              alert("캡처 중 오류 발생");
-            } finally {
-              document.body.removeChild(iframe);
-            }
-          };
-
-          iframe.src = data.htmlUrl; // ✅ src 방식으로 외부 CSS까지 반영됨
-          document.body.appendChild(iframe);
-        } catch (e) {
-          console.error("다운로드 실패", e);
-          alert("다운로드 중 오류 발생");
-        }
+        // 기본 템플릿 상세 보기 페이지로 이동
+        window.open(`/muscat/templates/template-001.html?docId=${docId}`, "_blank");
       });
     });
 
