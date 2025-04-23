@@ -13,6 +13,8 @@ import {
   deleteObject
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
+import html2canvas from "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
   const listArea = document.getElementById("downloadCardArea");
 
@@ -25,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const card = document.createElement("div");
       card.className = "template-card";
       card.innerHTML = `
-        <img src="${data.thumbnailUrl}" alt="썸네일" width="100%" />
+        <img src="${data.thumbnailUrl}" alt="썸네일" class="previewImg" data-doc="${docSnap.id}" style="cursor: pointer;" />
         <p><strong>${data.templateId || docSnap.id}</strong></p>
         <p>브랜드: ${data.brand || "-"}</p>
         <p>사용자: ${data.userEmail || "-"}</p>
@@ -35,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       listArea.appendChild(card);
     }
 
+    // ✅ 삭제 기능
     document.querySelectorAll(".deleteBtn").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const docId = btn.dataset.doc;
@@ -57,7 +60,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
 
           await Promise.all([...deletes, deleteDoc(docRef)]);
-
           alert("삭제 완료");
           window.location.reload();
         } catch (err) {
@@ -66,6 +68,51 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       });
     });
+
+    // ✅ 썸네일 클릭 → 원본 템플릿 다운로드
+    document.querySelectorAll(".previewImg").forEach((img) => {
+      img.addEventListener("click", async () => {
+        const docId = img.dataset.doc;
+        if (!docId) return;
+
+        try {
+          const docRef = doc(db, "savedTemplates", docId);
+          const snapshot = await getDoc(docRef);
+          const data = snapshot.data();
+
+          if (!data?.htmlUrl) return alert("원본 HTML이 없습니다.");
+
+          const response = await fetch(data.htmlUrl);
+          const htmlText = await response.text();
+          const tempDom = document.createElement("div");
+          tempDom.innerHTML = htmlText;
+
+          const template = tempDom.querySelector(".template-frame");
+          if (!template) return alert("디자인 프레임이 없습니다.");
+
+          template.style.position = "absolute";
+          template.style.left = "-9999px";
+          document.body.appendChild(template);
+
+          const canvas = await html2canvas(template, {
+            useCORS: true,
+            backgroundColor: null,
+            scale: 3
+          });
+
+          document.body.removeChild(template);
+
+          const link = document.createElement("a");
+          link.download = `${data.brand || "template"}.png`;
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+        } catch (e) {
+          console.error("다운로드 실패", e);
+          alert("다운로드 중 오류 발생");
+        }
+      });
+    });
+
   } catch (err) {
     console.error("템플릿 불러오기 실패", err);
   }
