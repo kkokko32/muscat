@@ -14,7 +14,16 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-// ✅ 로딩 오버레이 제어 함수
+// ✅ token 제거 함수
+function stripToken(url) {
+  try {
+    const u = new URL(url);
+    return `${u.origin}${u.pathname}?alt=media`;
+  } catch {
+    return url;
+  }
+}
+
 function showLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
@@ -25,7 +34,6 @@ function hideLoading() {
   if (overlay) overlay.style.display = "none";
 }
 
-// 버튼 요소
 const saveBtn = document.getElementById("saveTemplateBtn");
 const deleteBtn = document.getElementById("deleteTemplateBtn");
 const downloadBtn = document.getElementById("downloadBtn");
@@ -36,7 +44,6 @@ let savedDocId = null;
 
 console.log("✅ save-template-server.js 연결됨");
 
-// ✅ 템플릿 불러오기 기능
 async function loadTemplate() {
   if (!currentDocId) return;
 
@@ -72,14 +79,10 @@ async function loadTemplate() {
 
 function waitForImageLoad(imageElement) {
   return new Promise(resolve => {
-    if (!imageElement || !imageElement.src) {
-      resolve();
-    } else if (imageElement.complete && imageElement.naturalHeight !== 0) {
-      resolve();
-    } else {
-      imageElement.onload = () => resolve();
-      imageElement.onerror = () => resolve();
-    }
+    if (!imageElement || !imageElement.src) return resolve();
+    if (imageElement.complete && imageElement.naturalHeight !== 0) return resolve();
+    imageElement.onload = () => resolve();
+    imageElement.onerror = () => resolve();
   });
 }
 
@@ -93,36 +96,16 @@ function getImageExtension(dataUrl) {
 async function uploadImageToStorage(base64Data, path) {
   const storageRef = ref(storage, path);
   await uploadString(storageRef, base64Data, 'data_url');
-  return await getDownloadURL(storageRef);
+  const url = await getDownloadURL(storageRef);
+  return stripToken(url);
 }
 
 async function uploadHTMLToStorage(htmlString, path) {
   const blob = new Blob([htmlString], { type: 'text/html' });
   const storageRef = ref(storage, path);
-  try {
-    const snapshot = await uploadBytes(storageRef, blob);
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    
-    // 저장 성공 알림
-    alert("템플릿이 저장되었습니다.");
-    
-    // 로딩 숨기기
-    if (window.hideLoading) {
-      window.hideLoading();
-    }
-    
-    return downloadURL;
-  } catch (error) {
-    console.error("Error uploading template:", error);
-    alert("템플릿 저장에 실패했습니다.");
-    
-    // 에러 발생 시에도 로딩 숨기기
-    if (window.hideLoading) {
-      window.hideLoading();
-    }
-    
-    throw error;
-  }
+  const snapshot = await uploadBytes(storageRef, blob);
+  const url = await getDownloadURL(snapshot.ref);
+  return stripToken(url);
 }
 
 function isDataUrl(url) {
@@ -131,19 +114,11 @@ function isDataUrl(url) {
 
 async function handleSaveTemplate() {
   const user = auth.currentUser;
-  if (!user) {
-    alert("로그인이 필요합니다.");
-    return;
-  }
+  if (!user) return alert("로그인이 필요합니다.");
 
-  showLoading(); // ✅ 로딩 시작
-
+  showLoading();
   const frame = document.querySelector(".template-frame");
-  if (!frame) {
-    alert("템플릿이 존재하지 않습니다.");
-    hideLoading();
-    return;
-  }
+  if (!frame) return alert("템플릿이 존재하지 않습니다.");
 
   const brand = frame.querySelector(".brand-name")?.innerText || "";
   const slogan = frame.querySelector(".brand-slogan")?.innerText || "";
@@ -155,12 +130,6 @@ async function handleSaveTemplate() {
       waitForImageLoad(logoImg),
       waitForImageLoad(imageImg)
     ]);
-
-    if (typeof html2canvas !== "function") {
-      alert("html2canvas가 로드되지 않았습니다.");
-      hideLoading();
-      return;
-    }
 
     const frameHTML = frame.outerHTML;
     const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
@@ -183,14 +152,14 @@ async function handleSaveTemplate() {
     if (logoImg?.src) {
       logoUrl = isDataUrl(logoImg.src)
         ? await uploadImageToStorage(logoImg.src, `${basePath}/logo.${logoExt}`)
-        : logoImg.src;
+        : stripToken(logoImg.src);
     }
 
     let imageUrl = "";
     if (imageImg?.src) {
       imageUrl = isDataUrl(imageImg.src)
         ? await uploadImageToStorage(imageImg.src, `${basePath}/main.${imageExt}`)
-        : imageImg.src;
+        : stripToken(imageImg.src);
     }
 
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
@@ -213,21 +182,14 @@ async function handleSaveTemplate() {
     console.error("저장 실패:", e.message || e);
     alert("저장 중 오류가 발생했습니다.\n" + (e.message || e));
   } finally {
-    hideLoading(); // ✅ 로딩 종료
+    hideLoading();
   }
 }
 
 async function handleDeleteTemplate() {
   const user = auth.currentUser;
-  if (!user) {
-    alert("로그인이 필요합니다.");
-    return;
-  }
-
-  if (!currentDocId) {
-    alert("삭제할 템플릿이 없습니다.");
-    return;
-  }
+  if (!user) return alert("로그인이 필요합니다.");
+  if (!currentDocId) return alert("삭제할 템플릿이 없습니다.");
 
   const confirmDelete = confirm("정말 삭제하시겠습니까?");
   if (!confirmDelete) return;
@@ -252,7 +214,13 @@ function setupDownload() {
       waitForImageLoad(image)
     ]);
 
-    const canvas = await html2canvas(frame);
+    const canvas = await html2canvas(frame, {
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: null,
+      imageTimeout: 3000
+    });
+
     const link = document.createElement("a");
     link.download = "template.png";
     link.href = canvas.toDataURL("image/png");
