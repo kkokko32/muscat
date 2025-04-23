@@ -1,4 +1,3 @@
-// admin-downloads.js
 import { db } from "/muscat/common/firebase-init.js";
 import {
   collection,
@@ -67,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    // ✅ 썸네일 클릭 → 원본 템플릿 다운로드
+    // ✅ 썸네일 클릭 → 원본 템플릿 다운로드 (iframe 방식)
     document.querySelectorAll(".previewImg").forEach((img) => {
       img.addEventListener("click", async () => {
         const docId = img.dataset.doc;
@@ -77,33 +76,51 @@ document.addEventListener("DOMContentLoaded", async () => {
           const docRef = doc(db, "savedTemplates", docId);
           const snapshot = await getDoc(docRef);
           const data = snapshot.data();
-
           if (!data?.htmlUrl) return alert("원본 HTML이 없습니다.");
 
           const response = await fetch(data.htmlUrl);
           const htmlText = await response.text();
-          const tempDom = document.createElement("div");
-          tempDom.innerHTML = htmlText;
 
-          const template = tempDom.querySelector(".template-frame");
-          if (!template) return alert("디자인 프레임이 없습니다.");
+          // ✅ iframe 삽입
+          const iframe = document.createElement("iframe");
+          iframe.style.position = "absolute";
+          iframe.style.left = "-9999px";
+          iframe.style.top = "0";
+          iframe.style.width = "4000px";
+          iframe.style.height = "6000px";
+          iframe.style.border = "none";
+          document.body.appendChild(iframe);
 
-          template.style.position = "absolute";
-          template.style.left = "-9999px";
-          document.body.appendChild(template);
+          iframe.srcdoc = htmlText;
 
-          const canvas = await window.html2canvas(template, {
-            useCORS: true,
-            backgroundColor: null,
-            scale: 3
-          });
+          iframe.onload = async () => {
+            try {
+              const frameDoc = iframe.contentDocument || iframe.contentWindow.document;
+              const template = frameDoc.querySelector(".template-frame");
 
-          document.body.removeChild(template);
+              if (!template) {
+                alert("템플릿 프레임이 없습니다.");
+                document.body.removeChild(iframe);
+                return;
+              }
 
-          const link = document.createElement("a");
-          link.download = `${data.brand || "template"}.png`;
-          link.href = canvas.toDataURL("image/png");
-          link.click();
+              const canvas = await window.html2canvas(template, {
+                useCORS: true,
+                backgroundColor: null,
+                scale: 3
+              });
+
+              const link = document.createElement("a");
+              link.download = `${data.brand || "template"}.png`;
+              link.href = canvas.toDataURL("image/png");
+              link.click();
+            } catch (e) {
+              console.error("캡처 실패", e);
+              alert("캡처 중 오류 발생");
+            } finally {
+              document.body.removeChild(iframe);
+            }
+          };
         } catch (e) {
           console.error("다운로드 실패", e);
           alert("다운로드 중 오류 발생");
