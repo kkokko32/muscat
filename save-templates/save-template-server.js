@@ -178,6 +178,11 @@ async function handleSaveTemplate() {
 
     savedDocId = docRef.id;
     alert("템플릿이 서버에 저장되었습니다!");
+    
+    // ✅ 현재 페이지가 템플릿 상세 페이지일 경우에만 URL 변경
+    if (window.location.pathname.includes("template-")) {
+      window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
+    }
   } catch (e) {
     console.error("저장 실패:", e.message || e);
     alert("저장 중 오류가 발생했습니다.\n" + (e.message || e));
