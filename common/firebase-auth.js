@@ -90,6 +90,25 @@ window.logout = function () {
   });
 }
 
+// ✅ 회원탈퇴
+window.deleteAccount = function () {
+  const user = auth.currentUser;
+  if (!user) return alert("로그인이 필요합니다.");
+  const confirmDelete = confirm("정말로 회원탈퇴하시겠습니까?\n탈퇴 시 모든 데이터가 삭제됩니다.");
+  if (!confirmDelete) return;
+
+  user.delete().then(() => {
+    alert("회원탈퇴가 완료되었습니다.");
+    window.location.href = "/muscat/index.html";
+  }).catch((error) => {
+    if (error.code === "auth/requires-recent-login") {
+      alert("보안을 위해 다시 로그인 후 탈퇴해주세요.");
+    } else {
+      alert("회원탈퇴 중 오류가 발생했습니다:\n" + error.message);
+    }
+  });
+}
+
 // 로그인 후 UI 변경 함수
 window.updateUIAfterLogin = function (user) {
   const loginBtn = document.getElementById("login-btn");
