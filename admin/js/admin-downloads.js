@@ -13,7 +13,11 @@ import {
   deleteObject
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-import html2canvas from "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+const canvas = await window.html2canvas(template, {
+  useCORS: true,
+  backgroundColor: null,
+  scale: 3
+});
 
 document.addEventListener("DOMContentLoaded", async () => {
   const listArea = document.getElementById("downloadCardArea");
