@@ -51,6 +51,37 @@
     .loading-overlay.active {
       display: flex;
     }
+
+    .template-footer {
+      max-width: 1200px;
+      margin: 80px auto;
+      padding: 0 20px;
+    }
+
+    .footer-section {
+      margin-bottom: 60px;
+    }
+
+    .footer-section h3 {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 12px;
+    }
+
+    .thumbnail-list {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .thumbnail-list img {
+      width: 180px;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body class="template-page">
@@ -73,21 +104,46 @@
     </div>
   </div>
 
+  <!-- 하단 추천/연관 템플릿 영역 -->
+  <div class="template-footer">
+    <div class="footer-section">
+      <h3>이 디자인의 다른 사이즈</h3>
+      <div class="thumbnail-list">
+        <img src="/muscat/assets/thumbs/template-003-a4.jpg" onclick="goToTemplate('template-003-a4.html')">
+        <img src="/muscat/assets/thumbs/template-003-a5.jpg" onclick="goToTemplate('template-003-a5.html')">
+        <img src="/muscat/assets/thumbs/template-003-a3.jpg" onclick="goToTemplate('template-003-a3.html')">
+      </div>
+    </div>
+    <div class="footer-section">
+      <h3>비슷한 컨셉의 다른 디자인</h3>
+      <div class="thumbnail-list">
+        <img src="/muscat/assets/thumbs/template-007.jpg" onclick="goToTemplate('template-007.html')">
+        <img src="/muscat/assets/thumbs/template-008.jpg" onclick="goToTemplate('template-008.html')">
+        <img src="/muscat/assets/thumbs/template-009.jpg" onclick="goToTemplate('template-009.html')">
+      </div>
+    </div>
+    <div class="footer-section">
+      <h3>비슷한 컨셉의 다른 디자인 대상</h3>
+      <div class="thumbnail-list">
+        <img src="/muscat/assets/thumbs/template-101.jpg" onclick="goToTemplate('template-101.html')">
+        <img src="/muscat/assets/thumbs/template-102.jpg" onclick="goToTemplate('template-102.html')">
+        <img src="/muscat/assets/thumbs/template-103.jpg" onclick="goToTemplate('template-103.html')">
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
-
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
       const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
       const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
       const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
-
       updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
 
       const saveBtn = document.getElementById("saveTemplateBtn");
       const loadingOverlay = document.getElementById("loadingOverlay");
-      
       if (saveBtn) {
         const originalOnClick = saveBtn.onclick;
         saveBtn.onclick = async function(e) {
@@ -129,6 +185,10 @@
     window.hideLoading = function() {
       document.getElementById("loadingOverlay").classList.remove("active");
     };
+
+    function goToTemplate(filename) {
+      window.location.href = "/muscat/templates/templates-design/" + filename;
+    }
   </script>
 </body>
 </html>
