@@ -86,7 +86,7 @@ main {
   min-width: 64px;
   height: 38px;
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .button-grid button.active {
