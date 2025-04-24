@@ -219,7 +219,8 @@ body.inside-preview .template-frame {
 }
 
 .template-card iframe {
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 /* 필터링 미리보기 제어 */
