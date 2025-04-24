@@ -12,6 +12,7 @@ html, body {
 body::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
 }
+
 .template-page {
   background-color: #292929;
   margin-top: 0;
@@ -19,11 +20,12 @@ body::-webkit-scrollbar {
   padding: 0;
   box-sizing: border-box;
   display: block;
+  color: white;
 }
 
 .template-frame {
   border-radius: 20px;
-  margin: 80px auto 0;  /* 상단 여백 유지 + 좌우 중앙 정렬 */
+  margin: 80px auto 0;
   padding: 40px 30px;
   box-sizing: border-box;
   text-align: center;
@@ -54,7 +56,6 @@ iframe {
   border: none;
 }
 
-
 /* 우측 고정 버튼 영역 */
 .template-buttons {
   position: absolute;
@@ -78,7 +79,7 @@ iframe {
 }
 
 .template-close {
-  position: fixed;  
+  position: fixed;
   top: 20px;
   right: 30px;
   font-size: 50px;
@@ -116,7 +117,7 @@ iframe {
 }
 
 .save-btn.active:hover {
-  background: none; /* 유지 */
+  background: none;
   color: #cbff6e;
   border-color: #cbff6e;
 }
@@ -171,4 +172,21 @@ iframe {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* ✅ 썸네일 추천 디자인 공통 스타일 */
+.template-footer {
+  color: white;
+}
+
+.template-footer .footer-section h3 {
+  color: white;
+}
+
+.thumbnail-list img {
+  width: 270px;
+  height: 230px;
+  object-fit: cover;
+  border-radius: 12px;
+  cursor: pointer;
 }
