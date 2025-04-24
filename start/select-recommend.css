@@ -72,7 +72,7 @@ main {
 
 /* 버튼 스타일 */
 .button-grid {
-  margin-bottom: 46px;
+  margin-bottom: 30px;
 }
 
 .button-grid button {
@@ -80,10 +80,10 @@ main {
   border: 1px solid #aaa;
   color: white;
   padding: 8px 12px;
-  margin: 4px 4px 4px 0;
-  border-radius: 8px;
+  margin: 4px 2px 2px 0;
+  border-radius: 6px;
   cursor: pointer;
-  min-width: 64px;
+  min-width: 50px;
   height: 38px;
   text-align: center;
   font-size: 13px;
