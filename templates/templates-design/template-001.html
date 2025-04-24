@@ -11,18 +11,15 @@
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 </head>
 <body class="template-page">
-  <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
 
-  <!-- 확대/축소 버튼 -->
   <div class="zoom-controls">
     <button onclick="zoomOut()">-</button>
     <button onclick="zoomIn()">+</button>
   </div>
 
-  <!-- 템플릿 콘텐츠 영역 (확대/축소 적용 가능) -->
   <div class="template-scale-wrapper" id="templateZoomWrapper">
     <div class="template-frame" id="templateFrame" style="position: relative; width: 2480px; height: 3508px; background-color: #f3d9aa; margin: 80px auto;">
       <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
@@ -32,7 +29,6 @@
     </div>
   </div>
 
-  <!-- ✅ 기존 버튼 영역 복원 -->
   <button class="template-close" onclick="window.history.back()">&times;</button>
   <div class="template-buttons">
     <button id="saveTemplateBtn" class="save-btn">저장</button>
@@ -43,5 +39,60 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
   <script src="/muscat/templates/templates-data/zoom-control.js"></script>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
+      const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
+      const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
+      const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+
+      updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
+
+      const saveBtn = document.getElementById("saveTemplateBtn");
+      const loadingOverlay = document.getElementById("loadingOverlay");
+
+      if (saveBtn) {
+        const originalOnClick = saveBtn.onclick;
+        saveBtn.onclick = async function(e) {
+          loadingOverlay.classList.add("active");
+          if (originalOnClick) {
+            try {
+              await originalOnClick.call(this, e);
+            } finally {
+              // 저장 후 로딩 제거는 save-template-server.js에서 처리
+            }
+          }
+        };
+      }
+    });
+
+    window.addEventListener("message", (event) => {
+      const data = event.data;
+      if (data.type === 'updateTemplate') {
+        updateTemplateContent(data);
+      }
+    });
+
+    function updateTemplateContent(data) {
+      const brandEl = document.querySelector(".brand-name");
+      const sloganEl = document.querySelector(".brand-slogan");
+      const logoEl = document.querySelector(".logo-preview");
+      const mainEl = document.querySelector(".main-preview");
+
+      if (data.brand && brandEl) brandEl.textContent = data.brand;
+      if (data.slogan && sloganEl) sloganEl.textContent = data.slogan;
+      if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
+      if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
+    }
+
+    window.showLoading = function() {
+      document.getElementById("loadingOverlay").classList.add("active");
+    };
+
+    window.hideLoading = function() {
+      document.getElementById("loadingOverlay").classList.remove("active");
+    };
+  </script>
 </body>
 </html>
