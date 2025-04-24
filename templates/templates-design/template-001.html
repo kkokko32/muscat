@@ -9,9 +9,48 @@
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #292929;
+      margin: 0;
+    }
+
+    .loading-spinner {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #ccc;
+      border-top-color: #aafc3e;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .zoom-controls {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 10000;
+    }
+
+    .zoom-controls button {
+      margin-right: 5px;
+      padding: 6px 10px;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body class="template-page">
-  <div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-overlay" id="loadingOverlay" style="display: none;">
     <div class="loading-spinner"></div>
   </div>
 
@@ -55,7 +94,7 @@
       if (saveBtn) {
         const originalOnClick = saveBtn.onclick;
         saveBtn.onclick = async function(e) {
-          loadingOverlay.classList.add("active");
+          loadingOverlay.style.display = "flex";
           if (originalOnClick) {
             try {
               await originalOnClick.call(this, e);
@@ -87,11 +126,11 @@
     }
 
     window.showLoading = function() {
-      document.getElementById("loadingOverlay").classList.add("active");
+      document.getElementById("loadingOverlay").style.display = "flex";
     };
 
     window.hideLoading = function() {
-      document.getElementById("loadingOverlay").classList.remove("active");
+      document.getElementById("loadingOverlay").style.display = "none";
     };
   </script>
 </body>
