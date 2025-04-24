@@ -177,10 +177,24 @@ iframe {
 /* ✅ 썸네일 추천 디자인 공통 스타일 */
 .template-footer {
   color: white;
+  text-align: center;
+}
+
+.template-footer .footer-section {
+  margin-bottom: 60px;
 }
 
 .template-footer .footer-section h3 {
   color: white;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.thumbnail-list {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .thumbnail-list img {
