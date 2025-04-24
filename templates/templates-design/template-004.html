@@ -14,13 +14,12 @@
       height: 100%;
       margin: 0;
       overflow-y: scroll;
-      scrollbar-width: none; /* Firefox */
+      scrollbar-width: none;
     }
     body::-webkit-scrollbar {
-      display: none; /* Chrome, Safari */
+      display: none;
     }
 
-    /* 로딩 오버레이 스타일 */
     .loading-overlay {
       position: fixed;
       top: 0;
@@ -60,11 +59,11 @@
     <div class="loading-spinner"></div>
   </div>
 
-  <div class="template-frame" id="templateFrame" style="position: relative; width: 1000px; height: 600px; background-color: #9cb4a0;" >
+  <div class="template-frame" id="templateFrame" style="position: relative; width: 1200px; height: 800px; background-color: #f3d9aa;" >
     <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
     <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
-    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
+    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
+    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 300px; height: 300px; object-fit: cover;" />
 
     <button class="template-close" onclick="window.history.back()">&times;</button>
     <div class="template-buttons">
@@ -78,7 +77,6 @@
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 
   <script>
-    // 페이지 로드 시 초기 데이터 설정
     window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
       const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
@@ -86,9 +84,25 @@
       const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
 
       updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
+
+      const saveBtn = document.getElementById("saveTemplateBtn");
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      
+      if (saveBtn) {
+        const originalOnClick = saveBtn.onclick;
+        saveBtn.onclick = async function(e) {
+          loadingOverlay.classList.add("active");
+          if (originalOnClick) {
+            try {
+              await originalOnClick.call(this, e);
+            } finally {
+              // 저장 후 로딩 제거는 save-template-server.js에서 처리
+            }
+          }
+        };
+      }
     });
 
-    // 부모 창으로부터의 메시지 수신
     window.addEventListener("message", (event) => {
       const data = event.data;
       if (data.type === 'updateTemplate') {
@@ -96,7 +110,6 @@
       }
     });
 
-    // 템플릿 내용 업데이트 함수
     function updateTemplateContent(data) {
       const brandEl = document.querySelector(".brand-name");
       const sloganEl = document.querySelector(".brand-slogan");
@@ -108,6 +121,14 @@
       if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
       if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
     }
+
+    window.showLoading = function() {
+      document.getElementById("loadingOverlay").classList.add("active");
+    };
+
+    window.hideLoading = function() {
+      document.getElementById("loadingOverlay").classList.remove("active");
+    };
   </script>
 </body>
 </html>
