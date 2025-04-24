@@ -257,3 +257,11 @@ document.addEventListener("DOMContentLoaded", () => {
 window.selectIndustry = selectIndustry;
 window.selectConcept = selectConcept;
 window.selectStyle = selectStyle;
+
+// ✅ 디자인 사이즈 필터 함수 등록
+function selectSize(button) {
+  document.querySelectorAll("#step2 .button-grid:nth-of-type(2) button").forEach(btn => btn.classList.remove("active"));
+  button.classList.add("active");
+  filterTemplates();
+}
+window.selectSize = selectSize;

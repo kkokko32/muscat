@@ -66,13 +66,13 @@ main {
 /* 단계 타이틀 */
 .step-title {
   font-weight: bold;
-  margin: 6px 5px;
+  margin: 2px 2px;
   color: #ccc;
 }
 
 /* 버튼 스타일 */
 .button-grid {
-  margin-bottom: 50px;
+  margin-bottom: 36px;
 }
 
 .button-grid button {
@@ -80,9 +80,12 @@ main {
   border: 1px solid #aaa;
   color: white;
   padding: 8px 12px;
-  margin: 4px 4px 4px 0;
+  margin: 4px 2px 2px 0;
   border-radius: 8px;
   cursor: pointer;
+  min-width: 60px;
+  height: 38px;
+  text-align: center;
 }
 
 .button-grid button.active {
@@ -94,7 +97,7 @@ main {
 
 .brand-guide,
 .upload-label {
-  margin: 16px 0 5px 0;
+  margin: 16px 2px 5px;
   font-size: 15px;
   font-weight: 300;
   color: #ccc;
@@ -223,8 +226,12 @@ body.inside-preview .template-frame {
   display: none !important;
 }
 
+.template-card:hover {
+  cursor: pointer;
+}
+
 .selection-summary {
-  margin: 30px 0 50px;
+  margin: 30px 2px 50px;
   font-size: 15px;
   color: #ccc;
   display: flex;
