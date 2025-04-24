@@ -150,6 +150,26 @@ iframe {
   border-color: #cbff6e;
 }
 
+.template-scale-wrapper {
+  transform-origin: top center;
+  transition: transform 0.3s ease;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.zoom-controls {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10000;
+}
+
+.zoom-controls button {
+  margin-right: 5px;
+  padding: 6px 10px;
+  font-size: 16px;
+}
+
 .loading-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -204,3 +224,4 @@ iframe {
   border-radius: 12px;
   cursor: pointer;
 }
+
