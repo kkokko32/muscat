@@ -22,6 +22,8 @@ header.global-header nav a:not(.menu_d):hover {
   font-weight: 600 !important;
 }
 
+
+
 body {
   overflow: auto;
 }
@@ -30,7 +32,7 @@ body {
 .sidebar {
   background-color: #292929;
   color: white;
-  padding: 100px 40px 0px 40px;
+  padding: 120px 40px 0px 40px;
   width: 400px;
   height: 100vh;
   overflow-y: auto;
@@ -64,13 +66,13 @@ main {
 /* 단계 타이틀 */
 .step-title {
   font-weight: bold;
-  margin: 2px 2px;
+  margin: 6px 5px;
   color: #ccc;
 }
 
 /* 버튼 스타일 */
 .button-grid {
-  margin-bottom: 30px;
+  margin-bottom: 50px;
 }
 
 .button-grid button {
@@ -78,13 +80,9 @@ main {
   border: 1px solid #aaa;
   color: white;
   padding: 8px 12px;
-  margin: 4px 2px 2px 0;
-  border-radius: 6px;
+  margin: 4px 4px 4px 0;
+  border-radius: 8px;
   cursor: pointer;
-  min-width: 54px;
-  height: 38px;
-  text-align: center;
-  font-size: 13px;
 }
 
 .button-grid button.active {
@@ -154,7 +152,7 @@ input[disabled] {
   width: 600px;
   text-align: center;
   background-color: #fcfcfc;
-  padding: 0;
+  padding: 0; /* 패딩 제거로 높이 최소화 */
   box-sizing: border-box;
 }
 
@@ -200,6 +198,7 @@ input[disabled] {
   justify-content: center;
 }
 
+/* 템플릿 카드 */
 body.inside-preview .template-frame {
   margin-top: 0 !important;
 }
@@ -207,23 +206,16 @@ body.inside-preview .template-frame {
 .template-card {
   position: relative;
   width: 440px;
-  height: 340px;
-  overflow: hidden;
+  margin-bottom: 24px;
+  overflow: visible;
   box-sizing: border-box;
   flex-shrink: 0;
   border-radius: 20px;
+  overflow: hidden;
 }
 
 .template-card iframe {
-  pointer-events: auto;
-  cursor: pointer;
-  width: 3508px;
-  height: 2480px;
-  transform: scale(0.13);
-  transform-origin: top left;
-  position: absolute;
-  top: 0;
-  left: 0;
+  pointer-events: none;
 }
 
 /* 필터링 미리보기 제어 */
@@ -245,6 +237,7 @@ body.inside-preview .template-frame {
   text-decoration: underline;
 }
 
+/* 기존 concept-filter (현재는 사용하지 않음, 유지할 경우) */
 .concept-filter {
   display: flex;
   justify-content: center;
@@ -271,6 +264,7 @@ body.inside-preview .template-frame {
   font-weight: bold;
 }
 
+/* ✅ 새로 추가된 inline concept filter 버튼 */
 .inline-concept-filter {
   display: flex;
   justify-content: center;
