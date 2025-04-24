@@ -133,5 +133,10 @@
       document.getElementById("loadingOverlay").style.display = "none";
     };
   </script>
+<script>
+  if (window !== window.parent) {
+    document.body.classList.add("inside-preview");
+  }
+</script>
 </body>
 </html>
