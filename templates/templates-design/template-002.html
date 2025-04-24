@@ -14,13 +14,12 @@
       height: 100%;
       margin: 0;
       overflow-y: scroll;
-      scrollbar-width: none; /* Firefox */
+      scrollbar-width: none;
     }
     body::-webkit-scrollbar {
-      display: none; /* Chrome, Safari */
+      display: none;
     }
 
-    /* 로딩 오버레이 스타일 */
     .loading-overlay {
       position: fixed;
       top: 0;
@@ -52,6 +51,42 @@
     .loading-overlay.active {
       display: flex;
     }
+
+    .template-container {
+      width: 100%;
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    .template-frame {
+      position: relative;
+      width: 3508px;
+      height: 2480px;
+      background-color: #ffffff;
+      transform: scale(0.3);
+      transform-origin: top center;
+      margin: 0 auto;
+    }
+
+    .template-buttons {
+      position: absolute;
+      top: 100px;
+      right: 50px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .template-close {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      font-size: 48px;
+      background: none;
+      border: none;
+      color: #333;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body class="template-page">
@@ -60,17 +95,19 @@
     <div class="loading-spinner"></div>
   </div>
 
-  <div class="template-frame" id="templateFrame" style="position: relative; width: 1000px; height: 800px; background-color: #f2f3aa;" >
-    <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
-    <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
-    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
+  <div class="template-container">
+    <div class="template-frame" id="templateFrame">
+      <div class="brand-name" id="brandName" style="font-size: 160px; font-weight: bold; color: #333; margin-bottom: 40px;">브랜드명</div>
+      <div class="brand-slogan" id="brandDesc" style="font-size: 80px; color: #555; margin-bottom: 60px;">브랜드 슬로건</div>
+      <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 400px; height: 400px; object-fit: contain; margin-bottom: 80px;" />
+      <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 1000px; height: 1000px; object-fit: cover;" />
 
-    <button class="template-close" onclick="window.history.back()">&times;</button>
-    <div class="template-buttons">
-      <button id="saveTemplateBtn" class="save-btn">저장</button>
-      <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
-      <button id="downloadBtn" class="download-btn">다운로드</button>
+      <button class="template-close" onclick="window.history.back()">&times;</button>
+      <div class="template-buttons">
+        <button id="saveTemplateBtn" class="save-btn">저장</button>
+        <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
+        <button id="downloadBtn" class="download-btn">다운로드</button>
+      </div>
     </div>
   </div>
 
@@ -78,7 +115,6 @@
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 
   <script>
-    // 페이지 로드 시 초기 데이터 설정
     window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
       const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
@@ -86,9 +122,25 @@
       const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
 
       updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
+
+      const saveBtn = document.getElementById("saveTemplateBtn");
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      
+      if (saveBtn) {
+        const originalOnClick = saveBtn.onclick;
+        saveBtn.onclick = async function(e) {
+          loadingOverlay.classList.add("active");
+          if (originalOnClick) {
+            try {
+              await originalOnClick.call(this, e);
+            } finally {
+              // 저장 후 로딩 제거는 save-template-server.js에서 처리
+            }
+          }
+        };
+      }
     });
 
-    // 부모 창으로부터의 메시지 수신
     window.addEventListener("message", (event) => {
       const data = event.data;
       if (data.type === 'updateTemplate') {
@@ -96,7 +148,6 @@
       }
     });
 
-    // 템플릿 내용 업데이트 함수
     function updateTemplateContent(data) {
       const brandEl = document.querySelector(".brand-name");
       const sloganEl = document.querySelector(".brand-slogan");
@@ -108,6 +159,14 @@
       if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
       if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
     }
+
+    window.showLoading = function() {
+      document.getElementById("loadingOverlay").classList.add("active");
+    };
+
+    window.hideLoading = function() {
+      document.getElementById("loadingOverlay").classList.remove("active");
+    };
   </script>
 </body>
 </html>
