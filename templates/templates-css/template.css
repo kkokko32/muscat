@@ -21,6 +21,7 @@ body::-webkit-scrollbar {
   box-sizing: border-box;
   display: block;
   color: white;
+  position: relative;
 }
 
 .template-frame {
@@ -60,10 +61,11 @@ iframe {
 .template-buttons {
   position: absolute;
   top: 5px;
-  right: -80px;
+  right: -100px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  z-index: 1000;
 }
 
 .template-buttons button {
