@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -9,15 +8,68 @@
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
+
   <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      flex-direction: column;
-      min-height: 100vh;
-      background-color: #292929;
+    html, body {
+      height: 100%;
       margin: 0;
+      padding: 0;
+      overflow: auto;
+      background-color: #292929;
+    }
+
+    .template-preview-wrapper {
+      transform-origin: top left;
+      display: inline-block;
+    }
+
+    .template-frame {
+      position: relative;
+      width: 2480px;
+      height: 3508px;
+      background-color: #f3d9aa;
+      border-radius: 10px;
+      margin: 80px auto;
+    }
+
+    .template-buttons {
+      position: fixed;
+      top: 100px;
+      right: 30px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .template-buttons button,
+    .template-close {
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background-color: #333;
+      color: white;
+    }
+
+    .template-close {
+      font-size: 28px;
+      line-height: 28px;
+      background: transparent;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
     }
 
     .loading-spinner {
@@ -35,72 +87,64 @@
       }
     }
 
-    .zoom-controls {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 10000;
-    }
-
-    .zoom-controls button {
-      margin-right: 5px;
-      padding: 6px 10px;
-      font-size: 16px;
+    .loading-overlay.active {
+      display: flex;
     }
   </style>
 </head>
-<body class="template-page">
-  <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+<body>
+  <!-- 로딩 오버레이 -->
+  <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
 
-  <div class="zoom-controls">
-    <button onclick="zoomOut()">-</button>
-    <button onclick="zoomIn()">+</button>
-  </div>
-
-  <div class="template-scale-wrapper" id="templateZoomWrapper">
-    <div class="template-frame" id="templateFrame" style="position: relative; width: 2480px; height: 3508px; background-color: #f3d9aa; margin: 80px auto;">
-      <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
-      <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
-      <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-      <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 300px; height: 300px; object-fit: cover;" />
-    </div>
-  </div>
-
-  <button class="template-close" onclick="window.history.back()">&times;</button>
+  <!-- 버튼은 축소되지 않도록 scale 바깥에 위치 -->
   <div class="template-buttons">
     <button id="saveTemplateBtn" class="save-btn">저장</button>
     <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
     <button id="downloadBtn" class="download-btn">다운로드</button>
+    <button class="template-close" onclick="window.history.back()">&times;</button>
+  </div>
+
+  <!-- scale이 적용되는 wrapper -->
+  <div class="template-preview-wrapper" id="previewWrapper">
+    <div class="template-frame" id="templateFrame">
+      <div class="brand-name" id="brandName" style="font-size: 72px; font-weight: bold; color: #333; margin-bottom: 40px;">브랜드명</div>
+      <div class="brand-slogan" id="brandDesc" style="font-size: 36px; color: #555; margin-bottom: 50px;">브랜드 슬로건</div>
+      <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 180px; height: 180px; object-fit: contain; margin-bottom: 60px;" />
+      <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 600px; height: 600px; object-fit: cover;" />
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
-  <script src="/muscat/templates/templates-data/zoom-control.js"></script>
-
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
+    function getScaleFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const scale = parseFloat(params.get("scale"));
+      return isNaN(scale) ? 1 : scale;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const scale = getScaleFromURL();
+      document.getElementById("previewWrapper").style.transform = `scale(${scale})`;
+
       const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
       const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
       const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
       const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
-
       updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
 
       const saveBtn = document.getElementById("saveTemplateBtn");
       const loadingOverlay = document.getElementById("loadingOverlay");
-
       if (saveBtn) {
         const originalOnClick = saveBtn.onclick;
         saveBtn.onclick = async function(e) {
-          loadingOverlay.style.display = "flex";
+          loadingOverlay.classList.add("active");
           if (originalOnClick) {
             try {
               await originalOnClick.call(this, e);
-            } finally {
-              // 저장 후 로딩 제거는 save-template-server.js에서 처리
-            }
+            } finally {}
           }
         };
       }
@@ -126,17 +170,12 @@
     }
 
     window.showLoading = function() {
-      document.getElementById("loadingOverlay").style.display = "flex";
+      document.getElementById("loadingOverlay").classList.add("active");
     };
 
     window.hideLoading = function() {
-      document.getElementById("loadingOverlay").style.display = "none";
+      document.getElementById("loadingOverlay").classList.remove("active");
     };
   </script>
-<script>
-  if (window !== window.parent) {
-    document.body.classList.add("inside-preview");
-  }
-</script>
 </body>
 </html>
