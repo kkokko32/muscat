@@ -25,7 +25,7 @@
     }
 
     body.inside-preview .template-preview-wrapper {
-      transform: none !important;
+      transform: scale(0.3) !important;
     }
 
     .zoom-controls {
@@ -36,6 +36,16 @@
       flex-direction: column;
       gap: 8px;
       z-index: 1000;
+    }
+
+    .zoom-controls button {
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background-color: #444;
+      color: white;
     }
 
     .loading-overlay {
@@ -107,11 +117,12 @@
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 
   <script>
-    let currentScale = 0.4; // 초기 스케일
+    let currentScale = 0.4;
 
     function applyScale() {
-      if (!document.body.classList.contains('inside-preview')) {
-        document.getElementById("previewWrapper").style.transform = `scale(${currentScale})`;
+      const wrapper = document.getElementById("previewWrapper");
+      if (!document.body.classList.contains("inside-preview")) {
+        wrapper.style.transform = `scale(${currentScale})`;
       }
     }
 
@@ -133,7 +144,6 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      // iframe 미리보기 여부 판단
       if (window.location !== window.parent.location) {
         document.body.classList.add("inside-preview");
       }
