@@ -92,6 +92,17 @@ iframe {
 }
 
 /* 저장 버튼 공통 스타일 */
+
+.template-buttons {
+  position: fixed; 
+  top: 100px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1000;
+}
+
 .save-btn,
 .download-btn {
   color: #000;
