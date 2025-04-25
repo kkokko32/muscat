@@ -225,6 +225,7 @@ body.inside-preview .template-close,
 body.inside-preview .zoom-controls {
   display: none !important;
 }
+
 .zoom-controls {
   position: fixed;
   top: 100px;
@@ -244,6 +245,3 @@ body.inside-preview .zoom-controls {
   background-color: #444;
   color: white;
 }
-
-
-/* 이하 기존 template.css 유지 */

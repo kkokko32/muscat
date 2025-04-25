@@ -24,6 +24,20 @@
       justify-content: center;
     }
 
+    body.inside-preview .template-preview-wrapper {
+      transform: none !important;
+    }
+
+    .zoom-controls {
+      position: fixed;
+      top: 100px;
+      left: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 1000;
+    }
+
     .loading-overlay {
       position: fixed;
       top: 0;
@@ -93,10 +107,12 @@
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 
   <script>
-    let currentScale = 0.4; // 초기 스케일 (약 가로 1200px 크기로 축소)
+    let currentScale = 0.4; // 초기 스케일
 
     function applyScale() {
-      document.getElementById("previewWrapper").style.transform = `scale(${currentScale})`;
+      if (!document.body.classList.contains('inside-preview')) {
+        document.getElementById("previewWrapper").style.transform = `scale(${currentScale})`;
+      }
     }
 
     function zoomIn() {
@@ -117,6 +133,11 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+      // iframe 미리보기 여부 판단
+      if (window.location !== window.parent.location) {
+        document.body.classList.add("inside-preview");
+      }
+
       applyScale();
 
       const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
