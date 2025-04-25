@@ -223,13 +223,19 @@ function setupDownload() {
       useCORS: true,
       allowTaint: false,
       backgroundColor: null,
-      imageTimeout: 3000
+      imageTimeout: 3000,
+      scale: 2 // 더 고해상도 캡처
     });
 
-    const link = document.createElement("a");
-    link.download = "template.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    const imgData = canvas.toDataURL("image/jpeg", 1.0);
+    const pdf = new jspdf.jsPDF({
+      orientation: "portrait",
+      unit: "px",
+      format: [canvas.width, canvas.height]
+    });
+
+    pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
+    pdf.save("template.pdf");
   });
 }
 

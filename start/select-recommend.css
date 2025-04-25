@@ -71,6 +71,17 @@ main {
 }
 
 /* 버튼 스타일 */
+
+.template-buttons {
+  position: fixed;
+  top: 100px;
+  right: 30px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .button-grid {
   margin-bottom: 36px;
 }

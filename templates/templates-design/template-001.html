@@ -23,25 +23,6 @@
       display: inline-block;
     }
 
-    .template-frame {
-      position: relative;
-      width: 2480px;
-      height: 3508px;
-      background-color: #f3d9aa;
-      border-radius: 10px;
-      margin: 80px auto;
-    }
-
-    .template-buttons {
-      position: fixed;
-      top: 100px;
-      right: 30px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
     .loading-overlay {
       position: fixed;
       top: 0;
@@ -74,33 +55,39 @@
       display: flex;
     }
   </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
+
 <body>
   <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
 
-  <!-- 버튼은 축소되지 않도록 scale 바깥에 위치 -->
+  <!-- 버튼 영역 (우측 고정) -->
   <div class="template-buttons">
     <button id="saveTemplateBtn" class="save-btn">저장</button>
     <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
     <button id="downloadBtn" class="download-btn">다운로드</button>
-    <button class="template-close" onclick="window.history.back()">&times;</button>
   </div>
 
-  <!-- scale이 적용되는 wrapper -->
+  <!-- 닫기 버튼 (별도) -->
+  <button class="template-close" onclick="window.history.back()">&times;</button>
+
+  <!-- 미리보기 축소 가능 영역 -->
   <div class="template-preview-wrapper" id="previewWrapper">
-    <div class="template-frame" id="templateFrame">
-      <div class="brand-name" id="brandName" style="font-size: 72px; font-weight: bold; color: #333; margin-bottom: 40px;">브랜드명</div>
-      <div class="brand-slogan" id="brandDesc" style="font-size: 36px; color: #555; margin-bottom: 50px;">브랜드 슬로건</div>
-      <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 180px; height: 180px; object-fit: contain; margin-bottom: 60px;" />
-      <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 600px; height: 600px; object-fit: cover;" />
+    <div class="template-frame" id="templateFrame" style="width: 2480px; height: 3508px; background-color: #f3d9aa;">
+      <div class="brand-name" id="brandName">브랜드명</div>
+      <div class="brand-slogan" id="brandDesc">브랜드 슬로건</div>
+      <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" />
+      <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" />
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
+
   <script>
     function getScaleFromURL() {
       const params = new URLSearchParams(window.location.search);
