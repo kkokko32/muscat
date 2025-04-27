@@ -55,7 +55,7 @@
       z-index: 10;
     }
 
-    /* ✅ 좌측 뷰어 컨트롤러 */
+    /* ✅ 좌측 뷰어 컨트롤 */
     .view-controls {
       position: fixed;
       top: 150px;
@@ -67,13 +67,13 @@
     }
 
     .view-controls button {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 40px;
       background-color: #333;
       color: white;
       border: none;
       border-radius: 8px;
-      font-size: 18px;
+      font-size: 16px;
       cursor: pointer;
     }
 
@@ -120,6 +120,13 @@
     .loading-overlay.active {
       display: flex;
     }
+
+    /* ✅ select 페이지 iframe에서는 버튼 전부 숨기기 */
+    body.inside-preview .template-buttons,
+    body.inside-preview .template-close,
+    body.inside-preview .view-controls {
+      display: none !important;
+    }
   </style>
 </head>
 
@@ -135,6 +142,7 @@
       <button onclick="zoomOut()">-</button>
       <button onclick="resetZoom()">100%</button>
       <button onclick="zoomIn()">+</button>
+      <button onclick="fitHeight()">Fit</button>
     </div>
 
     <div class="template-frame" id="templateFrame" style="position: relative; width: 2400px; height: 3508px; background-color: #f3d9aa;">
@@ -183,6 +191,16 @@
     function resetZoom() {
       currentScale = 1.0;
       applyScale();
+    }
+
+    function fitHeight() {
+      const frame = document.getElementById("templateFrame");
+      if (frame) {
+        const frameHeight = frame.offsetHeight;
+        const windowHeight = window.innerHeight - 150; // 버튼 여유
+        currentScale = windowHeight / frameHeight;
+        applyScale();
+      }
     }
 
     window.addEventListener("DOMContentLoaded", () => {
