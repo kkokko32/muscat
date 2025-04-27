@@ -3,16 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Template Save Final</title>
+  <title>Template Save Final (Fixed)</title>
 
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+  <!-- ✅ Firebase compat 버전으로 수정 -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+  <!-- ✅ html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
@@ -35,10 +38,10 @@
 
 <div class="template-wrapper">
   <div class="view-controls">
-    <button onclick="zoomOut()">-</button>
-    <button onclick="resetZoom()">100%</button>
-    <button onclick="zoomIn()">+</button>
-    <button onclick="fitHeight()">Fit</button>
+    <button id="zoomOutBtn">-</button>
+    <button id="resetZoomBtn">100%</button>
+    <button id="zoomInBtn">+</button>
+    <button id="fitHeightBtn">Fit</button>
   </div>
 
   <div class="template-frame" id="templateFrame">
@@ -49,6 +52,7 @@
   </div>
 
   <button class="template-close" onclick="window.history.back()">&times;</button>
+
   <div class="template-buttons">
     <button id="saveTemplateBtn">저장</button>
     <button id="deleteTemplateBtn">삭제</button>
@@ -57,26 +61,30 @@
 </div>
 
 <script>
-const firebaseConfig = { /* 🔥 네 Firebase 설정 삽입 */ };
+// ✅ Firebase 설정
+const firebaseConfig = { /* 👉 여기에 본인 Firebase 설정 삽입 */ };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const storage = firebase.storage();
 const auth = firebase.auth();
 
-let docId = null;
+// ✅ 로딩 오버레이
 function showLoading() { document.getElementById("loadingOverlay").style.display = "flex"; }
 function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
 
+// ✅ 파일 업로드
 async function uploadFile(refPath, blob) {
   const storageRef = storage.ref(refPath);
   await storageRef.put(blob);
   return await storageRef.getDownloadURL();
 }
 
+let docId = null;
+
+// ✅ 저장
 async function handleSaveTemplate() {
   try {
     showLoading();
-
     const frame = document.getElementById("templateFrame");
     const logo = document.getElementById("brandLogo");
     const main = document.getElementById("mainImage");
@@ -118,6 +126,7 @@ async function handleSaveTemplate() {
   }
 }
 
+// ✅ 삭제
 async function handleDeleteTemplate() {
   if (!docId) { alert("저장된 템플릿이 없습니다."); return; }
   try {
@@ -143,6 +152,7 @@ async function handleDeleteTemplate() {
   }
 }
 
+// ✅ 다운로드
 async function handleDownloadTemplate() {
   try {
     showLoading();
@@ -160,8 +170,11 @@ async function handleDownloadTemplate() {
   }
 }
 
+// ✅ 뷰어 스케일 조정
 let currentScale = 0.416;
-function applyScale() { document.getElementById("templateFrame").style.transform = `translateX(-50%) scale(${currentScale})`; }
+function applyScale() {
+  document.getElementById("templateFrame").style.transform = `translateX(-50%) scale(${currentScale})`;
+}
 function zoomIn() { currentScale += 0.1; if (currentScale > 2) currentScale = 2; applyScale(); }
 function zoomOut() { currentScale -= 0.1; if (currentScale < 0.1) currentScale = 0.1; applyScale(); }
 function resetZoom() { currentScale = 1; applyScale(); }
@@ -172,6 +185,7 @@ function fitHeight() {
   applyScale();
 }
 
+// ✅ 초기 데이터 세팅 + 버튼 이벤트 연결
 window.addEventListener("DOMContentLoaded", () => {
   const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
   const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
@@ -186,6 +200,10 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("saveTemplateBtn").addEventListener("click", handleSaveTemplate);
   document.getElementById("deleteTemplateBtn").addEventListener("click", handleDeleteTemplate);
   document.getElementById("downloadBtn").addEventListener("click", handleDownloadTemplate);
+  document.getElementById("zoomInBtn").addEventListener("click", zoomIn);
+  document.getElementById("zoomOutBtn").addEventListener("click", zoomOut);
+  document.getElementById("resetZoomBtn").addEventListener("click", resetZoom);
+  document.getElementById("fitHeightBtn").addEventListener("click", fitHeight);
 });
 </script>
 
