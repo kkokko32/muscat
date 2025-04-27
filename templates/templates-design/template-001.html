@@ -55,7 +55,6 @@
       z-index: 10;
     }
 
-    /* ✅ 좌측 뷰어 컨트롤 */
     .view-controls {
       position: fixed;
       top: 150px;
@@ -121,7 +120,6 @@
       display: flex;
     }
 
-    /* ✅ select 페이지 iframe에서는 버튼 전부 숨기기 */
     body.inside-preview .template-buttons,
     body.inside-preview .template-close,
     body.inside-preview .view-controls {
@@ -131,13 +129,11 @@
 </head>
 
 <body class="template-page">
-  <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
 
   <div class="template-wrapper">
-    <!-- ✅ 좌측 뷰어 컨트롤 -->
     <div class="view-controls">
       <button onclick="zoomOut()">-</button>
       <button onclick="resetZoom()">100%</button>
@@ -152,10 +148,8 @@
       <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 300px; height: 300px; object-fit: cover;" />
     </div>
 
-    <!-- 닫기 버튼 -->
     <button class="template-close" onclick="window.history.back()">&times;</button>
 
-    <!-- 저장/삭제/다운로드 버튼 -->
     <div class="template-buttons">
       <button id="saveTemplateBtn" class="save-btn">저장</button>
       <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
@@ -166,8 +160,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 
-  <script>
-    let currentScale = 0.416; // ✅ 초기 스케일
+  <script type="module">
+    import { handleSaveTemplate, handleDeleteTemplate, handleDownloadTemplate } from "/muscat/save-templates/save-template-server.js";
+
+    let currentScale = 0.416;
 
     function applyScale() {
       const frame = document.getElementById("templateFrame");
@@ -178,13 +174,13 @@
 
     function zoomIn() {
       currentScale += 0.1;
-      if (currentScale > 2) currentScale = 2; // 최대 2배
+      if (currentScale > 2) currentScale = 2;
       applyScale();
     }
 
     function zoomOut() {
       currentScale -= 0.1;
-      if (currentScale < 0.1) currentScale = 0.1; // 최소 0.1배
+      if (currentScale < 0.1) currentScale = 0.1;
       applyScale();
     }
 
@@ -197,7 +193,7 @@
       const frame = document.getElementById("templateFrame");
       if (frame) {
         const frameHeight = frame.offsetHeight;
-        const windowHeight = window.innerHeight - 150; // 버튼 여유
+        const windowHeight = window.innerHeight - 150;
         currentScale = windowHeight / frameHeight;
         applyScale();
       }
@@ -211,22 +207,9 @@
 
       updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
 
-      const saveBtn = document.getElementById("saveTemplateBtn");
-      const loadingOverlay = document.getElementById("loadingOverlay");
-
-      if (saveBtn) {
-        const originalOnClick = saveBtn.onclick;
-        saveBtn.onclick = async function(e) {
-          loadingOverlay.classList.add("active");
-          if (originalOnClick) {
-            try {
-              await originalOnClick.call(this, e);
-            } finally {
-              // 저장 후 로딩 제거는 save-template-server.js에서 처리
-            }
-          }
-        };
-      }
+      document.getElementById("saveTemplateBtn")?.addEventListener("click", handleSaveTemplate);
+      document.getElementById("deleteTemplateBtn")?.addEventListener("click", handleDeleteTemplate);
+      document.getElementById("downloadBtn")?.addEventListener("click", handleDownloadTemplate);
 
       if (window.top === window.self) {
         document.body.classList.add("view-mode");
