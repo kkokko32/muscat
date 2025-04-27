@@ -144,26 +144,26 @@
   }
 
   async function deleteTemplate() {
-    if (!savedDocId) {
-      alert("저장된 템플릿이 없습니다.");
-      return;
-    }
+  if (!savedDocId) {
+    alert("저장된 템플릿이 없습니다.");
+    return;
+  }
 
-    if (!uploadedPaths || Object.keys(uploadedPaths).length === 0) {
-      alert("삭제할 파일이 없습니다.");
-      return;
-    }
+  const confirmDelete = confirm("정말 삭제하시겠습니까?");
+  if (!confirmDelete) {
+    hideLoading();
+    return;
+  }
 
-    const confirmDelete = confirm("정말 삭제하시겠습니까?");
-    if (!confirmDelete) {
-      hideLoading();
-      return;
-    }
-
-    showLoading();
+  showLoading();
+  
+  try {
     await deleteDoc(doc(db, "savedTemplates", savedDocId));
-    for (const path of Object.values(uploadedPaths)) {
-      await deleteObject(ref(storage, path)).catch(() => {});
+
+    if (uploadedPaths && Object.keys(uploadedPaths).length > 0) {
+      for (const path of Object.values(uploadedPaths)) {
+        await deleteObject(ref(storage, path)).catch(() => {});
+      }
     }
 
     savedDocId = null;
@@ -174,8 +174,13 @@
     document.getElementById("deleteTemplateBtn").disabled = true;
 
     alert("삭제 완료되었습니다!");
+  } catch (error) {
+    console.error("삭제 실패:", error);
+    alert("삭제 중 오류가 발생했습니다.");
+  } finally {
     hideLoading();
   }
+}
 
   async function downloadTemplate() {
     const frame = document.getElementById("templateFrame");
