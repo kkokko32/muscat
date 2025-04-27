@@ -21,7 +21,6 @@ body::-webkit-scrollbar {
   box-sizing: border-box;
   display: block;
   color: white;
-  position: relative;
 }
 
 .template-frame {
@@ -61,11 +60,10 @@ iframe {
 .template-buttons {
   position: absolute;
   top: 5px;
-  right: -100px;
+  right: -80px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  z-index: 1000;
 }
 
 .template-buttons button {
@@ -94,17 +92,6 @@ iframe {
 }
 
 /* 저장 버튼 공통 스타일 */
-
-.template-buttons {
-  position: fixed; 
-  top: 100px;
-  right: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 1000;
-}
-
 .save-btn,
 .download-btn {
   color: #000;
@@ -216,32 +203,4 @@ iframe {
   object-fit: cover;
   border-radius: 12px;
   cursor: pointer;
-}
-
-
-/* 추가된 iframe 미리보기 전용 숨김 처리 */
-body.inside-preview .template-buttons,
-body.inside-preview .template-close,
-body.inside-preview .zoom-controls {
-  display: none !important;
-}
-
-.zoom-controls {
-  position: fixed;
-  top: 100px;
-  left: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 1000;
-}
-
-.zoom-controls button {
-  padding: 8px 12px;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-  border-radius: 6px;
-  background-color: #444;
-  color: white;
 }

@@ -295,23 +295,3 @@ body.inside-preview .template-frame {
   border-bottom: 2px solid #292929;
   font-weight: bold;
 }
-
-/* 템플릿 카드 기본 스타일 */
-.template-card {
-  width: 480px;
-  display: inline-block;
-  vertical-align: top;
-  margin: 10px;
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.template-card iframe {
-  width: 480px;
-  height: 674px;
-  border: none;
-  display: block;
-  background: #fff;
-}
-
