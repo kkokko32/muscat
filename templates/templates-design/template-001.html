@@ -154,34 +154,34 @@
   <script type="module">
     import { db, storage, auth } from "/muscat/common/firebase-init.js";
     import { collection, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { ref, uploadString, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { ref, uploadString, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     let currentScale = 0.416;
     let savedDocId = null;
     let uploadedPaths = {};
+
+    window.zoomIn = function() {
+      currentScale += 0.1;
+      if (currentScale > 2) currentScale = 2;
+      applyScale();
+    };
+
+    window.zoomOut = function() {
+      currentScale -= 0.1;
+      if (currentScale < 0.1) currentScale = 0.1;
+      applyScale();
+    };
+
+    window.resetZoom = function() {
+      currentScale = 1.0;
+      applyScale();
+    };
 
     function applyScale() {
       const frame = document.getElementById("templateFrame");
       if (frame) {
         frame.style.transform = `translateX(-50%) scale(${currentScale})`;
       }
-    }
-
-    function zoomIn() {
-      currentScale += 0.1;
-      if (currentScale > 2) currentScale = 2;
-      applyScale();
-    }
-
-    function zoomOut() {
-      currentScale -= 0.1;
-      if (currentScale < 0.1) currentScale = 0.1;
-      applyScale();
-    }
-
-    function resetZoom() {
-      currentScale = 1.0;
-      applyScale();
     }
 
     async function saveTemplate() {
@@ -203,18 +203,28 @@
       }
 
       const timestamp = Date.now();
+
+      // 썸네일 저장
       const thumbnailPath = `savedTemplates/images/${user.uid}_${timestamp}_thumbnail.jpg`;
       const thumbnailRef = ref(storage, thumbnailPath);
       await uploadString(thumbnailRef, thumbnailDataUrl, 'data_url');
+      const thumbnailUrl = await getDownloadURL(thumbnailRef);
 
-      uploadedPaths = { thumbnailPath };
+      // 로고 저장
+      const logoBlob = await fetch(logoUrl).then(r => r.blob());
+      const logoPath = `savedTemplates/images/${user.uid}_${timestamp}_logo.jpg`;
+      const logoRef = ref(storage, logoPath);
+      await uploadBytes(logoRef, logoBlob);
+      const logoDownloadUrl = await getDownloadURL(logoRef);
+
+      uploadedPaths = { thumbnailPath, logoPath };
 
       const docRef = await addDoc(collection(db, "savedTemplates"), {
         userId: user.uid,
         brand,
         slogan,
-        thumbnailPath,
-        logoUrl,
+        thumbnailUrl,
+        logoUrl: logoDownloadUrl,
         mainUrl,
         createdAt: serverTimestamp(),
       });
