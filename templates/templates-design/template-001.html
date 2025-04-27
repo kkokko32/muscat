@@ -9,13 +9,11 @@
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 
-  <!-- ✅ firebase compat 버전 사용 -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-
-  <!-- ✅ html2canvas -->
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
@@ -47,8 +45,8 @@
   <div class="template-frame" id="templateFrame">
     <div class="brand-name" id="brandName">브랜드명</div>
     <div class="brand-slogan" id="brandDesc">브랜드 슬로건</div>
-    <img id="brandLogo" src="" style="width:100px; height:100px; object-fit:contain; margin-bottom:40px;" />
-    <img id="mainImage" src="" style="width:300px; height:300px; object-fit:cover;" />
+    <img id="brandLogo" src="" crossorigin="anonymous" style="width:100px; height:100px; object-fit:contain; margin-bottom:40px;" />
+    <img id="mainImage" src="" crossorigin="anonymous" style="width:300px; height:300px; object-fit:cover;" />
   </div>
 
   <button class="template-close" onclick="window.history.back()">&times;</button>
@@ -77,34 +75,29 @@ const auth = firebase.auth();
 
 let docId = null;
 
+// ✅ 로딩 표시
 function showLoading() { document.getElementById("loadingOverlay").style.display = "flex"; }
 function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
 
-async function uploadFile(refPath, blob) {
-  const storageRef = storage.ref(refPath);
-  await storageRef.put(blob);
-  return await storageRef.getDownloadURL();
-}
-
+// ✅ 저장
 async function handleSaveTemplate() {
   try {
     showLoading();
-    const frame = document.getElementById("templateFrame").cloneNode(true);
-    frame.style.transform = "none"; // ✅ 저장용 transform 제거
-
-    const canvas = await html2canvas(frame);
-    const thumbnailBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg"));
-    
+    const frame = document.getElementById("templateFrame");
     const logo = document.getElementById("brandLogo");
     const main = document.getElementById("mainImage");
+
+    const clonedFrame = frame.cloneNode(true);
+    clonedFrame.style.transform = "none";
+
+    const canvas = await html2canvas(clonedFrame);
+    const thumbnailBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg"));
+
     const logoBlob = await fetch(logo.src).then(r => r.blob());
     const mainBlob = await fetch(main.src).then(r => r.blob());
-
-    const htmlContent = document.getElementById("templateFrame").outerHTML.replace('transform: translateX(-50%) scale(0.416);', '');
-    const htmlBlob = new Blob([htmlContent], { type: "text/html" });
+    const htmlBlob = new Blob([frame.outerHTML], { type: "text/html" });
 
     const timestamp = Date.now();
-
     const [thumbnailUrl, logoUrl, imageUrl, htmlUrl] = await Promise.all([
       uploadFile(`savedTemplates/images/template-${timestamp}.jpg`, thumbnailBlob),
       uploadFile(`savedTemplates/logos/logo-${timestamp}.jpg`, logoBlob),
@@ -135,6 +128,7 @@ async function handleSaveTemplate() {
   }
 }
 
+// ✅ 삭제
 async function handleDeleteTemplate() {
   if (!docId) { alert("저장된 템플릿이 없습니다."); return; }
   try {
@@ -160,6 +154,7 @@ async function handleDeleteTemplate() {
   }
 }
 
+// ✅ 다운로드
 async function handleDownloadTemplate() {
   try {
     showLoading();
@@ -177,10 +172,11 @@ async function handleDownloadTemplate() {
   }
 }
 
+// ✅ 확대, 축소, 초기화
 let currentScale = 0.416;
 function applyScale() { document.getElementById("templateFrame").style.transform = `translateX(-50%) scale(${currentScale})`; }
-function zoomIn() { currentScale += 0.1; if (currentScale > 2) currentScale = 2; applyScale(); }
-function zoomOut() { currentScale -= 0.1; if (currentScale < 0.1) currentScale = 0.1; applyScale(); }
+function zoomIn() { currentScale = Math.min(currentScale + 0.1, 2); applyScale(); }
+function zoomOut() { currentScale = Math.max(currentScale - 0.1, 0.1); applyScale(); }
 function resetZoom() { currentScale = 1; applyScale(); }
 function fitHeight() {
   const frameHeight = document.getElementById("templateFrame").offsetHeight;
@@ -189,6 +185,7 @@ function fitHeight() {
   applyScale();
 }
 
+// ✅ 초기 데이터 세팅
 window.addEventListener("DOMContentLoaded", () => {
   const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
   const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
@@ -204,6 +201,12 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("deleteTemplateBtn").addEventListener("click", handleDeleteTemplate);
   document.getElementById("downloadBtn").addEventListener("click", handleDownloadTemplate);
 });
+
+async function uploadFile(refPath, blob) {
+  const storageRef = storage.ref(refPath);
+  await storageRef.put(blob);
+  return await storageRef.getDownloadURL();
+}
 </script>
 
 </body>
