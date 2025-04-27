@@ -174,12 +174,20 @@
   }
 
   async function downloadTemplate() {
-    const frame = document.getElementById("templateFrame");
-    const canvas = await html2canvas(frame, { useCORS: true, scale: 1 });
-    const link = document.createElement("a");
-    link.href = canvas.toDataURL("image/jpeg", 1.0);
-    link.download = "template.jpg";
-    link.click();
+  const frame = document.getElementById("templateFrame");
+  const canvas = await html2canvas(frame, {
+    useCORS: true,
+    scale: 1,
+    backgroundColor: null,
+    scrollX: 0,
+    scrollY: 0,
+    windowWidth: frame.scrollWidth,
+    windowHeight: frame.scrollHeight
+  });
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/jpeg", 1.0);
+  link.download = "template.jpg";
+  link.click();
   }
 
   window.addEventListener("DOMContentLoaded", () => {
