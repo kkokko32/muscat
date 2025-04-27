@@ -2,201 +2,296 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Template</title>
 
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 
-  <!-- ✅ Firebase compat 버전으로 교체 -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-
-  <!-- ✅ html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
+    body.view-mode .template-frame {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.416);
+      transform-origin: top center;
+      width: 2400px;
+      height: 3508px;
+      margin: 0;
+    }
+    .template-frame {
+      transform: none;
+    }
+    .template-wrapper {
+      width: 100%;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      background-color: #292929;
+    }
+    .template-buttons {
+      position: fixed;
+      top: 150px;
+      right: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10;
+    }
+    .template-close {
+      position: fixed;
+      top: 50px;
+      right: 30px;
+      font-size: 32px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .view-controls {
+      position: fixed;
+      top: 150px;
+      left: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10;
+    }
+    .view-controls button {
+      width: 50px;
+      height: 50px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+    }
     html, body {
       height: 100%;
       margin: 0;
-      background: #292929;
       overflow-y: scroll;
       overflow-x: hidden;
       scrollbar-width: none;
+      background-color: #292929;
     }
     body::-webkit-scrollbar { display: none; }
-    
-    .template-wrapper { width: 100%; min-height: 100vh; position: relative; }
-    .template-frame { position: absolute; top: 50px; left: 50%; width: 2400px; height: 3508px; transform: translateX(-50%) scale(0.416); transform-origin: top center; background-color: #f3d9aa; }
-    
-    .view-controls, .template-buttons, .template-close {
-      position: fixed; z-index: 10; display: flex; flex-direction: column; gap: 10px;
-    }
-    .view-controls { top: 150px; left: 30px; }
-    .template-buttons { top: 150px; right: 30px; }
-    .template-close { top: 50px; right: 30px; font-size: 32px; background: none; border: none; color: white; cursor: pointer; }
-    .view-controls button, .template-buttons button {
-      width: 60px; height: 40px; background: #333; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;
-    }
     .loading-overlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7); z-index: 9999;
-      display: none; align-items: center; justify-content: center;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
     }
     .loading-spinner {
-      width: 48px; height: 48px; border: 5px solid #ccc; border-top-color: #aafc3e;
-      border-radius: 50%; animation: spin 1s linear infinite;
+      width: 48px;
+      height: 48px;
+      border: 5px solid #ccc;
+      border-top-color: #aafc3e;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-overlay.active {
+      display: flex;
+    }
   </style>
 </head>
 
 <body class="template-page">
-  <div class="loading-overlay" id="loadingOverlay"><div class="loading-spinner"></div></div>
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+</div>
 
-  <div class="template-wrapper">
-    <div class="view-controls">
-      <button onclick="zoomOut()">-</button>
-      <button onclick="resetZoom()">100%</button>
-      <button onclick="zoomIn()">+</button>
-    </div>
-
-    <div class="template-frame" id="templateFrame">
-      <div class="brand-name" id="brandName">브랜드명</div>
-      <div class="brand-slogan" id="brandDesc">브랜드 슬로건</div>
-      <img id="brandLogo" src="" style="width:100px; height:100px; object-fit:contain; margin-bottom:40px;" />
-      <img id="mainImage" src="" style="width:300px; height:300px; object-fit:cover;" />
-    </div>
-
-    <button class="template-close" onclick="window.history.back()">&times;</button>
-
-    <div class="template-buttons">
-      <button id="saveTemplateBtn">저장</button>
-      <button id="deleteTemplateBtn">삭제</button>
-      <button id="downloadBtn">다운로드</button>
-    </div>
+<div class="template-wrapper">
+  <div class="view-controls">
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetZoom()">100%</button>
+    <button onclick="zoomIn()">+</button>
   </div>
 
+  <div class="template-frame" id="templateFrame" style="position: relative; width: 2400px; height: 3508px; background-color: #f3d9aa;">
+    <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
+    <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
+    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
+    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 300px; height: 300px; object-fit: cover;" />
+  </div>
+
+  <button class="template-close" onclick="window.history.back()">&times;</button>
+
+  <div class="template-buttons">
+    <button id="saveTemplateBtn" class="save-btn">저장</button>
+    <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
+    <button id="downloadBtn" class="download-btn">다운로드</button>
+  </div>
+</div>
+
 <script>
-/* ✅ 스크립트 시작 */
+  const firebaseConfig = {
+    apiKey: "AIzaSyAZ8jWpCo1ZeS3VrOQh8m5pCJRVi1wJRNY",
+    authDomain: "muscat-86007.firebaseapp.com",
+    projectId: "muscat-86007",
+    storageBucket: "muscat-86007.appspot.com",
+    messagingSenderId: "741157244877",
+    appId: "1:741157244877:web:3bba4655292e2e19cdbe84",
+    measurementId: "G-VSBCZ125J2"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+  const auth = firebase.auth();
 
-// 초기 스케일
-let currentScale = 0.416;
-function applyScale() { document.getElementById("templateFrame").style.transform = `translateX(-50%) scale(${currentScale})`; }
-function zoomIn() { currentScale += 0.1; if (currentScale > 2) currentScale = 2; applyScale(); }
-function zoomOut() { currentScale -= 0.1; if (currentScale < 0.1) currentScale = 0.1; applyScale(); }
-function resetZoom() { currentScale = 1.0; applyScale(); }
+  let docId = null;
 
-// 로딩 오버레이
-function showLoading() { document.getElementById("loadingOverlay").style.display = "flex"; }
-function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
+  function showLoading() { document.getElementById("loadingOverlay").classList.add("active"); }
+  function hideLoading() { document.getElementById("loadingOverlay").classList.remove("active"); }
 
-// Firebase 초기화
-const firebaseConfig = {
-  apiKey: "AIzaSyAZ8jWpCo1ZeS3VrOQh8m5pCJRVi1wJRNY",
-  authDomain: "muscat-86007.firebaseapp.com",
-  projectId: "muscat-86007",
-  storageBucket: "muscat-86007.appspot.com",
-  messagingSenderId: "741157244877",
-  appId: "1:741157244877:web:3bba4655292e2e19cdbe84",
-  measurementId: "G-VSBCZ125J2"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const storage = firebase.storage();
-const auth = firebase.auth();
+  async function handleSaveTemplate() {
+    try {
+      showLoading();
+      const frame = document.getElementById("templateFrame");
+      const canvas = await html2canvas(frame);
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg"));
 
-let docId = null;
+      const filename = `template-${Date.now()}.jpg`;
+      const storageRef = storage.ref().child(`savedTemplates/images/${filename}`);
+      await storageRef.put(blob);
+      const downloadURL = await storageRef.getDownloadURL();
 
-// 저장 기능
-async function handleSaveTemplate() {
-  try {
-    showLoading();
+      const user = auth.currentUser;
+      const uid = user ? user.uid : "guest";
+
+      const docRef = await db.collection("savedTemplates").add({
+        brand: document.getElementById("brandName").innerText,
+        slogan: document.getElementById("brandDesc").innerText,
+        thumbnailUrl: downloadURL,
+        uid: uid,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      docId = docRef.id;
+      alert("저장 완료!");
+    } catch (err) {
+      console.error(err);
+      alert("저장 실패");
+    } finally {
+      hideLoading();
+    }
+  }
+
+  async function handleDeleteTemplate() {
+    if (!docId) { alert("저장된 템플릿이 없습니다."); return; }
+    try {
+      showLoading();
+      const docRef = db.collection("savedTemplates").doc(docId);
+      const snap = await docRef.get();
+      const data = snap.data();
+
+      await Promise.all([
+        storage.refFromURL(data.thumbnailUrl).delete(),
+        docRef.delete()
+      ]);
+
+      alert("삭제 완료!");
+      docId = null;
+    } catch (err) {
+      console.error(err);
+      alert("삭제 실패");
+    } finally {
+      hideLoading();
+    }
+  }
+
+  async function handleDownloadTemplate() {
+    try {
+      showLoading();
+      const frame = document.getElementById("templateFrame");
+      const canvas = await html2canvas(frame);
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/jpeg");
+      link.download = "template-download.jpg";
+      link.click();
+    } catch (err) {
+      console.error(err);
+      alert("다운로드 실패");
+    } finally {
+      hideLoading();
+    }
+  }
+
+  let currentScale = 0.416;
+  function applyScale() {
     const frame = document.getElementById("templateFrame");
-    const canvas = await html2canvas(frame);
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg"));
-    const filename = `template-${Date.now()}.jpg`;
-    const storageRef = storage.ref().child(`savedTemplates/images/${filename}`);
-    await storageRef.put(blob);
-    const downloadURL = await storageRef.getDownloadURL();
-
-    const docRef = await db.collection("savedTemplates").add({
-      brand: document.getElementById("brandName").innerText,
-      slogan: document.getElementById("brandDesc").innerText,
-      thumbnailUrl: downloadURL,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    docId = docRef.id;
-    alert("저장 완료!");
-  } catch (err) {
-    console.error(err);
-    alert("저장 실패");
-  } finally {
-    hideLoading();
+    if (frame) {
+      frame.style.transform = `translateX(-50%) scale(${currentScale})`;
+    }
   }
-}
 
-// 삭제 기능
-async function handleDeleteTemplate() {
-  if (!docId) { alert("저장된 템플릿이 없습니다."); return; }
-  try {
-    showLoading();
-    const docRef = db.collection("savedTemplates").doc(docId);
-    const snap = await docRef.get();
-    const data = snap.data();
-    await storage.refFromURL(data.thumbnailUrl).delete();
-    await docRef.delete();
-    alert("삭제 완료!");
-    docId = null;
-  } catch (err) {
-    console.error(err);
-    alert("삭제 실패");
-  } finally {
-    hideLoading();
+  function zoomIn() {
+    currentScale += 0.1;
+    if (currentScale > 2) currentScale = 2;
+    applyScale();
   }
-}
 
-// 다운로드 기능
-async function handleDownloadTemplate() {
-  try {
-    showLoading();
-    const frame = document.getElementById("templateFrame");
-    const canvas = await html2canvas(frame);
-    const link = document.createElement("a");
-    link.href = canvas.toDataURL("image/jpeg");
-    link.download = "template-download.jpg";
-    link.click();
-  } catch (err) {
-    console.error(err);
-    alert("다운로드 실패");
-  } finally {
-    hideLoading();
+  function zoomOut() {
+    currentScale -= 0.1;
+    if (currentScale < 0.1) currentScale = 0.1;
+    applyScale();
   }
-}
 
-// 초기 데이터 반영
-window.addEventListener("DOMContentLoaded", () => {
-  const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
-  const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
-  const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
-  const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
-
-  if (brand) document.getElementById("brandName").innerText = brand;
-  if (slogan) document.getElementById("brandDesc").innerText = slogan;
-  if (logoUrl) document.getElementById("brandLogo").src = logoUrl;
-  if (mainUrl) document.getElementById("mainImage").src = mainUrl;
-
-  document.getElementById("saveTemplateBtn").addEventListener("click", handleSaveTemplate);
-  document.getElementById("deleteTemplateBtn").addEventListener("click", handleDeleteTemplate);
-  document.getElementById("downloadBtn").addEventListener("click", handleDownloadTemplate);
-
-  if (window.top === window.self) {
-    document.body.classList.add("view-mode");
+  function resetZoom() {
+    currentScale = 1.0;
+    applyScale();
   }
-});
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
+    const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
+    const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
+    const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+
+    updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
+
+    document.getElementById("saveTemplateBtn").addEventListener("click", handleSaveTemplate);
+    document.getElementById("deleteTemplateBtn").addEventListener("click", handleDeleteTemplate);
+    document.getElementById("downloadBtn").addEventListener("click", handleDownloadTemplate);
+
+    if (window.top === window.self) {
+      document.body.classList.add("view-mode");
+      applyScale(); // ✅ 페이지 진입 시 바로 축소 적용
+    }
+  });
+
+  window.addEventListener("message", (event) => {
+    const data = event.data;
+    if (data.type === 'updateTemplate') {
+      updateTemplateContent(data);
+    }
+  });
+
+  function updateTemplateContent(data) {
+    const brandEl = document.querySelector(".brand-name");
+    const sloganEl = document.querySelector(".brand-slogan");
+    const logoEl = document.querySelector(".logo-preview");
+    const mainEl = document.querySelector(".main-preview");
+
+    if (data.brand && brandEl) brandEl.textContent = data.brand;
+    if (data.slogan && sloganEl) sloganEl.textContent = data.slogan;
+    if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
+    if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
+  }
 </script>
 
 </body>
