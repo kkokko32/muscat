@@ -55,7 +55,6 @@
       z-index: 10;
     }
 
-    /* 좌측 뷰어 컨트롤러 */
     .view-controls {
       position: fixed;
       top: 150px;
@@ -137,7 +136,6 @@
       <button onclick="zoomIn()">+</button>
     </div>
 
-    <!-- 템플릿 프레임 -->
     <div class="template-frame" id="templateFrame" style="position: relative; width: 2400px; height: 3508px; background-color: #f3d9aa;">
       <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
       <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
@@ -164,14 +162,7 @@
 
     let currentScale = 0.416;
     let savedDocId = null;
-    let uploadedPaths = {}; // 업로드된 Storage 경로 기억용
-
-    function applyScale() {
-      const frame = document.getElementById("templateFrame");
-      if (frame) {
-        frame.style.transform = `translateX(-50%) scale(${currentScale})`;
-      }
-    }
+    let uploadedPaths = {};
 
     function zoomIn() {
       currentScale += 0.1;
@@ -190,13 +181,9 @@
       applyScale();
     }
 
-    window.showLoading = function() {
-      document.getElementById("loadingOverlay").classList.add("active");
-    };
-
-    window.hideLoading = function() {
-      document.getElementById("loadingOverlay").classList.remove("active");
-    };
+    function applyScale() {
+      // 스케일은 body 클래스에 의해 이미 적용되므로 추가 조작 안 함
+    }
 
     async function saveTemplate() {
       showLoading();
@@ -218,28 +205,19 @@
 
       const timestamp = Date.now();
       const thumbnailPath = `savedTemplates/images/${user.uid}_${timestamp}_thumbnail.jpg`;
-      const logoPath = `savedTemplates/images/${user.uid}_${timestamp}_logo.jpg`;
-      const mainPath = `savedTemplates/images/${user.uid}_${timestamp}_main.jpg`;
 
-      // 썸네일 업로드
       const thumbnailRef = ref(storage, thumbnailPath);
       await uploadString(thumbnailRef, thumbnailDataUrl, 'data_url');
 
-      // 로고와 메인 업로드 (url을 파일로 변환하지 않고 data_url로 가정)
-      const logoRef = ref(storage, logoPath);
-      const mainRef = ref(storage, mainPath);
-      await uploadString(logoRef, logoUrl, 'data_url');
-      await uploadString(mainRef, mainUrl, 'data_url');
-
-      uploadedPaths = { thumbnailPath, logoPath, mainPath };
+      uploadedPaths = { thumbnailPath };
 
       const docRef = await addDoc(collection(db, "savedTemplates"), {
         userId: user.uid,
         brand,
         slogan,
         thumbnailPath,
-        logoPath,
-        mainPath,
+        logoUrl,
+        mainUrl,
         createdAt: serverTimestamp(),
       });
 
@@ -261,7 +239,6 @@
 
       await deleteDoc(doc(db, "savedTemplates", savedDocId));
 
-      // Storage 파일 삭제
       for (const path of Object.values(uploadedPaths)) {
         await deleteObject(ref(storage, path)).catch(() => {});
       }
@@ -286,8 +263,6 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      applyScale();
-
       const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
       const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
       const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
@@ -314,6 +289,14 @@
       if (data.slogan && sloganEl) sloganEl.textContent = data.slogan;
       if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
       if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
+    }
+
+    function showLoading() {
+      document.getElementById("loadingOverlay").classList.add("active");
+    }
+
+    function hideLoading() {
+      document.getElementById("loadingOverlay").classList.remove("active");
     }
   </script>
 </body>
