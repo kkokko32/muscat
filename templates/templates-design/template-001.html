@@ -20,105 +20,18 @@
       height: 3508px;
       margin: 0;
     }
-
-    .template-frame {
-      transform: none;
-    }
-
-    .template-wrapper {
-      width: 100%;
-      min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
-      background-color: #292929;
-    }
-
-    .template-buttons {
-      position: fixed;
-      top: 150px;
-      right: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 10;
-    }
-
-    .template-close {
-      position: fixed;
-      top: 50px;
-      right: 30px;
-      font-size: 32px;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    .view-controls {
-      position: fixed;
-      top: 150px;
-      left: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 10;
-    }
-
-    .view-controls button {
-      width: 50px;
-      height: 50px;
-      background-color: #333;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    html, body {
-      height: 100%;
-      margin: 0;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      scrollbar-width: none;
-      background-color: #292929;
-    }
-    body::-webkit-scrollbar {
-      display: none;
-    }
-
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .loading-spinner {
-      width: 48px;
-      height: 48px;
-      border: 5px solid #ccc;
-      border-top-color: #aafc3e;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .loading-overlay.active {
-      display: flex;
-    }
+    .template-frame { transform: none; }
+    .template-wrapper { width: 100%; min-height: 100vh; position: relative; overflow-x: hidden; background-color: #292929; }
+    .template-buttons { position: fixed; top: 150px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
+    .template-close { position: fixed; top: 50px; right: 30px; font-size: 32px; background: none; border: none; color: white; cursor: pointer; z-index: 10; }
+    .view-controls { position: fixed; top: 150px; left: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
+    .view-controls button { width: 50px; height: 50px; background-color: #333; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; }
+    html, body { height: 100%; margin: 0; overflow-y: scroll; overflow-x: hidden; scrollbar-width: none; background-color: #292929; }
+    body::-webkit-scrollbar { display: none; }
+    .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); z-index: 9999; display: none; align-items: center; justify-content: center; }
+    .loading-spinner { width: 48px; height: 48px; border: 5px solid #ccc; border-top-color: #aafc3e; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-overlay.active { display: flex; }
   </style>
 </head>
 
@@ -160,28 +73,13 @@
     let savedDocId = null;
     let uploadedPaths = {};
 
-    window.zoomIn = function() {
-      currentScale += 0.1;
-      if (currentScale > 2) currentScale = 2;
-      applyScale();
-    };
-
-    window.zoomOut = function() {
-      currentScale -= 0.1;
-      if (currentScale < 0.1) currentScale = 0.1;
-      applyScale();
-    };
-
-    window.resetZoom = function() {
-      currentScale = 1.0;
-      applyScale();
-    };
+    window.zoomIn = function() { currentScale += 0.1; if (currentScale > 2) currentScale = 2; applyScale(); };
+    window.zoomOut = function() { currentScale -= 0.1; if (currentScale < 0.1) currentScale = 0.1; applyScale(); };
+    window.resetZoom = function() { currentScale = 1.0; applyScale(); };
 
     function applyScale() {
       const frame = document.getElementById("templateFrame");
-      if (frame) {
-        frame.style.transform = `translateX(-50%) scale(${currentScale})`;
-      }
+      if (frame) frame.style.transform = `translateX(-50%) scale(${currentScale})`;
     }
 
     async function saveTemplate() {
@@ -204,13 +102,11 @@
 
       const timestamp = Date.now();
 
-      // 썸네일 저장
       const thumbnailPath = `savedTemplates/images/${user.uid}_${timestamp}_thumbnail.jpg`;
       const thumbnailRef = ref(storage, thumbnailPath);
       await uploadString(thumbnailRef, thumbnailDataUrl, 'data_url');
       const thumbnailUrl = await getDownloadURL(thumbnailRef);
 
-      // 로고 저장
       const logoBlob = await fetch(logoUrl).then(r => r.blob());
       const logoPath = `savedTemplates/images/${user.uid}_${timestamp}_logo.jpg`;
       const logoRef = ref(storage, logoPath);
@@ -220,7 +116,7 @@
       uploadedPaths = { thumbnailPath, logoPath };
 
       const docRef = await addDoc(collection(db, "savedTemplates"), {
-        userId: user.uid,
+        uid: user.uid, // ✅ 추가
         brand,
         slogan,
         thumbnailUrl,
@@ -243,8 +139,14 @@
         alert("저장된 템플릿이 없습니다.");
         return;
       }
-      showLoading();
 
+      const confirmDelete = confirm("정말 삭제하시겠습니까?"); // ✅ 추가
+      if (!confirmDelete) {
+        hideLoading();
+        return;
+      }
+
+      showLoading();
       await deleteDoc(doc(db, "savedTemplates", savedDocId));
       for (const path of Object.values(uploadedPaths)) {
         await deleteObject(ref(storage, path)).catch(() => {});
@@ -256,7 +158,7 @@
       document.getElementById("saveTemplateBtn").disabled = false;
       document.getElementById("deleteTemplateBtn").disabled = true;
 
-      alert("삭제 완료되었습니다.");
+      alert("삭제 완료되었습니다!"); // ✅ 추가
       hideLoading();
     }
 
@@ -301,7 +203,6 @@
     function showLoading() {
       document.getElementById("loadingOverlay").classList.add("active");
     }
-
     function hideLoading() {
       document.getElementById("loadingOverlay").classList.remove("active");
     }
