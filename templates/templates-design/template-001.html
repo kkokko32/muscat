@@ -116,7 +116,7 @@
       uploadedPaths = { thumbnailPath, logoPath };
 
       const docRef = await addDoc(collection(db, "savedTemplates"), {
-        uid: user.uid, // ✅ 추가
+        uid: user.uid,
         brand,
         slogan,
         thumbnailUrl,
@@ -126,7 +126,7 @@
       });
 
       savedDocId = docRef.id;
-
+      sessionStorage.setItem("savedDocId", savedDocId); // ✅ 저장
       document.getElementById("saveTemplateBtn").disabled = true;
       document.getElementById("deleteTemplateBtn").disabled = false;
 
@@ -140,7 +140,7 @@
         return;
       }
 
-      const confirmDelete = confirm("정말 삭제하시겠습니까?"); // ✅ 추가
+      const confirmDelete = confirm("정말 삭제하시겠습니까?");
       if (!confirmDelete) {
         hideLoading();
         return;
@@ -154,11 +154,12 @@
 
       savedDocId = null;
       uploadedPaths = {};
+      sessionStorage.removeItem("savedDocId"); // ✅ 삭제 완료 후 세션 클리어
 
       document.getElementById("saveTemplateBtn").disabled = false;
       document.getElementById("deleteTemplateBtn").disabled = true;
 
-      alert("삭제 완료되었습니다!"); // ✅ 추가
+      alert("삭제 완료되었습니다!");
       hideLoading();
     }
 
@@ -176,6 +177,12 @@
       const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
       const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
       const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+
+      const savedDocIdFromStorage = sessionStorage.getItem("savedDocId"); // ✅ 세션에서 불러오기
+      if (savedDocIdFromStorage) {
+        savedDocId = savedDocIdFromStorage;
+        document.getElementById("deleteTemplateBtn").disabled = false;
+      }
 
       updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
 
