@@ -63,14 +63,14 @@
   <button class="template-close" onclick="window.history.back()">&times;</button>
 
   <div class="template-buttons">
-    <button id="saveTemplateBtn" class="save-btn">저장</button>
-    <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
-    <button id="downloadBtn" class="download-btn">다운로드</button>
+    <button id="saveTemplateBtn">저장</button>
+    <button id="deleteTemplateBtn">삭제</button>
+    <button id="downloadBtn">다운로드</button>
   </div>
 </div>
 
 <script>
-// ✅ Firebase 설정
+// ✅ Firebase 초기화
 const firebaseConfig = {
   apiKey: "AIzaSyAZ8jWpCo1ZeS3VrOQh8m5pCJRVi1wJRNY",
   authDomain: "muscat-86007.firebaseapp.com",
@@ -157,6 +157,7 @@ async function handleDownloadTemplate() {
   }
 }
 
+// ✅ 뷰어 기능
 let currentScale = 0.416;
 function applyScale() { document.getElementById("templateFrame").style.transform = `translateX(-50%) scale(${currentScale})`; }
 function zoomIn() { currentScale = Math.min(currentScale + 0.1, 2); applyScale(); }
@@ -176,24 +177,16 @@ window.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("message", (event) => {
   const data = event.data;
   if (data.type === 'updateTemplate') {
-    updateTemplateContent(data);
+    const brandEl = document.querySelector(".brand-name");
+    const sloganEl = document.querySelector(".brand-slogan");
+    const logoEl = document.querySelector(".logo-preview");
+    const mainEl = document.querySelector(".main-preview");
+    if (data.brand && brandEl) brandEl.textContent = data.brand;
+    if (data.slogan && sloganEl) sloganEl.textContent = data.slogan;
+    if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
+    if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
   }
 });
-
-function updateTemplateContent(data) {
-  const brandEl = document.querySelector(".brand-name");
-  const sloganEl = document.querySelector(".brand-slogan");
-  const logoEl = document.querySelector(".logo-preview");
-  const mainEl = document.querySelector(".main-preview");
-
-  if (data.brand && brandEl) brandEl.textContent = data.brand;
-  if (data.slogan && sloganEl) sloganEl.textContent = data.slogan;
-  if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
-  if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
-}
-
-window.showLoading = showLoading;
-window.hideLoading = hideLoading;
 </script>
 
 </body>
