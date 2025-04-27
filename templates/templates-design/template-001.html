@@ -10,13 +10,16 @@
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 
   <style>
-    /* ✅ 보기용(view-mode)에서만 템플릿 축소 */
+    /* ✅ view-mode일 때만 템플릿 축소 + 가운데 정렬 */
     body.view-mode .template-frame {
-      transform: scale(0.416);
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.416);
       transform-origin: top center;
       width: 2400px;
       height: 3508px;
-      margin: 0 auto;
+      margin: 0;
     }
 
     /* ✅ 기본은 transform 없음 */
@@ -24,18 +27,16 @@
       transform: none;
     }
 
-    /* ✅ 템플릿 + 버튼 전체 감싸는 영역 */
+    /* ✅ 전체 감싸는 wrapper */
     .template-wrapper {
       width: 100%;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
       position: relative;
+      overflow-x: hidden;
+      background-color: #292929;
     }
 
-    /* ✅ 버튼 고정 위치 */
+    /* ✅ 버튼 고정 */
     .template-buttons {
       position: fixed;
       top: 150px;
@@ -62,6 +63,7 @@
       height: 100%;
       margin: 0;
       overflow-y: scroll;
+      overflow-x: hidden;
       scrollbar-width: none;
       background-color: #292929;
     }
