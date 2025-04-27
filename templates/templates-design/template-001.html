@@ -10,12 +10,24 @@
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 
   <style>
+    body.view-mode .template-frame {
+      width: 1000px; /* 보기 편하게 축소 */
+      height: auto;
+      transform: none !important; /* scale 제거 */
+      margin: 0 auto;
+    }
+
+    .template-frame {
+      transform: none; /* 기본 transform 제거 (안전) */
+    }
+
     html, body {
       height: 100%;
       margin: 0;
       overflow-y: scroll;
       scrollbar-width: none;
     }
+
     body::-webkit-scrollbar {
       display: none;
     }
@@ -53,13 +65,14 @@
     }
   </style>
 </head>
+
 <body class="template-page">
   <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
 
-  <div class="template-frame" id="templateFrame" style="position: relative; width: 1200px; height: 800px; background-color: #f3d9aa;" >
+  <div class="template-frame" id="templateFrame" style="position: relative; width: 2400px; height: 3508px; background-color: #f3d9aa;">
     <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
     <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
     <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
@@ -87,7 +100,7 @@
 
       const saveBtn = document.getElementById("saveTemplateBtn");
       const loadingOverlay = document.getElementById("loadingOverlay");
-      
+
       if (saveBtn) {
         const originalOnClick = saveBtn.onclick;
         saveBtn.onclick = async function(e) {
@@ -129,6 +142,11 @@
     window.hideLoading = function() {
       document.getElementById("loadingOverlay").classList.remove("active");
     };
+
+    if (window.top === window.self) {
+      // 상세페이지로 직접 접근했을 때만 view-mode 클래스 추가
+      document.body.classList.add("view-mode");
+    }
   </script>
 </body>
 </html>
