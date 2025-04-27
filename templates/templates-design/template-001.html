@@ -2,246 +2,192 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Template</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Template Save Final</title>
 
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
   <style>
-    body.view-mode .template-frame {
-      position: absolute;
-      top: 50px;
-      left: 50%;
-      transform: translateX(-50%) scale(0.416);
-      transform-origin: top center;
-      width: 2400px;
-      height: 3508px;
-      margin: 0;
-    }
-
-    .template-frame {
-      transform: none;
-    }
-
-    .template-wrapper {
-      width: 100%;
-      min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
-      background-color: #292929;
-    }
-
-    .template-buttons {
-      position: fixed;
-      top: 150px;
-      right: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 10;
-    }
-
-    .template-close {
-      position: fixed;
-      top: 50px;
-      right: 30px;
-      font-size: 32px;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    .view-controls {
-      position: fixed;
-      top: 150px;
-      left: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 10;
-    }
-
-    .view-controls button {
-      width: 60px;
-      height: 40px;
-      background-color: #333;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    html, body {
-      height: 100%;
-      margin: 0;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      scrollbar-width: none;
-      background-color: #292929;
-    }
-    body::-webkit-scrollbar {
-      display: none;
-    }
-
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .loading-spinner {
-      width: 48px;
-      height: 48px;
-      border: 5px solid #ccc;
-      border-top-color: #aafc3e;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .loading-overlay.active {
-      display: flex;
-    }
-
-    body.inside-preview .template-buttons,
-    body.inside-preview .template-close,
-    body.inside-preview .view-controls {
-      display: none !important;
-    }
+    html, body { margin: 0; height: 100%; background: #292929; overflow: hidden; }
+    .template-wrapper { width: 100%; height: 100%; position: relative; }
+    .template-frame { width: 2400px; height: 3508px; background: #f3d9aa; transform: translateX(-50%) scale(0.416); transform-origin: top center; position: relative; margin-left: 50%; }
+    .template-buttons, .view-controls { position: fixed; top: 150px; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
+    .template-buttons { right: 30px; }
+    .view-controls { left: 30px; }
+    .template-close { position: fixed; top: 50px; right: 30px; font-size: 32px; background: none; color: white; border: none; cursor: pointer; z-index: 10; }
+    button { background: #333; color: white; border: none; border-radius: 8px; padding: 10px; cursor: pointer; }
+    .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    .loading-spinner { width: 48px; height: 48px; border: 5px solid #ccc; border-top-color: #aafc3e; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 
-<body class="template-page">
-  <div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-spinner"></div>
+<body>
+<div class="loading-overlay" id="loadingOverlay"><div class="loading-spinner"></div></div>
+
+<div class="template-wrapper">
+  <div class="view-controls">
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetZoom()">100%</button>
+    <button onclick="zoomIn()">+</button>
+    <button onclick="fitHeight()">Fit</button>
   </div>
 
-  <div class="template-wrapper">
-    <div class="view-controls">
-      <button onclick="zoomOut()">-</button>
-      <button onclick="resetZoom()">100%</button>
-      <button onclick="zoomIn()">+</button>
-      <button onclick="fitHeight()">Fit</button>
-    </div>
-
-    <div class="template-frame" id="templateFrame" style="position: relative; width: 2400px; height: 3508px; background-color: #f3d9aa;">
-      <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
-      <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
-      <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-      <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 300px; height: 300px; object-fit: cover;" />
-    </div>
-
-    <button class="template-close" onclick="window.history.back()">&times;</button>
-
-    <div class="template-buttons">
-      <button id="saveTemplateBtn" class="save-btn">저장</button>
-      <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
-      <button id="downloadBtn" class="download-btn">다운로드</button>
-    </div>
+  <div class="template-frame" id="templateFrame">
+    <div class="brand-name" id="brandName">브랜드명</div>
+    <div class="brand-slogan" id="brandDesc">브랜드 슬로건</div>
+    <img id="brandLogo" src="" style="width:100px; height:100px; object-fit:contain; margin-bottom:40px;" />
+    <img id="mainImage" src="" style="width:300px; height:300px; object-fit:cover;" />
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
+  <button class="template-close" onclick="window.history.back()">&times;</button>
+  <div class="template-buttons">
+    <button id="saveTemplateBtn">저장</button>
+    <button id="deleteTemplateBtn">삭제</button>
+    <button id="downloadBtn">다운로드</button>
+  </div>
+</div>
 
-  <script type="module">
-    import { handleSaveTemplate, handleDeleteTemplate, handleDownloadTemplate } from "/muscat/save-templates/save-template-server.js";
+<script>
+const firebaseConfig = { /* 🔥 네 Firebase 설정 삽입 */ };
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+const auth = firebase.auth();
 
-    let currentScale = 0.416;
+let docId = null;
+function showLoading() { document.getElementById("loadingOverlay").style.display = "flex"; }
+function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
 
-    function applyScale() {
-      const frame = document.getElementById("templateFrame");
-      if (frame) {
-        frame.style.transform = `translateX(-50%) scale(${currentScale})`;
-      }
-    }
+async function uploadFile(refPath, blob) {
+  const storageRef = storage.ref(refPath);
+  await storageRef.put(blob);
+  return await storageRef.getDownloadURL();
+}
 
-    function zoomIn() {
-      currentScale += 0.1;
-      if (currentScale > 2) currentScale = 2;
-      applyScale();
-    }
+async function handleSaveTemplate() {
+  try {
+    showLoading();
 
-    function zoomOut() {
-      currentScale -= 0.1;
-      if (currentScale < 0.1) currentScale = 0.1;
-      applyScale();
-    }
+    const frame = document.getElementById("templateFrame");
+    const logo = document.getElementById("brandLogo");
+    const main = document.getElementById("mainImage");
 
-    function resetZoom() {
-      currentScale = 1.0;
-      applyScale();
-    }
+    const thumbnailBlob = await new Promise(resolve => html2canvas(frame).then(c => c.toBlob(resolve, "image/jpeg")));
+    const logoBlob = await fetch(logo.src).then(r => r.blob());
+    const mainBlob = await fetch(main.src).then(r => r.blob());
+    const htmlBlob = new Blob([frame.outerHTML], { type: "text/html" });
 
-    function fitHeight() {
-      const frame = document.getElementById("templateFrame");
-      if (frame) {
-        const frameHeight = frame.offsetHeight;
-        const windowHeight = window.innerHeight - 150;
-        currentScale = windowHeight / frameHeight;
-        applyScale();
-      }
-    }
+    const timestamp = Date.now();
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
-      const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
-      const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
-      const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+    const [thumbnailUrl, logoUrl, imageUrl, htmlUrl] = await Promise.all([
+      uploadFile(`savedTemplates/images/template-${timestamp}.jpg`, thumbnailBlob),
+      uploadFile(`savedTemplates/logos/logo-${timestamp}.jpg`, logoBlob),
+      uploadFile(`savedTemplates/images/main-${timestamp}.jpg`, mainBlob),
+      uploadFile(`savedTemplates/htmls/template-${timestamp}.html`, htmlBlob)
+    ]);
 
-      updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
+    const user = auth.currentUser;
+    const uid = user ? user.uid : "guest";
 
-      document.getElementById("saveTemplateBtn")?.addEventListener("click", handleSaveTemplate);
-      document.getElementById("deleteTemplateBtn")?.addEventListener("click", handleDeleteTemplate);
-      document.getElementById("downloadBtn")?.addEventListener("click", handleDownloadTemplate);
-
-      if (window.top === window.self) {
-        document.body.classList.add("view-mode");
-      }
+    const docRef = await db.collection("savedTemplates").add({
+      brand: document.getElementById("brandName").innerText,
+      slogan: document.getElementById("brandDesc").innerText,
+      thumbnailUrl,
+      logoUrl,
+      imageUrl,
+      htmlUrl,
+      uid,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+    docId = docRef.id;
+    alert("저장 완료!");
+  } catch (err) {
+    console.error(err);
+    alert("저장 실패");
+  } finally {
+    hideLoading();
+  }
+}
 
-    window.addEventListener("message", (event) => {
-      const data = event.data;
-      if (data.type === 'updateTemplate') {
-        updateTemplateContent(data);
-      }
-    });
+async function handleDeleteTemplate() {
+  if (!docId) { alert("저장된 템플릿이 없습니다."); return; }
+  try {
+    showLoading();
+    const docRef = db.collection("savedTemplates").doc(docId);
+    const snap = await docRef.get();
+    const data = snap.data();
 
-    function updateTemplateContent(data) {
-      const brandEl = document.querySelector(".brand-name");
-      const sloganEl = document.querySelector(".brand-slogan");
-      const logoEl = document.querySelector(".logo-preview");
-      const mainEl = document.querySelector(".main-preview");
+    await Promise.all([
+      storage.refFromURL(data.thumbnailUrl).delete(),
+      storage.refFromURL(data.logoUrl).delete(),
+      storage.refFromURL(data.imageUrl).delete(),
+      storage.refFromURL(data.htmlUrl).delete(),
+      docRef.delete()
+    ]);
+    alert("삭제 완료!");
+    docId = null;
+  } catch (err) {
+    console.error(err);
+    alert("삭제 실패");
+  } finally {
+    hideLoading();
+  }
+}
 
-      if (data.brand && brandEl) brandEl.textContent = data.brand;
-      if (data.slogan && sloganEl) sloganEl.textContent = data.slogan;
-      if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
-      if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
-    }
+async function handleDownloadTemplate() {
+  try {
+    showLoading();
+    const frame = document.getElementById("templateFrame");
+    const canvas = await html2canvas(frame);
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/jpeg");
+    link.download = "template-download.jpg";
+    link.click();
+  } catch (err) {
+    console.error(err);
+    alert("다운로드 실패");
+  } finally {
+    hideLoading();
+  }
+}
 
-    window.showLoading = function() {
-      document.getElementById("loadingOverlay").classList.add("active");
-    };
+let currentScale = 0.416;
+function applyScale() { document.getElementById("templateFrame").style.transform = `translateX(-50%) scale(${currentScale})`; }
+function zoomIn() { currentScale += 0.1; if (currentScale > 2) currentScale = 2; applyScale(); }
+function zoomOut() { currentScale -= 0.1; if (currentScale < 0.1) currentScale = 0.1; applyScale(); }
+function resetZoom() { currentScale = 1; applyScale(); }
+function fitHeight() {
+  const frameHeight = document.getElementById("templateFrame").offsetHeight;
+  const windowHeight = window.innerHeight - 150;
+  currentScale = windowHeight / frameHeight;
+  applyScale();
+}
 
-    window.hideLoading = function() {
-      document.getElementById("loadingOverlay").classList.remove("active");
-    };
-  </script>
+window.addEventListener("DOMContentLoaded", () => {
+  const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
+  const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
+  const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
+  const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+
+  if (brand) document.getElementById("brandName").innerText = brand;
+  if (slogan) document.getElementById("brandDesc").innerText = slogan;
+  if (logoUrl) document.getElementById("brandLogo").src = logoUrl;
+  if (mainUrl) document.getElementById("mainImage").src = mainUrl;
+
+  document.getElementById("saveTemplateBtn").addEventListener("click", handleSaveTemplate);
+  document.getElementById("deleteTemplateBtn").addEventListener("click", handleDeleteTemplate);
+  document.getElementById("downloadBtn").addEventListener("click", handleDownloadTemplate);
+});
+</script>
+
 </body>
 </html>
