@@ -61,158 +61,181 @@
       <button id="deleteTemplateBtn" class="delete-btn" disabled>삭제</button>
       <button id="downloadBtn" class="download-btn">다운로드</button>
     </div>
+
+    <!-- ✅ 저장 완료 메시지 영역 (처음에는 숨김) -->
+    <div id="saveCompleteMessage" style="display:none; text-align:center; margin-top: 20px; color: white;">
+      <p style="font-size: 20px; margin-bottom: 10px;">저장 완료되었습니다!</p>
+      <p style="font-size: 16px; margin-bottom: 20px;">내 작업실로 이동할까요?</p>
+      <button onclick="goToMySave()" style="padding:10px 20px; background-color:#aafc3e; color:#292929; border:none; border-radius:8px; font-size:16px; cursor:pointer;">내 작업실로 이동</button>
+    </div>
+
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script type="module">
-    import { db, storage, auth } from "/muscat/common/firebase-init.js";
-    import { collection, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { ref, uploadString, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script type="module">
+// (Firebase import 및 초기 스크립트 동일)
 
-    let currentScale = 0.416;
-    let savedDocId = null;
-    let uploadedPaths = {};
+import { db, storage, auth } from "/muscat/common/firebase-init.js";
+import { collection, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { ref, uploadString, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    window.zoomIn = function() { currentScale += 0.1; if (currentScale > 2) currentScale = 2; applyScale(); };
-    window.zoomOut = function() { currentScale -= 0.1; if (currentScale < 0.1) currentScale = 0.1; applyScale(); };
-    window.resetZoom = function() { currentScale = 1.0; applyScale(); };
+let currentScale = 0.416;
+let savedDocId = null;
+let uploadedPaths = {};
 
-    function applyScale() {
-      const frame = document.getElementById("templateFrame");
-      if (frame) frame.style.transform = `translateX(-50%) scale(${currentScale})`;
-    }
+window.zoomIn = function() { currentScale += 0.1; if (currentScale > 2) currentScale = 2; applyScale(); };
+window.zoomOut = function() { currentScale -= 0.1; if (currentScale < 0.1) currentScale = 0.1; applyScale(); };
+window.resetZoom = function() { currentScale = 1.0; applyScale(); };
 
-    async function saveTemplate() {
-      showLoading();
-      const frame = document.getElementById("templateFrame");
-      const brand = document.getElementById("brandName")?.textContent || "";
-      const slogan = document.getElementById("brandDesc")?.textContent || "";
-      const logoUrl = document.getElementById("brandLogo")?.src || "";
-      const mainUrl = document.getElementById("mainImage")?.src || "";
+function applyScale() {
+  const frame = document.getElementById("templateFrame");
+  if (frame) frame.style.transform = `translateX(-50%) scale(${currentScale})`;
+}
 
-      const canvas = await html2canvas(frame, { useCORS: true, scale: 1 });
-      const thumbnailDataUrl = canvas.toDataURL("image/jpeg", 0.9);
+async function saveTemplate() {
+  showLoading();
+  const frame = document.getElementById("templateFrame");
+  const brand = document.getElementById("brandName")?.textContent || "";
+  const slogan = document.getElementById("brandDesc")?.textContent || "";
+  const logoUrl = document.getElementById("brandLogo")?.src || "";
+  const mainUrl = document.getElementById("mainImage")?.src || "";
 
-      const user = auth.currentUser;
-      if (!user) {
-        alert("로그인이 필요합니다.");
-        hideLoading();
-        return;
-      }
+  const canvas = await html2canvas(frame, { useCORS: true, scale: 1 });
+  const thumbnailDataUrl = canvas.toDataURL("image/jpeg", 0.9);
 
-      const timestamp = Date.now();
+  const user = auth.currentUser;
+  if (!user) {
+    alert("로그인이 필요합니다.");
+    hideLoading();
+    return;
+  }
 
-      const thumbnailPath = `savedTemplates/images/${user.uid}_${timestamp}_thumbnail.jpg`;
-      const thumbnailRef = ref(storage, thumbnailPath);
-      await uploadString(thumbnailRef, thumbnailDataUrl, 'data_url');
-      const thumbnailUrl = await getDownloadURL(thumbnailRef);
+  const timestamp = Date.now();
 
-      const logoBlob = await fetch(logoUrl).then(r => r.blob());
-      const logoPath = `savedTemplates/images/${user.uid}_${timestamp}_logo.jpg`;
-      const logoRef = ref(storage, logoPath);
-      await uploadBytes(logoRef, logoBlob);
-      const logoDownloadUrl = await getDownloadURL(logoRef);
+  const thumbnailPath = `savedTemplates/images/${user.uid}_${timestamp}_thumbnail.jpg`;
+  const thumbnailRef = ref(storage, thumbnailPath);
+  await uploadString(thumbnailRef, thumbnailDataUrl, 'data_url');
+  const thumbnailUrl = await getDownloadURL(thumbnailRef);
 
-      uploadedPaths = { thumbnailPath, logoPath };
+  const logoBlob = await fetch(logoUrl).then(r => r.blob());
+  const logoPath = `savedTemplates/images/${user.uid}_${timestamp}_logo.jpg`;
+  const logoRef = ref(storage, logoPath);
+  await uploadBytes(logoRef, logoBlob);
+  const logoDownloadUrl = await getDownloadURL(logoRef);
 
-      const docRef = await addDoc(collection(db, "savedTemplates"), {
-        uid: user.uid,
-        brand,
-        slogan,
-        thumbnailUrl,
-        logoUrl: logoDownloadUrl,
-        mainUrl,
-        createdAt: serverTimestamp(),
-      });
+  uploadedPaths = { thumbnailPath, logoPath };
 
-      savedDocId = docRef.id;
-      sessionStorage.setItem("savedDocId", savedDocId); // ✅ 저장
-      document.getElementById("saveTemplateBtn").disabled = true;
-      document.getElementById("deleteTemplateBtn").disabled = false;
+  const docRef = await addDoc(collection(db, "savedTemplates"), {
+    uid: user.uid,
+    brand,
+    slogan,
+    thumbnailUrl,
+    logoUrl: logoDownloadUrl,
+    mainUrl,
+    createdAt: serverTimestamp(),
+  });
 
-      alert("저장 완료되었습니다!");
-      hideLoading();
-    }
+  savedDocId = docRef.id;
+  sessionStorage.setItem("savedDocId", savedDocId);
 
-    async function deleteTemplate() {
-      if (!savedDocId) {
-        alert("저장된 템플릿이 없습니다.");
-        return;
-      }
+  document.getElementById("saveTemplateBtn").disabled = true;
+  document.getElementById("deleteTemplateBtn").disabled = false;
 
-      const confirmDelete = confirm("정말 삭제하시겠습니까?");
-      if (!confirmDelete) {
-        hideLoading();
-        return;
-      }
+  hideLoading();
+  showSaveCompleteMessage(); // ✅ 저장 완료 메시지 표시
+}
 
-      showLoading();
-      await deleteDoc(doc(db, "savedTemplates", savedDocId));
-      for (const path of Object.values(uploadedPaths)) {
-        await deleteObject(ref(storage, path)).catch(() => {});
-      }
+async function deleteTemplate() {
+  if (!savedDocId) {
+    alert("저장된 템플릿이 없습니다.");
+    return;
+  }
 
-      savedDocId = null;
-      uploadedPaths = {};
-      sessionStorage.removeItem("savedDocId"); // ✅ 삭제 완료 후 세션 클리어
+  const confirmDelete = confirm("정말 삭제하시겠습니까?");
+  if (!confirmDelete) {
+    hideLoading();
+    return;
+  }
 
-      document.getElementById("saveTemplateBtn").disabled = false;
-      document.getElementById("deleteTemplateBtn").disabled = true;
+  showLoading();
+  await deleteDoc(doc(db, "savedTemplates", savedDocId));
+  for (const path of Object.values(uploadedPaths)) {
+    await deleteObject(ref(storage, path)).catch(() => {});
+  }
 
-      alert("삭제 완료되었습니다!");
-      hideLoading();
-    }
+  savedDocId = null;
+  uploadedPaths = {};
+  sessionStorage.removeItem("savedDocId");
 
-    async function downloadTemplate() {
-      const frame = document.getElementById("templateFrame");
-      const canvas = await html2canvas(frame, { useCORS: true, scale: 1 });
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/jpeg", 1.0);
-      link.download = "template.jpg";
-      link.click();
-    }
+  document.getElementById("saveTemplateBtn").disabled = false;
+  document.getElementById("deleteTemplateBtn").disabled = true;
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
-      const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
-      const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
-      const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+  alert("삭제 완료되었습니다!");
+  hideLoading();
+}
 
-      const savedDocIdFromStorage = sessionStorage.getItem("savedDocId"); // ✅ 세션에서 불러오기
-      if (savedDocIdFromStorage) {
-        savedDocId = savedDocIdFromStorage;
-        document.getElementById("deleteTemplateBtn").disabled = false;
-      }
+async function downloadTemplate() {
+  const frame = document.getElementById("templateFrame");
+  const canvas = await html2canvas(frame, { useCORS: true, scale: 1 });
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/jpeg", 1.0);
+  link.download = "template.jpg";
+  link.click();
+}
 
-      updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
+window.addEventListener("DOMContentLoaded", () => {
+  const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
+  const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
+  const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
+  const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
 
-      document.getElementById("saveTemplateBtn").onclick = saveTemplate;
-      document.getElementById("deleteTemplateBtn").onclick = deleteTemplate;
-      document.getElementById("downloadBtn").onclick = downloadTemplate;
+  const savedDocIdFromStorage = sessionStorage.getItem("savedDocId");
+  if (savedDocIdFromStorage) {
+    savedDocId = savedDocIdFromStorage;
+    document.getElementById("deleteTemplateBtn").disabled = false;
+  }
 
-      if (window.top === window.self) {
-        document.body.classList.add("view-mode");
-      }
-    });
+  updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
 
-    function updateTemplateContent(data) {
-      const brandEl = document.querySelector(".brand-name");
-      const sloganEl = document.querySelector(".brand-slogan");
-      const logoEl = document.querySelector(".logo-preview");
-      const mainEl = document.querySelector(".main-preview");
+  document.getElementById("saveTemplateBtn").onclick = saveTemplate;
+  document.getElementById("deleteTemplateBtn").onclick = deleteTemplate;
+  document.getElementById("downloadBtn").onclick = downloadTemplate;
 
-      if (data.brand && brandEl) brandEl.textContent = data.brand;
-      if (data.slogan && sloganEl) sloganEl.textContent = data.slogan;
-      if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
-      if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
-    }
+  if (window.top === window.self) {
+    document.body.classList.add("view-mode");
+  }
+});
 
-    function showLoading() {
-      document.getElementById("loadingOverlay").classList.add("active");
-    }
-    function hideLoading() {
-      document.getElementById("loadingOverlay").classList.remove("active");
-    }
-  </script>
+function updateTemplateContent(data) {
+  const brandEl = document.querySelector(".brand-name");
+  const sloganEl = document.querySelector(".brand-slogan");
+  const logoEl = document.querySelector(".logo-preview");
+  const mainEl = document.querySelector(".main-preview");
+
+  if (data.brand && brandEl) brandEl.textContent = data.brand;
+  if (data.slogan && sloganEl) sloganEl.textContent = data.slogan;
+  if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
+  if (data.mainUrl && mainEl) mainEl.src = data.mainUrl;
+}
+
+function showLoading() {
+  document.getElementById("loadingOverlay").classList.add("active");
+}
+function hideLoading() {
+  document.getElementById("loadingOverlay").classList.remove("active");
+}
+
+function showSaveCompleteMessage() {
+  const messageBox = document.getElementById("saveCompleteMessage");
+  if (messageBox) {
+    messageBox.style.display = "block";
+    messageBox.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+function goToMySave() {
+  window.location.href = "/muscat/mypage/my-save.html";
+}
+</script>
 </body>
 </html>
