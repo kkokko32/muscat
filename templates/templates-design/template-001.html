@@ -9,10 +9,13 @@
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+  <!-- ✅ firebase compat 버전 사용 -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+  <!-- ✅ html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
@@ -86,14 +89,19 @@ async function uploadFile(refPath, blob) {
 async function handleSaveTemplate() {
   try {
     showLoading();
-    const frame = document.getElementById("templateFrame");
+    const frame = document.getElementById("templateFrame").cloneNode(true);
+    frame.style.transform = "none"; // ✅ 저장용 transform 제거
+
+    const canvas = await html2canvas(frame);
+    const thumbnailBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg"));
+    
     const logo = document.getElementById("brandLogo");
     const main = document.getElementById("mainImage");
-
-    const thumbnailBlob = await new Promise(resolve => html2canvas(frame).then(c => c.toBlob(resolve, "image/jpeg")));
     const logoBlob = await fetch(logo.src).then(r => r.blob());
     const mainBlob = await fetch(main.src).then(r => r.blob());
-    const htmlBlob = new Blob([frame.outerHTML], { type: "text/html" });
+
+    const htmlContent = document.getElementById("templateFrame").outerHTML.replace('transform: translateX(-50%) scale(0.416);', '');
+    const htmlBlob = new Blob([htmlContent], { type: "text/html" });
 
     const timestamp = Date.now();
 
@@ -170,9 +178,7 @@ async function handleDownloadTemplate() {
 }
 
 let currentScale = 0.416;
-function applyScale() {
-  document.getElementById("templateFrame").style.transform = `translateX(-50%) scale(${currentScale})`;
-}
+function applyScale() { document.getElementById("templateFrame").style.transform = `translateX(-50%) scale(${currentScale})`; }
 function zoomIn() { currentScale += 0.1; if (currentScale > 2) currentScale = 2; applyScale(); }
 function zoomOut() { currentScale -= 0.1; if (currentScale < 0.1) currentScale = 0.1; applyScale(); }
 function resetZoom() { currentScale = 1; applyScale(); }
