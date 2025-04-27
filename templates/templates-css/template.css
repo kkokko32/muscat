@@ -204,3 +204,9 @@ iframe {
   border-radius: 12px;
   cursor: pointer;
 }
+
+body.inside-preview .template-buttons,
+body.inside-preview .template-close,
+body.inside-preview .view-controls {
+  display: none !important;
+}
