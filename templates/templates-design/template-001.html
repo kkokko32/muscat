@@ -47,7 +47,7 @@
       <button onclick="zoomIn()">+</button>
     </div>
 
-    <div class="template-frame" id="templateFrame" style="position: relative; width: 2400px; height: 3508px; background-color: #f3d9aa;">
+    <div class="template-frame" id="templateFrame" style="position: relative; width: 2480px; height: 3508px; background-color: #f3d9aa;">
       <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
       <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
       <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
@@ -63,7 +63,11 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+ <!-- html2canvas CDN 그대로 유지 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- jsPDF 추가 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script type="module">
   import { db, storage, auth } from "/muscat/common/firebase-init.js";
   import { collection, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -174,20 +178,24 @@
   }
 
   async function downloadTemplate() {
-  const frame = document.getElementById("templateFrame");
-  const canvas = await html2canvas(frame, {
-    useCORS: true,
-    scale: 1,
-    backgroundColor: null,
-    scrollX: 0,
-    scrollY: 0,
-    windowWidth: frame.scrollWidth,
-    windowHeight: frame.scrollHeight
-  });
-  const link = document.createElement("a");
-  link.href = canvas.toDataURL("image/jpeg", 1.0);
-  link.download = "template.jpg";
-  link.click();
+    const frame = document.getElementById("templateFrame");
+    const canvas = await html2canvas(frame, {
+      useCORS: true,
+      scale: 1,
+      backgroundColor: null
+    });
+
+    const imgData = canvas.toDataURL("image/jpeg", 1.0);
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "px",
+      format: [canvas.width, canvas.height]
+    });
+
+    pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
+    pdf.save("template.pdf");
   }
 
   window.addEventListener("DOMContentLoaded", () => {
