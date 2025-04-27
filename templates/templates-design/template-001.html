@@ -10,15 +10,18 @@
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 
   <style>
+    /* ✅ view-mode일 때만 보기 축소 */
     body.view-mode .template-frame {
-      width: 1000px; /* 보기 편하게 축소 */
-      height: auto;
-      transform: none !important; /* scale 제거 */
+      transform: scale(0.416);
+      transform-origin: top left;
+      width: 2400px; /* 원본 크기 유지 */
+      height: 3508px; /* 원본 크기 유지 */
       margin: 0 auto;
     }
 
+    /* ✅ 기본은 transform 없음 */
     .template-frame {
-      transform: none; /* 기본 transform 제거 (안전) */
+      transform: none;
     }
 
     html, body {
@@ -27,7 +30,6 @@
       overflow-y: scroll;
       scrollbar-width: none;
     }
-
     body::-webkit-scrollbar {
       display: none;
     }
