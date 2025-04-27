@@ -19,13 +19,13 @@
     }
 
     .template-preview-wrapper {
-      width: 100vw;
-      height: 100vh;
+      width: 2480px;
+      height: 3508px;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      overflow: auto;
-      padding: 40px 0;
+      overflow: hidden;
+      margin: 0 auto;
     }
 
     .template-frame {
@@ -38,8 +38,6 @@
     body.inside-preview .template-preview-wrapper {
       transform: scale(0.2);
       transform-origin: top center;
-      width: 100%;
-      height: auto;
     }
 
     .loading-overlay {
@@ -78,12 +76,10 @@
 </head>
 
 <body>
-  <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
 
-  <!-- 우측 고정 버튼 -->
   <div class="template-buttons">
     <button id="saveTemplateBtn" class="save-btn">저장</button>
     <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
@@ -91,14 +87,12 @@
   </div>
   <button class="template-close" onclick="window.history.back()">&times;</button>
 
-  <!-- 좌측 확대/축소 컨트롤 -->
   <div class="zoom-controls">
     <button onclick="zoomOut()">-</button>
     <button onclick="resetZoom()">Reset</button>
     <button onclick="zoomIn()">+</button>
   </div>
 
-  <!-- 미리보기 축소 가능 영역 -->
   <div class="template-preview-wrapper" id="previewWrapper">
     <div class="template-frame" id="templateFrame">
       <div class="brand-name" id="brandName" style="font-size: 50px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
@@ -111,7 +105,7 @@
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 
   <script>
-    let currentScale = 0.2; // 초기 스케일 0.2 설정
+    let currentScale = 0.2;
 
     function applyScale() {
       const wrapper = document.getElementById("previewWrapper");
