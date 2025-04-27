@@ -12,41 +12,17 @@ function hideLoading() {
   if (overlay) overlay.style.display = "none";
 }
 
+// ✅ 수정된 resizeSingleIframe
 function resizeSingleIframe(iframe) {
-  const doc = iframe.contentDocument || iframe.contentWindow?.document;
-  const frame = doc?.querySelector('.template-frame');
-  const url = iframe.getAttribute("data-template");
-
-  if (!frame) {
-    console.warn(`template-frame 없음: ${url}`);
-    iframe.style.width = `440px`;
-    iframe.style.height = `1200px`;
-    iframe.style.border = "none";
-    const card = iframe.closest(".template-card");
-    if (card) {
-      card.style.width = `440px`;
-      card.style.height = `1200px`;
-    }
-    return;
-  }
-
-  const originalWidth = frame.offsetWidth || 560;
-  const originalHeight = frame.offsetHeight || 900;
-  const targetWidth = 440;
-  const ratio = targetWidth / originalWidth;
-  const targetHeight = originalHeight * ratio;
-
-  iframe.style.width = `${originalWidth}px`;
-  iframe.style.height = `${originalHeight}px`;
-  iframe.style.border = "none";
-  iframe.style.transform = `scale(${ratio})`;
-  iframe.style.transformOrigin = "top left";
+  iframe.style.width = '440px';
+  iframe.style.height = 'auto';
+  iframe.style.border = 'none';
+  iframe.style.overflow = 'hidden';
 
   const card = iframe.closest(".template-card");
   if (card) {
-    card.style.width = `${targetWidth}px`;
-    card.style.height = `${targetHeight}px`;
-    card.style.overflow = "hidden";
+    card.style.width = '440px';
+    card.style.overflow = 'hidden';
   }
 
   if (window.msnry) {
@@ -254,14 +230,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (firstStyle) firstStyle.click();
 });
 
+// ✅ 전역 등록
 window.selectIndustry = selectIndustry;
 window.selectConcept = selectConcept;
 window.selectStyle = selectStyle;
-
-// ✅ 디자인 사이즈 필터 함수 등록
-function selectSize(button) {
+window.selectSize = function(button) {
   document.querySelectorAll("#step2 .button-grid:nth-of-type(2) button").forEach(btn => btn.classList.remove("active"));
   button.classList.add("active");
   filterTemplates();
-}
-window.selectSize = selectSize;
+};
