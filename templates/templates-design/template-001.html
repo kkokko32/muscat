@@ -19,25 +19,27 @@
     }
 
     .template-preview-wrapper {
-      transform-origin: top left;
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
       align-items: flex-start;
-      width: 2480px;  /* 원본 크기 유지 */
-      height: 3508px;  /* 원본 크기 유지 */
-    }
-
-    body.inside-preview .template-preview-wrapper {
-      transform: scale(0.3) !important;
-      width: 480px;
-      height: auto;
-      overflow: hidden;
+      padding: 40px 0;
     }
 
     .template-frame {
-      width: auto;  /* 고정 크기 제거 */
-      height: auto;  /* 고정 크기 제거 */
+      width: 2480px;
+      height: 3508px;
       background-color: #f3d9aa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      transform-origin: top center;
+    }
+
+    body.inside-preview .template-preview-wrapper {
+      transform: scale(0.2);
+      transform-origin: top center;
+      height: auto;
     }
 
     .loading-overlay {
@@ -76,12 +78,10 @@
 </head>
 
 <body>
-  <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
 
-  <!-- 우측 고정 버튼 -->
   <div class="template-buttons">
     <button id="saveTemplateBtn" class="save-btn">저장</button>
     <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
@@ -89,16 +89,14 @@
   </div>
   <button class="template-close" onclick="window.history.back()">&times;</button>
 
-  <!-- 좌측 확대/축소 컨트롤 -->
   <div class="zoom-controls">
     <button onclick="zoomOut()">-</button>
     <button onclick="resetZoom()">Reset</button>
     <button onclick="zoomIn()">+</button>
   </div>
 
-  <!-- 미리보기 축소 가능 영역 -->
   <div class="template-preview-wrapper" id="previewWrapper">
-    <div class="template-frame" id="templateFrame" style="background-color: #f3d9aa;">
+    <div class="template-frame" id="templateFrame">
       <div class="brand-name" id="brandName" style="font-size: 50px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
       <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
       <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
@@ -109,7 +107,7 @@
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 
   <script>
-    let currentScale = 0.4;
+    let currentScale = 1;
 
     function applyScale() {
       const wrapper = document.getElementById("previewWrapper");
@@ -131,7 +129,7 @@
     }
 
     function resetZoom() {
-      currentScale = 0.4;
+      currentScale = 1;
       applyScale();
     }
 
