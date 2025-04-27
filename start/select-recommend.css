@@ -295,3 +295,25 @@ body.inside-preview .template-frame {
   border-bottom: 2px solid #292929;
   font-weight: bold;
 }
+
+/* 템플릿 카드 기본 스타일 */
+.template-card {
+  display: inline-block;
+  width: 480px; /* 카드 가로폭 480px 고정 */
+  margin: 10px;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 카드 안의 iframe */
+.template-card iframe {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2480 / 3508;
+  border: none;
+  overflow: hidden;
+  display: block;
+  pointer-events: none; 
+}
