@@ -156,9 +156,10 @@
   }
 
   showLoading();
-  
+
   try {
-    await deleteDoc(doc(db, "savedTemplates", savedDocId));
+    const docRef = doc(db, "savedTemplates", savedDocId);
+    await deleteDoc(docRef);
 
     if (uploadedPaths && Object.keys(uploadedPaths).length > 0) {
       for (const path of Object.values(uploadedPaths)) {
@@ -181,6 +182,7 @@
     hideLoading();
   }
 }
+
 
   async function downloadTemplate() {
     const frame = document.getElementById("templateFrame");
