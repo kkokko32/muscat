@@ -123,13 +123,11 @@
 </head>
 
 <body class="template-page">
-  <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
 
   <div class="template-wrapper">
-    <!-- 좌측 뷰어 컨트롤 -->
     <div class="view-controls">
       <button onclick="zoomOut()">-</button>
       <button onclick="resetZoom()">100%</button>
@@ -143,10 +141,8 @@
       <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 300px; height: 300px; object-fit: cover;" />
     </div>
 
-    <!-- 닫기 버튼 -->
     <button class="template-close" onclick="window.history.back()">&times;</button>
 
-    <!-- 저장/삭제/다운로드 버튼 -->
     <div class="template-buttons">
       <button id="saveTemplateBtn" class="save-btn">저장</button>
       <button id="deleteTemplateBtn" class="delete-btn" disabled>삭제</button>
@@ -164,6 +160,13 @@
     let savedDocId = null;
     let uploadedPaths = {};
 
+    function applyScale() {
+      const frame = document.getElementById("templateFrame");
+      if (frame) {
+        frame.style.transform = `translateX(-50%) scale(${currentScale})`;
+      }
+    }
+
     function zoomIn() {
       currentScale += 0.1;
       if (currentScale > 2) currentScale = 2;
@@ -179,10 +182,6 @@
     function resetZoom() {
       currentScale = 1.0;
       applyScale();
-    }
-
-    function applyScale() {
-      // 스케일은 body 클래스에 의해 이미 적용되므로 추가 조작 안 함
     }
 
     async function saveTemplate() {
@@ -205,7 +204,6 @@
 
       const timestamp = Date.now();
       const thumbnailPath = `savedTemplates/images/${user.uid}_${timestamp}_thumbnail.jpg`;
-
       const thumbnailRef = ref(storage, thumbnailPath);
       await uploadString(thumbnailRef, thumbnailDataUrl, 'data_url');
 
@@ -238,7 +236,6 @@
       showLoading();
 
       await deleteDoc(doc(db, "savedTemplates", savedDocId));
-
       for (const path of Object.values(uploadedPaths)) {
         await deleteObject(ref(storage, path)).catch(() => {});
       }
