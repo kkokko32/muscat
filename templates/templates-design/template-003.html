@@ -10,11 +10,80 @@
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 
   <style>
+    body.view-mode .template-frame {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.416);
+      transform-origin: top center;
+      width: 2400px;
+      height: 3508px;
+      margin: 0;
+    }
+
+    .template-frame {
+      transform: none;
+    }
+
+    .template-wrapper {
+      width: 100%;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      background-color: #292929;
+    }
+
+    .template-buttons {
+      position: fixed;
+      top: 150px;
+      right: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .template-close {
+      position: fixed;
+      top: 50px;
+      right: 30px;
+      font-size: 32px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    /* ✅ 좌측 뷰어 컨트롤러 */
+    .view-controls {
+      position: fixed;
+      top: 150px;
+      left: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .view-controls button {
+      width: 50px;
+      height: 50px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
     html, body {
       height: 100%;
       margin: 0;
       overflow-y: scroll;
+      overflow-x: hidden;
       scrollbar-width: none;
+      background-color: #292929;
     }
     body::-webkit-scrollbar {
       display: none;
@@ -51,52 +120,34 @@
     .loading-overlay.active {
       display: flex;
     }
-
-    .template-footer {
-      max-width: 1200px;
-      margin: 80px auto;
-      padding: 0 20px;
-    }
-
-    .footer-section {
-      margin-bottom: 60px;
-    }
-
-    .footer-section h3 {
-      font-size: 18px;
-      color: #333;
-      margin-bottom: 12px;
-    }
-
-    .thumbnail-list {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-
-    .thumbnail-list img {
-      width: 180px;
-      height: 250px;
-      object-fit: cover;
-      border-radius: 8px;
-      cursor: pointer;
-    }
   </style>
 </head>
+
 <body class="template-page">
   <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
 
-  <div class="template-frame" id="templateFrame" style="position: relative; width: 1200px; height: 1400px; background-color: #f3d9aa;" >
-    <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
-    <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
-    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 300px; height: 300px; object-fit: cover;" />
+  <div class="template-wrapper">
+    <!-- ✅ 좌측 뷰어 컨트롤 -->
+    <div class="view-controls">
+      <button onclick="zoomOut()">-</button>
+      <button onclick="resetZoom()">100%</button>
+      <button onclick="zoomIn()">+</button>
+    </div>
 
+    <div class="template-frame" id="templateFrame" style="position: relative; width: 2400px; height: 3508px; background-color: #f3d9aa;">
+      <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
+      <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
+      <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
+      <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 300px; height: 300px; object-fit: cover;" />
+    </div>
+
+    <!-- 닫기 버튼 -->
     <button class="template-close" onclick="window.history.back()">&times;</button>
+
+    <!-- 저장/삭제/다운로드 버튼 -->
     <div class="template-buttons">
       <button id="saveTemplateBtn" class="save-btn">저장</button>
       <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
@@ -104,46 +155,47 @@
     </div>
   </div>
 
-  <!-- 하단 추천/연관 템플릿 영역 -->
-  <div class="template-footer">
-    <div class="footer-section">
-      <h3>이 디자인의 다른 사이즈</h3>
-      <div class="thumbnail-list">
-        <img src="/muscat/assets/thumbs/template-003-a4.jpg" onclick="goToTemplate('template-003-a4.html')">
-        <img src="/muscat/assets/thumbs/template-003-a5.jpg" onclick="goToTemplate('template-003-a5.html')">
-        <img src="/muscat/assets/thumbs/template-003-a3.jpg" onclick="goToTemplate('template-003-a3.html')">
-      </div>
-    </div>
-    <div class="footer-section">
-      <h3>비슷한 컨셉의 다른 디자인</h3>
-      <div class="thumbnail-list">
-        <img src="/muscat/assets/thumbs/template-007.jpg" onclick="goToTemplate('template-007.html')">
-        <img src="/muscat/assets/thumbs/template-008.jpg" onclick="goToTemplate('template-008.html')">
-        <img src="/muscat/assets/thumbs/template-009.jpg" onclick="goToTemplate('template-009.html')">
-      </div>
-    </div>
-    <div class="footer-section">
-      <h3>비슷한 컨셉의 다른 디자인 대상</h3>
-      <div class="thumbnail-list">
-        <img src="/muscat/assets/thumbs/template-101.jpg" onclick="goToTemplate('template-101.html')">
-        <img src="/muscat/assets/thumbs/template-102.jpg" onclick="goToTemplate('template-102.html')">
-        <img src="/muscat/assets/thumbs/template-103.jpg" onclick="goToTemplate('template-103.html')">
-      </div>
-    </div>
-  </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
+
   <script>
+    let currentScale = 0.416; // ✅ 초기 스케일
+
+    function applyScale() {
+      const frame = document.getElementById("templateFrame");
+      if (frame) {
+        frame.style.transform = `translateX(-50%) scale(${currentScale})`;
+      }
+    }
+
+    function zoomIn() {
+      currentScale += 0.1;
+      if (currentScale > 2) currentScale = 2; // 최대 2배
+      applyScale();
+    }
+
+    function zoomOut() {
+      currentScale -= 0.1;
+      if (currentScale < 0.1) currentScale = 0.1; // 최소 0.1배
+      applyScale();
+    }
+
+    function resetZoom() {
+      currentScale = 1.0;
+      applyScale();
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
       const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
       const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
       const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+
       updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
 
       const saveBtn = document.getElementById("saveTemplateBtn");
       const loadingOverlay = document.getElementById("loadingOverlay");
+
       if (saveBtn) {
         const originalOnClick = saveBtn.onclick;
         saveBtn.onclick = async function(e) {
@@ -156,6 +208,10 @@
             }
           }
         };
+      }
+
+      if (window.top === window.self) {
+        document.body.classList.add("view-mode");
       }
     });
 
@@ -185,10 +241,6 @@
     window.hideLoading = function() {
       document.getElementById("loadingOverlay").classList.remove("active");
     };
-
-    function goToTemplate(filename) {
-      window.location.href = "/muscat/templates/templates-design/" + filename;
-    }
   </script>
 </body>
 </html>
