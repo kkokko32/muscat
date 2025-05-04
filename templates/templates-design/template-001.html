@@ -100,9 +100,10 @@
     if (frame) frame.style.transform = `translateX(-50%) scale(${currentScale})`;
   }
   function toggleEditMode() {
+  document.body.classList.remove("view-mode");
   document.body.classList.toggle("edit-mode");
   }
-  window.toggleEditMode = toggleEditMode; 
+  window.toggleEditMode = toggleEditMode;
 
   async function saveTemplate() {
     showLoading();
