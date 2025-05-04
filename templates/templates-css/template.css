@@ -215,6 +215,16 @@ body.inside-preview .view-controls {
   display: block !important;
 }
 
-body.edit-mode .resize-handle {
-  display: block !important;
+.resize-handle {
+  width: 20px;
+  height: 20px;
+  background-color: #cbff6e;
+  position: absolute;
+  z-index: 10;
+  display: none; /* 기본값은 hidden, edit-mode에서만 block으로 변경됨 */
 }
+
+.resize-handle.top-left { top: -10px; left: -10px; cursor: nwse-resize; }
+.resize-handle.top-right { top: -10px; right: -10px; cursor: nesw-resize; }
+.resize-handle.bottom-left { bottom: -10px; left: -10px; cursor: nesw-resize; }
+.resize-handle.bottom-right { bottom: -10px; right: -10px; cursor: nwse-resize; }
