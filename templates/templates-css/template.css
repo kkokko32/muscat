@@ -224,6 +224,12 @@ body.inside-preview .view-controls {
   display: none; /* 기본값은 hidden, edit-mode에서만 block으로 변경됨 */
 }
 
+body.edit-mode .template-frame {
+  outline: 4px dashed #cbff6e;
+  outline-offset: -20px;
+  transition: outline 0.3s ease;
+}
+
 .resize-handle.top-left { top: -10px; left: -10px; cursor: nwse-resize; }
 .resize-handle.top-right { top: -10px; right: -10px; cursor: nesw-resize; }
 .resize-handle.bottom-left { bottom: -10px; left: -10px; cursor: nesw-resize; }
