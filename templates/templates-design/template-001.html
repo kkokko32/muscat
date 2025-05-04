@@ -52,16 +52,22 @@
       <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
       <img id="brandLogo" class="logo-preview" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" alt="로고 이미지" />
 
-      <!-- 이미지 마스킹 대상 -->
-    <div class="image-edit-wrapper" style="position: relative; width: fit-content; margin: 0 auto; overflow: hidden;">
-      <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
-          style="display: block; width: 500px; height: auto; object-fit: cover; z-index: 1;" />
-      <!-- 편집 핸들: 이미지 기준 상대 위치 -->
-      <div class="resize-handle top-left"></div>
-      <div class="resize-handle top-right"></div>
-      <div class="resize-handle bottom-left"></div>
-      <div class="resize-handle bottom-right"></div>
-    </div>
+      <!-- 이미지 편집 컨테이너 전체 -->
+      <div class="image-edit-container" style="position: relative; width: fit-content; margin: 0 auto;">
+
+        <!-- 이미지 마스크 적용 영역 -->
+        <div class="image-edit-mask" style="overflow: hidden;">
+          <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
+              style="display: block; width: 500px; height: auto; object-fit: cover; z-index: 1;" />
+        </div>
+
+        <!-- 핸들은 마스크 바깥에서 위치 절대 지정 -->
+        <div class="resize-handle top-left"></div>
+        <div class="resize-handle top-right"></div>
+        <div class="resize-handle bottom-left"></div>
+        <div class="resize-handle bottom-right"></div>
+      </div>
+
     </div>
 
     <!-- 닫기/기능 버튼 -->
@@ -241,34 +247,35 @@
 
   function updateResizeHandlesPosition() {
     const image = document.getElementById("mainImage");
-    if (!image || !image.complete) return;
+    const container = document.querySelector(".image-edit-container");
 
-    const wrapper = image.parentElement; // .image-edit-wrapper
-    const handles = {
-      topLeft: wrapper.querySelector(".resize-handle.top-left"),
-      topRight: wrapper.querySelector(".resize-handle.top-right"),
-      bottomLeft: wrapper.querySelector(".resize-handle.bottom-left"),
-      bottomRight: wrapper.querySelector(".resize-handle.bottom-right"),
-    };
+    if (!image || !container) return;
 
-    const imgRect = image.getBoundingClientRect();
-    const wrapperRect = wrapper.getBoundingClientRect();
-    const offsetLeft = imgRect.left - wrapperRect.left;
-    const offsetTop = imgRect.top - wrapperRect.top;
+    const imageRect = image.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    const offsetX = imageRect.left - containerRect.left;
+    const offsetY = imageRect.top - containerRect.top;
     const width = image.offsetWidth;
     const height = image.offsetHeight;
 
-    handles.topLeft.style.left = `${offsetLeft - 6}px`;
-    handles.topLeft.style.top = `${offsetTop - 6}px`;
+    const handles = {
+      topLeft: document.querySelector(".resize-handle.top-left"),
+      topRight: document.querySelector(".resize-handle.top-right"),
+      bottomLeft: document.querySelector(".resize-handle.bottom-left"),
+      bottomRight: document.querySelector(".resize-handle.bottom-right"),
+    };
 
-    handles.topRight.style.left = `${offsetLeft + width - 6}px`;
-    handles.topRight.style.top = `${offsetTop - 6}px`;
+    handles.topLeft.style.left = `${offsetX - 6}px`;
+    handles.topLeft.style.top = `${offsetY - 6}px`;
 
-    handles.bottomLeft.style.left = `${offsetLeft - 6}px`;
-    handles.bottomLeft.style.top = `${offsetTop + height - 6}px`;
+    handles.topRight.style.left = `${offsetX + width - 6}px`;
+    handles.topRight.style.top = `${offsetY - 6}px`;
 
-    handles.bottomRight.style.left = `${offsetLeft + width - 6}px`;
-    handles.bottomRight.style.top = `${offsetTop + height - 6}px`;
+    handles.bottomLeft.style.left = `${offsetX - 6}px`;
+    handles.bottomLeft.style.top = `${offsetY + height - 6}px`;
+
+    handles.bottomRight.style.left = `${offsetX + width - 6}px`;
+    handles.bottomRight.style.top = `${offsetY + height - 6}px`;
 
     for (let key in handles) {
       handles[key].style.position = "absolute";
@@ -303,6 +310,7 @@
 
   window.addEventListener("resize", updateResizeHandlesPosition);
 </script>
+
 
 </body>
 </html>
