@@ -213,16 +213,20 @@ body.inside-preview .view-controls {
 
 /*  편집 모드 이미지 핸들 */
 .image-edit-wrapper {
-  width: 400px;
-  height: 400px;
   position: relative;
   overflow: hidden;
   margin: 0 auto;
+  width: fit-content;
+  height: fit-content;
+}
+
+#mainImage {
+  position: relative; 
 }
 
 .resize-handle {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background: white;
   border: 1px solid #000;
   position: absolute;
@@ -230,12 +234,11 @@ body.inside-preview .view-controls {
   display: none;
 }
 
-.top-left     { top: -5px; left: -5px; cursor: nwse-resize; }
-.top-right    { top: -5px; right: -5px; cursor: nesw-resize; }
-.bottom-left  { bottom: -5px; left: -5px; cursor: nesw-resize; }
-.bottom-right { bottom: -5px; right: -5px; cursor: nwse-resize; }
-
 .edit-mode .resize-handle {
   display: block;
 }
 
+.top-left     { top: -6px; left: -6px; cursor: nwse-resize; }
+.top-right    { top: -6px; right: -6px; cursor: nesw-resize; }
+.bottom-left  { bottom: -6px; left: -6px; cursor: nesw-resize; }
+.bottom-right { bottom: -6px; right: -6px; cursor: nwse-resize; }
