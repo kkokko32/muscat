@@ -84,26 +84,54 @@
 
 <script type="module">
   import { db, storage, auth } from "/muscat/common/firebase-init.js";
-  import { collection, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { ref, uploadString, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+  import {
+    collection, addDoc, deleteDoc, doc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import {
+    ref, uploadString, uploadBytes, getDownloadURL, deleteObject
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
   let currentScale = 0.416;
   let savedDocId = null;
   let uploadedPaths = {};
 
-  window.zoomIn = function() { currentScale += 0.1; if (currentScale > 2) currentScale = 2; applyScale(); };
-  window.zoomOut = function() { currentScale -= 0.1; if (currentScale < 0.1) currentScale = 0.1; applyScale(); };
-  window.resetZoom = function() { currentScale = 1.0; applyScale(); };
+  // 확대 축소 및 적용
+  window.zoomIn = function () {
+    currentScale += 0.1;
+    if (currentScale > 2) currentScale = 2;
+    applyScale();
+  };
+
+  window.zoomOut = function () {
+    currentScale -= 0.1;
+    if (currentScale < 0.1) currentScale = 0.1;
+    applyScale();
+  };
+
+  window.resetZoom = function () {
+    currentScale = 1.0;
+    applyScale();
+  };
 
   function applyScale() {
     const frame = document.getElementById("templateFrame");
-    if (frame) frame.style.transform = `translateX(-50%) scale(${currentScale})`;
+    if (frame) {
+      frame.style.transform = `translateX(-50%) scale(${currentScale})`;
+    }
   }
-  function toggleEditMode() {
-  document.body.classList.remove("view-mode");
-  document.body.classList.toggle("edit-mode");
-  }
-  window.toggleEditMode = toggleEditMode;
+
+  // 편집 모드 전환 (확대 없이 비율 유지)
+  window.toggleEditMode = function () {
+    const body = document.body;
+    if (body.classList.contains("edit-mode")) {
+      body.classList.remove("edit-mode");
+      body.classList.add("view-mode");
+    } else {
+      body.classList.remove("view-mode");
+      body.classList.add("edit-mode");
+    }
+    applyScale();
+  };
 
   async function saveTemplate() {
     showLoading();
@@ -126,7 +154,7 @@
     const timestamp = Date.now();
     const thumbnailPath = `savedTemplates/images/${user.uid}_${timestamp}_thumbnail.jpg`;
     const thumbnailRef = ref(storage, thumbnailPath);
-    await uploadString(thumbnailRef, thumbnailDataUrl, 'data_url');
+    await uploadString(thumbnailRef, thumbnailDataUrl, "data_url");
     const thumbnailUrl = await getDownloadURL(thumbnailRef);
 
     const logoBlob = await fetch(logoUrl).then(r => r.blob());
@@ -144,7 +172,7 @@
       thumbnailUrl,
       logoUrl: logoDownloadUrl,
       mainUrl,
-      createdAt: serverTimestamp(),
+      createdAt: serverTimestamp()
     });
 
     savedDocId = docRef.id;
@@ -155,7 +183,6 @@
 
     hideLoading();
 
-    // ✅ 저장 완료 후 confirm 띄우기
     const move = confirm("저장 완료되었습니다!\n\n내 작업실로 이동할까요?");
     if (move) {
       window.location.href = "/muscat/save-templates/my-save.html";
@@ -163,45 +190,44 @@
   }
 
   async function deleteTemplate() {
-  if (!savedDocId) {
-    alert("저장된 템플릿이 없습니다.");
-    return;
-  }
-
-  const confirmDelete = confirm("정말 삭제하시겠습니까?");
-  if (!confirmDelete) {
-    hideLoading();
-    return;
-  }
-
-  showLoading();
-
-  try {
-    const docRef = doc(db, "savedTemplates", savedDocId);
-    await deleteDoc(docRef);
-
-    if (uploadedPaths && Object.keys(uploadedPaths).length > 0) {
-      for (const path of Object.values(uploadedPaths)) {
-        await deleteObject(ref(storage, path)).catch(() => {});
-      }
+    if (!savedDocId) {
+      alert("저장된 템플릿이 없습니다.");
+      return;
     }
 
-    savedDocId = null;
-    uploadedPaths = {};
-    sessionStorage.removeItem("savedDocId");
+    const confirmDelete = confirm("정말 삭제하시겠습니까?");
+    if (!confirmDelete) {
+      hideLoading();
+      return;
+    }
 
-    document.getElementById("saveTemplateBtn").disabled = false;
-    document.getElementById("deleteTemplateBtn").disabled = true;
+    showLoading();
 
-    alert("삭제 완료되었습니다!");
-  } catch (error) {
-    console.error("삭제 실패:", error);
-    alert("삭제 중 오류가 발생했습니다.");
-  } finally {
-    hideLoading();
+    try {
+      const docRef = doc(db, "savedTemplates", savedDocId);
+      await deleteDoc(docRef);
+
+      if (uploadedPaths && Object.keys(uploadedPaths).length > 0) {
+        for (const path of Object.values(uploadedPaths)) {
+          await deleteObject(ref(storage, path)).catch(() => { });
+        }
+      }
+
+      savedDocId = null;
+      uploadedPaths = {};
+      sessionStorage.removeItem("savedDocId");
+
+      document.getElementById("saveTemplateBtn").disabled = false;
+      document.getElementById("deleteTemplateBtn").disabled = true;
+
+      alert("삭제 완료되었습니다!");
+    } catch (error) {
+      console.error("삭제 실패:", error);
+      alert("삭제 중 오류가 발생했습니다.");
+    } finally {
+      hideLoading();
+    }
   }
-}
-
 
   async function downloadTemplate() {
     const frame = document.getElementById("templateFrame");
@@ -242,9 +268,12 @@
     document.getElementById("deleteTemplateBtn").onclick = deleteTemplate;
     document.getElementById("downloadBtn").onclick = downloadTemplate;
 
+    // 기본은 view-mode로 진입
     if (window.top === window.self) {
       document.body.classList.add("view-mode");
     }
+
+    applyScale(); // 진입 시 비율 적용
   });
 
   function updateTemplateContent(data) {
@@ -260,13 +289,14 @@
   }
 
   function showLoading() {
-    document.getElementById("loadingOverlay").classList.add("active");
+    document.getElementById("loadingOverlay")?.classList.add("active");
   }
 
   function hideLoading() {
-    document.getElementById("loadingOverlay").classList.remove("active");
+    document.getElementById("loadingOverlay")?.classList.remove("active");
   }
 </script>
+
 
 </body>
 </html>
