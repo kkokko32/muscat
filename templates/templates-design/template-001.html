@@ -53,16 +53,15 @@
       <img id="brandLogo" class="logo-preview" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" alt="로고 이미지" />
 
       <!-- 이미지 마스킹 대상 -->
-      <div class="image-edit-wrapper" style="position: relative; width: fit-content; margin: 0 auto; overflow: hidden;">
-        <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
-            style="display: block; width: 500px; height: auto; object-fit: cover; z-index: 1;" />
-      </div>
-
-      <!-- 편집 핸들: 이미지 바깥에서 따로 렌더링 -->
-      <div class="resize-handle top-left" style="z-index: 300;"></div>
-      <div class="resize-handle top-right" style="z-index: 300;"></div>
-      <div class="resize-handle bottom-left" style="z-index: 300;"></div>
-      <div class="resize-handle bottom-right" style="z-index: 300;"></div>
+    <div class="image-edit-wrapper" style="position: relative; width: fit-content; margin: 0 auto; overflow: hidden;">
+      <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
+          style="display: block; width: 500px; height: auto; object-fit: cover; z-index: 1;" />
+      <!-- 편집 핸들: 이미지 기준 상대 위치 -->
+      <div class="resize-handle top-left"></div>
+      <div class="resize-handle top-right"></div>
+      <div class="resize-handle bottom-left"></div>
+      <div class="resize-handle bottom-right"></div>
+    </div>
     </div>
 
     <!-- 닫기/기능 버튼 -->
@@ -174,48 +173,29 @@
 
     savedDocId = docRef.id;
     sessionStorage.setItem("savedDocId", savedDocId);
-
     document.getElementById("saveTemplateBtn").disabled = true;
     document.getElementById("deleteTemplateBtn").disabled = false;
-
     hideLoading();
+
     const move = confirm("저장 완료되었습니다!\n\n내 작업실로 이동할까요?");
-    if (move) {
-      window.location.href = "/muscat/save-templates/my-save.html";
-    }
+    if (move) window.location.href = "/muscat/save-templates/my-save.html";
   }
 
   async function deleteTemplate() {
-    if (!savedDocId) {
-      alert("저장된 템플릿이 없습니다.");
-      return;
-    }
-
-    const confirmDelete = confirm("정말 삭제하시겠습니까?");
-    if (!confirmDelete) {
-      hideLoading();
-      return;
-    }
+    if (!savedDocId) return alert("저장된 템플릿이 없습니다.");
+    if (!confirm("정말 삭제하시겠습니까?")) return;
 
     showLoading();
-
     try {
-      const docRef = doc(db, "savedTemplates", savedDocId);
-      await deleteDoc(docRef);
-
-      if (uploadedPaths && Object.keys(uploadedPaths).length > 0) {
-        for (const path of Object.values(uploadedPaths)) {
-          await deleteObject(ref(storage, path)).catch(() => { });
-        }
+      await deleteDoc(doc(db, "savedTemplates", savedDocId));
+      for (const path of Object.values(uploadedPaths)) {
+        await deleteObject(ref(storage, path)).catch(() => {});
       }
-
       savedDocId = null;
       uploadedPaths = {};
       sessionStorage.removeItem("savedDocId");
-
       document.getElementById("saveTemplateBtn").disabled = false;
       document.getElementById("deleteTemplateBtn").disabled = true;
-
       alert("삭제 완료되었습니다!");
     } catch (error) {
       console.error("삭제 실패:", error);
@@ -227,20 +207,10 @@
 
   async function downloadTemplate() {
     const frame = document.getElementById("templateFrame");
-    const canvas = await html2canvas(frame, {
-      useCORS: true,
-      scale: 1,
-      backgroundColor: null
-    });
-
+    const canvas = await html2canvas(frame, { useCORS: true, scale: 1, backgroundColor: null });
     const imgData = canvas.toDataURL("image/jpeg", 1.0);
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "px",
-      format: [canvas.width, canvas.height]
-    });
-
+    const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: [canvas.width, canvas.height] });
     pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
     pdf.save("template.pdf");
   }
@@ -262,41 +232,43 @@
   }
 
   function showLoading() {
-    document.getElementById("loadingOverlay").classList.add("active");
+    document.getElementById("loadingOverlay")?.classList.add("active");
   }
 
   function hideLoading() {
-    document.getElementById("loadingOverlay").classList.remove("active");
+    document.getElementById("loadingOverlay")?.classList.remove("active");
   }
 
   function updateResizeHandlesPosition() {
     const image = document.getElementById("mainImage");
-    const scale = currentScale;
-
     if (!image || !image.complete) return;
 
-    const rect = image.getBoundingClientRect();
-    const offsetX = window.scrollX;
-    const offsetY = window.scrollY;
-
+    const wrapper = image.parentElement; // .image-edit-wrapper
     const handles = {
-      topLeft: document.querySelector(".resize-handle.top-left"),
-      topRight: document.querySelector(".resize-handle.top-right"),
-      bottomLeft: document.querySelector(".resize-handle.bottom-left"),
-      bottomRight: document.querySelector(".resize-handle.bottom-right"),
+      topLeft: wrapper.querySelector(".resize-handle.top-left"),
+      topRight: wrapper.querySelector(".resize-handle.top-right"),
+      bottomLeft: wrapper.querySelector(".resize-handle.bottom-left"),
+      bottomRight: wrapper.querySelector(".resize-handle.bottom-right"),
     };
 
-    handles.topLeft.style.left = `${rect.left + offsetX - 6}px`;
-    handles.topLeft.style.top = `${rect.top + offsetY - 6}px`;
+    const imgRect = image.getBoundingClientRect();
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const offsetLeft = imgRect.left - wrapperRect.left;
+    const offsetTop = imgRect.top - wrapperRect.top;
+    const width = image.offsetWidth;
+    const height = image.offsetHeight;
 
-    handles.topRight.style.left = `${rect.right + offsetX - 6}px`;
-    handles.topRight.style.top = `${rect.top + offsetY - 6}px`;
+    handles.topLeft.style.left = `${offsetLeft - 6}px`;
+    handles.topLeft.style.top = `${offsetTop - 6}px`;
 
-    handles.bottomLeft.style.left = `${rect.left + offsetX - 6}px`;
-    handles.bottomLeft.style.top = `${rect.bottom + offsetY - 6}px`;
+    handles.topRight.style.left = `${offsetLeft + width - 6}px`;
+    handles.topRight.style.top = `${offsetTop - 6}px`;
 
-    handles.bottomRight.style.left = `${rect.right + offsetX - 6}px`;
-    handles.bottomRight.style.top = `${rect.bottom + offsetY - 6}px`;
+    handles.bottomLeft.style.left = `${offsetLeft - 6}px`;
+    handles.bottomLeft.style.top = `${offsetTop + height - 6}px`;
+
+    handles.bottomRight.style.left = `${offsetLeft + width - 6}px`;
+    handles.bottomRight.style.top = `${offsetTop + height - 6}px`;
 
     for (let key in handles) {
       handles[key].style.position = "absolute";
@@ -317,7 +289,6 @@
     }
 
     updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
-
     document.getElementById("saveTemplateBtn").onclick = saveTemplate;
     document.getElementById("deleteTemplateBtn").onclick = deleteTemplate;
     document.getElementById("downloadBtn").onclick = downloadTemplate;
@@ -327,14 +298,11 @@
       applyScale();
     }
 
-    // 위치 갱신
     setTimeout(updateResizeHandlesPosition, 300);
   });
 
   window.addEventListener("resize", updateResizeHandlesPosition);
 </script>
-
-
 
 </body>
 </html>
