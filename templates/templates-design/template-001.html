@@ -96,6 +96,10 @@
     const frame = document.getElementById("templateFrame");
     if (frame) frame.style.transform = `translateX(-50%) scale(${currentScale})`;
   }
+  function toggleEditMode() {
+  document.body.classList.toggle("edit-mode");
+  }
+  window.toggleEditMode = toggleEditMode; // ✅ 전역에 바인딩
 
   async function saveTemplate() {
     showLoading();
