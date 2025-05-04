@@ -210,3 +210,7 @@ body.inside-preview .template-close,
 body.inside-preview .view-controls {
   display: none !important;
 }
+
+.edit-mode .resize-handle {
+  display: block !important;
+}

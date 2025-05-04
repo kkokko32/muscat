@@ -35,33 +35,44 @@
   </style>
 </head>
 
-<body class="template-page">
-  <div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-spinner"></div>
-  </div>
-
+<body class="template-page edit-mode">
   <div class="template-wrapper">
+    <!-- 편집 컨트롤 버튼 -->
     <div class="view-controls">
       <button onclick="zoomOut()">-</button>
       <button onclick="resetZoom()">100%</button>
       <button onclick="zoomIn()">+</button>
+      <button onclick="toggleEditMode()">편집 시작</button>
     </div>
 
+    <!-- 템플릿 프레임 -->
     <div class="template-frame" id="templateFrame" style="position: relative; width: 2480px; height: 3508px; background-color: #f3d9aa;">
       <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
       <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
-      <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-      <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 300px; height: 300px; object-fit: cover;" />
+      <img id="brandLogo" class="logo-preview" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" alt="로고 이미지" />
+
+      <!-- 이미지 편집 영역 -->
+      <div class="image-edit-wrapper" style="position: relative; width: fit-content; height: fit-content; margin: 0 auto; overflow: hidden;">
+        <img id="mainImage" class="main-preview" src="" crossorigin="anonymous" style="width: 500px; height: 500px; object-fit: cover;" alt="메인 이미지" />
+        <div class="resize-handle top-left"></div>
+        <div class="resize-handle top-right"></div>
+        <div class="resize-handle bottom-left"></div>
+        <div class="resize-handle bottom-right"></div>
+      </div>
     </div>
 
+    <!-- 닫기/기능 버튼 -->
     <button class="template-close" onclick="window.history.back()">&times;</button>
-
     <div class="template-buttons">
       <button id="saveTemplateBtn" class="save-btn">저장</button>
       <button id="deleteTemplateBtn" class="delete-btn" disabled>삭제</button>
       <button id="downloadBtn" class="download-btn">다운로드</button>
     </div>
   </div>
+
+  <!-- 스크립트는 그대로 유지 (zoom, save, delete, download 등 포함) -->
+</body>
+
 
  <!-- html2canvas CDN 그대로 유지 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
