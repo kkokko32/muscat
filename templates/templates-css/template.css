@@ -204,7 +204,7 @@ body.inside-preview .view-controls {
   display: none !important;
 }
 
-/* 편집 핸들 기본 숨김 */
+/* 핸들 기본 숨김 설정 */
 .resize-handle {
   position: absolute;
   z-index: 999;
@@ -215,19 +215,19 @@ body.inside-preview .view-controls {
   display: none;
 }
 
-/* 편집 모드에서 핸들 표시 */
+/* 편집 모드에서 핸들 보이기 */
 body.edit-mode .resize-handle {
   display: block;
 }
 
-/* 편집 모드에서 프레임 외곽선 표시 */
+/* 편집 모드에서 템플릿 외곽선 표시 */
 body.edit-mode .template-frame {
   outline: 4px dashed #cbff6e;
   outline-offset: -20px;
   transition: outline 0.3s ease;
 }
 
-/* 핸들 수동 위치 조정 (JS에서 위치 계산 기준으로 top/left를 설정) */
+/* 핸들 위치 수동 계산용 초기화 */
 .resize-handle.top-left,
 .resize-handle.top-right,
 .resize-handle.bottom-left,
@@ -236,15 +236,21 @@ body.edit-mode .template-frame {
   left: unset !important;
 }
 
-/* 이미지 편집 마스크 컨테이너 */
+/* 이미지 편집 컨테이너 */
 .image-edit-container {
   position: relative;
   width: 500px;
   height: 500px;
   margin: 0 auto;
+  overflow: hidden; /* 기본은 잘림 처리 */
 }
 
-/* 마스크: 기본은 overflow hidden */
+/* 편집 모드일 경우 확장된 이미지가 보여야 하므로 overflow 해제 */
+body.edit-mode .image-edit-container {
+  overflow: visible;
+}
+
+/* 이미지 마스크: 기본은 잘림 */
 .image-edit-mask {
   position: relative;
   width: 100%;
@@ -252,13 +258,13 @@ body.edit-mode .template-frame {
   overflow: hidden;
 }
 
-/* 편집 모드에서 이미지 넘치는 영역 보이게 + 배경 패턴 */
+/* 편집 모드에서 마스크 배경 및 넘침 보이기 */
 body.edit-mode .image-edit-mask {
   overflow: visible;
   background: repeating-conic-gradient(#eee 0% 25%, transparent 0% 50%) 0 / 10px 10px;
 }
 
-/* 이미지 자체는 절대 위치로 고정 (마스크 기준) */
+/* 편집 이미지 설정 (이미지 직접 배치되는 곳) */
 .main-preview {
   position: absolute;
   top: 0;
@@ -267,9 +273,3 @@ body.edit-mode .image-edit-mask {
   z-index: 1;
   object-fit: cover;
 }
-
-/* [추가] 이미지 마스크 컨테이너도 편집 모드에서 넘침 보이도록 설정 */
-body.edit-mode .image-edit-container {
-  overflow: visible;
-}
-
