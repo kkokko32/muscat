@@ -52,16 +52,17 @@
       <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
       <img id="brandLogo" class="logo-preview" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" alt="로고 이미지" />
 
-      <!-- 이미지 편집 영역 -->
-      <div class="image-edit-wrapper" style="position: relative; overflow: hidden;">
-        <img id="mainImage" class="main-preview" src="" crossorigin="anonymous" alt="메인 이미지" />
+      <!-- 이미지 마스킹 대상 -->
+      <div class="image-edit-wrapper" style="position: relative; width: fit-content; margin: 0 auto; overflow: hidden;">
+        <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
+            style="display: block; width: 500px; height: auto; object-fit: cover; z-index: 1;" />
       </div>
-      
-      <!-- 핸들은 밖으로 분리 -->
-      <div class="resize-handle top-left"></div>
-      <div class="resize-handle top-right"></div>
-      <div class="resize-handle bottom-left"></div>
-      <div class="resize-handle bottom-right"></div>
+
+      <!-- 편집 핸들: 이미지 바깥에서 따로 렌더링 -->
+      <div class="resize-handle top-left" style="z-index: 300;"></div>
+      <div class="resize-handle top-right" style="z-index: 300;"></div>
+      <div class="resize-handle bottom-left" style="z-index: 300;"></div>
+      <div class="resize-handle bottom-right" style="z-index: 300;"></div>
     </div>
 
     <!-- 닫기/기능 버튼 -->
@@ -91,21 +92,24 @@
   let savedDocId = null;
   let uploadedPaths = {};
 
-  window.zoomIn = function() {
+  window.zoomIn = function () {
     currentScale += 0.1;
     if (currentScale > 2) currentScale = 2;
     applyScale();
+    updateResizeHandlesPosition();
   };
 
-  window.zoomOut = function() {
+  window.zoomOut = function () {
     currentScale -= 0.1;
     if (currentScale < 0.1) currentScale = 0.1;
     applyScale();
+    updateResizeHandlesPosition();
   };
 
-  window.resetZoom = function() {
+  window.resetZoom = function () {
     currentScale = 1.0;
     applyScale();
+    updateResizeHandlesPosition();
   };
 
   function applyScale() {
@@ -121,8 +125,8 @@
 
   function toggleEditMode() {
     document.body.classList.toggle("edit-mode");
-    // scale 유지하면서 outline 및 UI만 토글
     applyScale();
+    updateResizeHandlesPosition();
   }
   window.toggleEditMode = toggleEditMode;
 
@@ -201,7 +205,7 @@
 
       if (uploadedPaths && Object.keys(uploadedPaths).length > 0) {
         for (const path of Object.values(uploadedPaths)) {
-          await deleteObject(ref(storage, path)).catch(() => {});
+          await deleteObject(ref(storage, path)).catch(() => { });
         }
       }
 
@@ -241,30 +245,6 @@
     pdf.save("template.pdf");
   }
 
-  window.addEventListener("DOMContentLoaded", () => {
-    const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
-    const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
-    const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
-    const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
-
-    const savedDocIdFromStorage = sessionStorage.getItem("savedDocId");
-    if (savedDocIdFromStorage) {
-      savedDocId = savedDocIdFromStorage;
-      document.getElementById("deleteTemplateBtn").disabled = false;
-    }
-
-    updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
-
-    document.getElementById("saveTemplateBtn").onclick = saveTemplate;
-    document.getElementById("deleteTemplateBtn").onclick = deleteTemplate;
-    document.getElementById("downloadBtn").onclick = downloadTemplate;
-
-    if (window.top === window.self) {
-      document.body.classList.add("view-mode");
-      applyScale(); // 처음 scale 적용
-    }
-  });
-
   function updateTemplateContent(data) {
     const brandEl = document.querySelector(".brand-name");
     const sloganEl = document.querySelector(".brand-slogan");
@@ -288,7 +268,72 @@
   function hideLoading() {
     document.getElementById("loadingOverlay").classList.remove("active");
   }
+
+  function updateResizeHandlesPosition() {
+    const image = document.getElementById("mainImage");
+    const scale = currentScale;
+
+    if (!image || !image.complete) return;
+
+    const rect = image.getBoundingClientRect();
+    const offsetX = window.scrollX;
+    const offsetY = window.scrollY;
+
+    const handles = {
+      topLeft: document.querySelector(".resize-handle.top-left"),
+      topRight: document.querySelector(".resize-handle.top-right"),
+      bottomLeft: document.querySelector(".resize-handle.bottom-left"),
+      bottomRight: document.querySelector(".resize-handle.bottom-right"),
+    };
+
+    handles.topLeft.style.left = `${rect.left + offsetX - 6}px`;
+    handles.topLeft.style.top = `${rect.top + offsetY - 6}px`;
+
+    handles.topRight.style.left = `${rect.right + offsetX - 6}px`;
+    handles.topRight.style.top = `${rect.top + offsetY - 6}px`;
+
+    handles.bottomLeft.style.left = `${rect.left + offsetX - 6}px`;
+    handles.bottomLeft.style.top = `${rect.bottom + offsetY - 6}px`;
+
+    handles.bottomRight.style.left = `${rect.right + offsetX - 6}px`;
+    handles.bottomRight.style.top = `${rect.bottom + offsetY - 6}px`;
+
+    for (let key in handles) {
+      handles[key].style.position = "absolute";
+      handles[key].style.zIndex = "300";
+    }
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
+    const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
+    const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
+    const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+
+    const savedDocIdFromStorage = sessionStorage.getItem("savedDocId");
+    if (savedDocIdFromStorage) {
+      savedDocId = savedDocIdFromStorage;
+      document.getElementById("deleteTemplateBtn").disabled = false;
+    }
+
+    updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
+
+    document.getElementById("saveTemplateBtn").onclick = saveTemplate;
+    document.getElementById("deleteTemplateBtn").onclick = deleteTemplate;
+    document.getElementById("downloadBtn").onclick = downloadTemplate;
+
+    if (window.top === window.self) {
+      document.body.classList.add("view-mode");
+      applyScale();
+    }
+
+    // 위치 갱신
+    setTimeout(updateResizeHandlesPosition, 300);
+  });
+
+  window.addEventListener("resize", updateResizeHandlesPosition);
 </script>
+
 
 
 </body>

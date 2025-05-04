@@ -35,14 +35,6 @@ body::-webkit-scrollbar {
   justify-content: flex-start;
 }
 
-.main-preview {
-  width: 400px;
-  height: 400px;
-  object-fit: cover;
-  display: block;
-  margin: 0 auto;
-}
-
 .logo-preview {
   width: 150px;
   height: 150px;
