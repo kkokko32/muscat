@@ -222,9 +222,3 @@ body.edit-mode .template-frame {
   outline-offset: -20px;
   transition: outline 0.3s ease;
 }
-
-/* 핸들을 이미지 기준 좌표로 수동 조절 */
-.resize-handle.top-left     { top: 765px;  left: 990px;  cursor: nwse-resize; }
-.resize-handle.top-right    { top: 765px;  left: 1515px; cursor: nesw-resize; }
-.resize-handle.bottom-left  { top: 1290px; left: 990px;  cursor: nesw-resize; }
-.resize-handle.bottom-right { top: 1290px; left: 1515px; cursor: nwse-resize; }

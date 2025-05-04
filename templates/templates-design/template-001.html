@@ -205,7 +205,7 @@
 
       if (uploadedPaths && Object.keys(uploadedPaths).length > 0) {
         for (const path of Object.values(uploadedPaths)) {
-          await deleteObject(ref(storage, path)).catch(() => { });
+          await deleteObject(ref(storage, path)).catch(() => {});
         }
       }
 
@@ -258,26 +258,33 @@
       mainEl.src = data.mainUrl;
       mainEl.style.display = 'block';
       mainEl.style.zIndex = '100';
+
+      mainEl.onload = () => {
+        updateResizeHandlesPosition();
+      };
     }
   }
 
   function showLoading() {
-    document.getElementById("loadingOverlay").classList.add("active");
+    document.getElementById("loadingOverlay")?.classList.add("active");
   }
 
   function hideLoading() {
-    document.getElementById("loadingOverlay").classList.remove("active");
+    document.getElementById("loadingOverlay")?.classList.remove("active");
   }
 
   function updateResizeHandlesPosition() {
     const image = document.getElementById("mainImage");
-    const scale = currentScale;
-
     if (!image || !image.complete) return;
 
-    const rect = image.getBoundingClientRect();
-    const offsetX = window.scrollX;
-    const offsetY = window.scrollY;
+    const imageRect = image.getBoundingClientRect();
+    const frameRect = document.getElementById("templateFrame").getBoundingClientRect();
+
+    const offsetX = imageRect.left - frameRect.left;
+    const offsetY = imageRect.top - frameRect.top;
+
+    const imgWidth = image.offsetWidth;
+    const imgHeight = image.offsetHeight;
 
     const handles = {
       topLeft: document.querySelector(".resize-handle.top-left"),
@@ -286,17 +293,17 @@
       bottomRight: document.querySelector(".resize-handle.bottom-right"),
     };
 
-    handles.topLeft.style.left = `${rect.left + offsetX - 6}px`;
-    handles.topLeft.style.top = `${rect.top + offsetY - 6}px`;
+    handles.topLeft.style.left = `${offsetX - 6}px`;
+    handles.topLeft.style.top = `${offsetY - 6}px`;
 
-    handles.topRight.style.left = `${rect.right + offsetX - 6}px`;
-    handles.topRight.style.top = `${rect.top + offsetY - 6}px`;
+    handles.topRight.style.left = `${offsetX + imgWidth - 6}px`;
+    handles.topRight.style.top = `${offsetY - 6}px`;
 
-    handles.bottomLeft.style.left = `${rect.left + offsetX - 6}px`;
-    handles.bottomLeft.style.top = `${rect.bottom + offsetY - 6}px`;
+    handles.bottomLeft.style.left = `${offsetX - 6}px`;
+    handles.bottomLeft.style.top = `${offsetY + imgHeight - 6}px`;
 
-    handles.bottomRight.style.left = `${rect.right + offsetX - 6}px`;
-    handles.bottomRight.style.top = `${rect.bottom + offsetY - 6}px`;
+    handles.bottomRight.style.left = `${offsetX + imgWidth - 6}px`;
+    handles.bottomRight.style.top = `${offsetY + imgHeight - 6}px`;
 
     for (let key in handles) {
       handles[key].style.position = "absolute";
@@ -327,14 +334,9 @@
       applyScale();
     }
 
-    // 위치 갱신
-    setTimeout(updateResizeHandlesPosition, 300);
+    window.addEventListener("resize", updateResizeHandlesPosition);
   });
-
-  window.addEventListener("resize", updateResizeHandlesPosition);
 </script>
-
-
 
 </body>
 </html>
