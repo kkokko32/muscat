@@ -53,19 +53,27 @@
       <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
     
       <!-- 로고 이미지 (brandLogo) -->
-      <img id="brandLogo" alt="로고 이미지" class="logo-preview" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
+      <img id="brandLogo" alt="로고 이미지" class="logo-preview" src="" crossorigin="anonymous"
+           style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
     
-      <!-- 메인 이미지 (mainImage) -->
-      <div class="image-edit-mask">
-        <div class="image-edit-wrapper">
-          <img id="mainImage" alt="메인 이미지" class="main-preview" src="" crossorigin="anonymous" />
+      <!-- 메인 이미지 (mainImage) + 편집 핸들 UI -->
+      <div class="image-edit-mask" style="position: relative; width: 400px; height: 400px; margin: 0 auto;">
+        <div class="image-edit-wrapper" style="width: 100%; height: 100%; overflow: hidden;">
+          <img id="mainImage" alt="메인 이미지" class="main-preview" src="" crossorigin="anonymous"
+               style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <div class="resize-handle top-left"></div>
-        <div class="resize-handle top-right"></div>
-        <div class="resize-handle bottom-left"></div>
-        <div class="resize-handle bottom-right"></div>
+        <!-- 리사이즈 핸들 -->
+        <div class="resize-handle top-left" style="width: 12px; height: 12px; background: white; border: 1px solid #000;
+             position: absolute; top: -6px; left: -6px; z-index: 10; display: none;"></div>
+        <div class="resize-handle top-right" style="width: 12px; height: 12px; background: white; border: 1px solid #000;
+             position: absolute; top: -6px; right: -6px; z-index: 10; display: none;"></div>
+        <div class="resize-handle bottom-left" style="width: 12px; height: 12px; background: white; border: 1px solid #000;
+             position: absolute; bottom: -6px; left: -6px; z-index: 10; display: none;"></div>
+        <div class="resize-handle bottom-right" style="width: 12px; height: 12px; background: white; border: 1px solid #000;
+             position: absolute; bottom: -6px; right: -6px; z-index: 10; display: none;"></div>
       </div>
     </div>
+    
 
 
     <button class="template-close" onclick="window.history.back()">&times;</button>
