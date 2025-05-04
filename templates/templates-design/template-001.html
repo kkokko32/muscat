@@ -174,29 +174,48 @@
 
     savedDocId = docRef.id;
     sessionStorage.setItem("savedDocId", savedDocId);
+
     document.getElementById("saveTemplateBtn").disabled = true;
     document.getElementById("deleteTemplateBtn").disabled = false;
-    hideLoading();
 
+    hideLoading();
     const move = confirm("저장 완료되었습니다!\n\n내 작업실로 이동할까요?");
-    if (move) window.location.href = "/muscat/save-templates/my-save.html";
+    if (move) {
+      window.location.href = "/muscat/save-templates/my-save.html";
+    }
   }
 
   async function deleteTemplate() {
-    if (!savedDocId) return alert("저장된 템플릿이 없습니다.");
-    if (!confirm("정말 삭제하시겠습니까?")) return;
+    if (!savedDocId) {
+      alert("저장된 템플릿이 없습니다.");
+      return;
+    }
+
+    const confirmDelete = confirm("정말 삭제하시겠습니까?");
+    if (!confirmDelete) {
+      hideLoading();
+      return;
+    }
 
     showLoading();
+
     try {
-      await deleteDoc(doc(db, "savedTemplates", savedDocId));
-      for (const path of Object.values(uploadedPaths)) {
-        await deleteObject(ref(storage, path)).catch(() => {});
+      const docRef = doc(db, "savedTemplates", savedDocId);
+      await deleteDoc(docRef);
+
+      if (uploadedPaths && Object.keys(uploadedPaths).length > 0) {
+        for (const path of Object.values(uploadedPaths)) {
+          await deleteObject(ref(storage, path)).catch(() => { });
+        }
       }
+
       savedDocId = null;
       uploadedPaths = {};
       sessionStorage.removeItem("savedDocId");
+
       document.getElementById("saveTemplateBtn").disabled = false;
       document.getElementById("deleteTemplateBtn").disabled = true;
+
       alert("삭제 완료되었습니다!");
     } catch (error) {
       console.error("삭제 실패:", error);
@@ -208,10 +227,20 @@
 
   async function downloadTemplate() {
     const frame = document.getElementById("templateFrame");
-    const canvas = await html2canvas(frame, { useCORS: true, scale: 1, backgroundColor: null });
+    const canvas = await html2canvas(frame, {
+      useCORS: true,
+      scale: 1,
+      backgroundColor: null
+    });
+
     const imgData = canvas.toDataURL("image/jpeg", 1.0);
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: [canvas.width, canvas.height] });
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "px",
+      format: [canvas.width, canvas.height]
+    });
+
     pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
     pdf.save("template.pdf");
   }
@@ -233,15 +262,23 @@
   }
 
   function showLoading() {
-    document.getElementById("loadingOverlay")?.classList.add("active");
+    document.getElementById("loadingOverlay").classList.add("active");
   }
 
   function hideLoading() {
-    document.getElementById("loadingOverlay")?.classList.remove("active");
+    document.getElementById("loadingOverlay").classList.remove("active");
   }
 
   function updateResizeHandlesPosition() {
     const image = document.getElementById("mainImage");
+    const scale = currentScale;
+
+    if (!image || !image.complete) return;
+
+    const rect = image.getBoundingClientRect();
+    const offsetX = window.scrollX;
+    const offsetY = window.scrollY;
+
     const handles = {
       topLeft: document.querySelector(".resize-handle.top-left"),
       topRight: document.querySelector(".resize-handle.top-right"),
@@ -249,17 +286,15 @@
       bottomRight: document.querySelector(".resize-handle.bottom-right"),
     };
 
-    if (!image || !image.complete) return;
-    const rect = image.getBoundingClientRect();
-    const offsetX = window.scrollX;
-    const offsetY = window.scrollY;
-
     handles.topLeft.style.left = `${rect.left + offsetX - 6}px`;
     handles.topLeft.style.top = `${rect.top + offsetY - 6}px`;
+
     handles.topRight.style.left = `${rect.right + offsetX - 6}px`;
     handles.topRight.style.top = `${rect.top + offsetY - 6}px`;
+
     handles.bottomLeft.style.left = `${rect.left + offsetX - 6}px`;
     handles.bottomLeft.style.top = `${rect.bottom + offsetY - 6}px`;
+
     handles.bottomRight.style.left = `${rect.right + offsetX - 6}px`;
     handles.bottomRight.style.top = `${rect.bottom + offsetY - 6}px`;
 
@@ -282,6 +317,7 @@
     }
 
     updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
+
     document.getElementById("saveTemplateBtn").onclick = saveTemplate;
     document.getElementById("deleteTemplateBtn").onclick = deleteTemplate;
     document.getElementById("downloadBtn").onclick = downloadTemplate;
@@ -291,11 +327,13 @@
       applyScale();
     }
 
+    // 위치 갱신
     setTimeout(updateResizeHandlesPosition, 300);
   });
 
   window.addEventListener("resize", updateResizeHandlesPosition);
 </script>
+
 
 
 </body>
