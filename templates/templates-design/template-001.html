@@ -253,14 +253,15 @@
 
   function updateResizeHandlesPosition() {
     const image = document.getElementById("mainImage");
-    const container = document.querySelector(".image-edit-container");
+    const mask = image.closest(".image-edit-mask");
 
-    if (!image || !container) return;
+    if (!image || !mask || !image.complete) return;
 
-    const imageRect = image.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
-    const offsetX = imageRect.left - containerRect.left;
-    const offsetY = imageRect.top - containerRect.top;
+    const imgRect = image.getBoundingClientRect();
+    const maskRect = mask.getBoundingClientRect();
+
+    const offsetLeft = imgRect.left - maskRect.left;
+    const offsetTop = imgRect.top - maskRect.top;
     const width = image.offsetWidth;
     const height = image.offsetHeight;
 
@@ -271,17 +272,17 @@
       bottomRight: document.querySelector(".resize-handle.bottom-right"),
     };
 
-    handles.topLeft.style.left = `${offsetX - 6}px`;
-    handles.topLeft.style.top = `${offsetY - 6}px`;
+    handles.topLeft.style.left = `${offsetLeft - 6}px`;
+    handles.topLeft.style.top = `${offsetTop - 6}px`;
 
-    handles.topRight.style.left = `${offsetX + width - 6}px`;
-    handles.topRight.style.top = `${offsetY - 6}px`;
+    handles.topRight.style.left = `${offsetLeft + width - 6}px`;
+    handles.topRight.style.top = `${offsetTop - 6}px`;
 
-    handles.bottomLeft.style.left = `${offsetX - 6}px`;
-    handles.bottomLeft.style.top = `${offsetY + height - 6}px`;
+    handles.bottomLeft.style.left = `${offsetLeft - 6}px`;
+    handles.bottomLeft.style.top = `${offsetTop + height - 6}px`;
 
-    handles.bottomRight.style.left = `${offsetX + width - 6}px`;
-    handles.bottomRight.style.top = `${offsetY + height - 6}px`;
+    handles.bottomRight.style.left = `${offsetLeft + width - 6}px`;
+    handles.bottomRight.style.top = `${offsetTop + height - 6}px`;
 
     for (let key in handles) {
       handles[key].style.position = "absolute";
@@ -316,6 +317,7 @@
 
   window.addEventListener("resize", updateResizeHandlesPosition);
 </script>
+
 
 
 </body>
