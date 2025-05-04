@@ -235,3 +235,7 @@ body.inside-preview .view-controls {
 .bottom-left  { bottom: -5px; left: -5px; cursor: nesw-resize; }
 .bottom-right { bottom: -5px; right: -5px; cursor: nwse-resize; }
 
+.edit-mode .resize-handle {
+  display: block;
+}
+
