@@ -53,13 +53,15 @@
       <img id="brandLogo" class="logo-preview" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" alt="로고 이미지" />
 
       <!-- 이미지 편집 영역 -->
-      <div class="image-edit-wrapper" style="position: relative; width: fit-content; height: fit-content; margin: 0 auto; overflow: hidden;">
-        <img id="mainImage" class="main-preview" src="" crossorigin="anonymous" style="width: 500px; height: 500px; object-fit: cover;" alt="메인 이미지" />
-        <div class="resize-handle top-left"></div>
-        <div class="resize-handle top-right"></div>
-        <div class="resize-handle bottom-left"></div>
-        <div class="resize-handle bottom-right"></div>
+      <div class="image-edit-wrapper" style="position: relative; overflow: hidden;">
+        <img id="mainImage" ... />
       </div>
+      
+      <!-- 핸들은 밖으로 분리 -->
+      <div class="resize-handle top-left"></div>
+      <div class="resize-handle top-right"></div>
+      <div class="resize-handle bottom-left"></div>
+      <div class="resize-handle bottom-right"></div>
     </div>
 
     <!-- 닫기/기능 버튼 -->

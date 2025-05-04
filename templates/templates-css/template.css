@@ -211,17 +211,18 @@ body.inside-preview .view-controls {
   display: none !important;
 }
 
-.edit-mode .resize-handle {
-  display: block !important;
+.resize-handle {
+  position: absolute;
+  z-index: 300;
+  width: 12px;
+  height: 12px;
+  background: white;
+  border: 1px solid #000;
+  display: none;
 }
 
-.resize-handle {
-  width: 20px;
-  height: 20px;
-  background-color: #cbff6e;
-  position: absolute;
-  z-index: 10;
-  display: none; /* 기본값은 hidden, edit-mode에서만 block으로 변경됨 */
+body.edit-mode .resize-handle {
+  display: block;
 }
 
 body.edit-mode .template-frame {
@@ -230,7 +231,8 @@ body.edit-mode .template-frame {
   transition: outline 0.3s ease;
 }
 
-.resize-handle.top-left { top: -10px; left: -10px; cursor: nwse-resize; }
-.resize-handle.top-right { top: -10px; right: -10px; cursor: nesw-resize; }
-.resize-handle.bottom-left { bottom: -10px; left: -10px; cursor: nesw-resize; }
-.resize-handle.bottom-right { bottom: -10px; right: -10px; cursor: nwse-resize; }
+/* 핸들을 이미지 기준 좌표로 수동 조절 */
+.resize-handle.top-left     { top: 765px;  left: 990px;  cursor: nwse-resize; }
+.resize-handle.top-right    { top: 765px;  left: 1515px; cursor: nesw-resize; }
+.resize-handle.bottom-left  { top: 1290px; left: 990px;  cursor: nesw-resize; }
+.resize-handle.bottom-right { top: 1290px; left: 1515px; cursor: nwse-resize; }
