@@ -267,3 +267,9 @@ body.edit-mode .image-edit-mask {
   z-index: 1;
   object-fit: cover;
 }
+
+/* [추가] 이미지 마스크 컨테이너도 편집 모드에서 넘침 보이도록 설정 */
+body.edit-mode .image-edit-container {
+  overflow: visible;
+}
+
