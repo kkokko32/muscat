@@ -53,20 +53,21 @@
       <img id="brandLogo" class="logo-preview" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" alt="로고 이미지" />
 
       <!-- 이미지 편집 컨테이너 전체 -->
-      <div class="image-edit-container" style="position: relative; width: fit-content; margin: 0 auto;">
+      <div class="image-edit-container" style="position: relative; width: 500px; height: 500px; margin: 0 auto;">
 
-        <!-- 이미지 마스크 적용 영역 -->
-        <div class="image-edit-mask" style="overflow: hidden;">
-          <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
-              style="display: block; width: 500px; height: auto; object-fit: cover; z-index: 1;" />
-        </div>
+      <!-- 이미지 마스크 적용 영역 -->
+      <div class="image-edit-mask">
+        <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
+            style="position: absolute; top: 0; left: 0; display: block; width: 500px; height: auto; object-fit: cover; z-index: 1;" />
+     </div>
 
-        <!-- 핸들은 마스크 바깥에서 위치 절대 지정 -->
-        <div class="resize-handle top-left"></div>
-        <div class="resize-handle top-right"></div>
-        <div class="resize-handle bottom-left"></div>
-        <div class="resize-handle bottom-right"></div>
-      </div>
+  <!-- 편집 핸들 (절대 위치) -->
+  <div class="resize-handle top-left"></div>
+  <div class="resize-handle top-right"></div>
+  <div class="resize-handle bottom-left"></div>
+  <div class="resize-handle bottom-right"></div>
+</div>
+
 
     </div>
 

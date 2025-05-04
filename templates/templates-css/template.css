@@ -197,33 +197,37 @@ iframe {
   cursor: pointer;
 }
 
+/* 뷰어 내에서는 버튼 숨김 처리 */
 body.inside-preview .template-buttons,
 body.inside-preview .template-close,
 body.inside-preview .view-controls {
   display: none !important;
 }
 
+/* 편집 핸들 기본 숨김 */
 .resize-handle {
   position: absolute;
-  z-index: 9999;
+  z-index: 999;
   width: 12px;
   height: 12px;
   background: white;
-  border: 1px solid #000;
+  border: 2px solid black;
   display: none;
 }
 
+/* 편집 모드에서 핸들 표시 */
 body.edit-mode .resize-handle {
   display: block;
 }
 
+/* 편집 모드에서 프레임 외곽선 표시 */
 body.edit-mode .template-frame {
   outline: 4px dashed #cbff6e;
   outline-offset: -20px;
   transition: outline 0.3s ease;
 }
 
-/* 핸들을 이미지 기준 좌표로 수동 조절 */
+/* 핸들 수동 위치 조정 (JS에서 위치 계산 기준으로 top/left를 설정) */
 .resize-handle.top-left,
 .resize-handle.top-right,
 .resize-handle.bottom-left,
@@ -232,11 +236,34 @@ body.edit-mode .template-frame {
   left: unset !important;
 }
 
-.resize-handle {
-  width: 12px;
-  height: 12px;
-  background: white;
-  border: 2px solid black;
+/* 이미지 편집 마스크 컨테이너 */
+.image-edit-container {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+/* 마스크: 기본은 overflow hidden */
+.image-edit-mask {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 편집 모드에서 이미지 넘치는 영역 보이게 + 배경 패턴 */
+body.edit-mode .image-edit-mask {
+  overflow: visible;
+  background: repeating-conic-gradient(#eee 0% 25%, transparent 0% 50%) 0 / 10px 10px;
+}
+
+/* 이미지 자체는 절대 위치로 고정 (마스크 기준) */
+.main-preview {
   position: absolute;
-  z-index: 999; /* 이미지 위로 올라오도록 */
+  top: 0;
+  left: 0;
+  display: block;
+  z-index: 1;
+  object-fit: cover;
 }
