@@ -32,7 +32,7 @@ body {
 .sidebar {
   background-color: #292929;
   color: white;
-  padding: 120px 40px 0px 40px;
+  padding: 90px 40px 0px 40px;
   width: 400px;
   height: 100vh;
   overflow-y: auto;
@@ -104,7 +104,7 @@ main {
 }
 
 .upload-label {
-  margin-top: 50px;
+  margin-top: 40px;
 }
 
 .full-width-group {
