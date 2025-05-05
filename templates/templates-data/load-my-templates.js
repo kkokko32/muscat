@@ -119,7 +119,8 @@ async function loadMyTemplates() {
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
-      window.location.href = `/muscat/templates/templates-design/template-001.html?docId=${docId}`;
+      const templateId = data.templateId || "template-001";  // 없으면 fallback
+      window.location.href = `/muscat/templates/templates-design/${templateId}.html?docId=${docId}`;
     };
 
     fragment.appendChild(wrapper);
