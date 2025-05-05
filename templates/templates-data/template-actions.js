@@ -38,11 +38,6 @@ function applyScale() {
   frame.style.transformOrigin = 'top center';
 }
 
-export function toggleEditMode() {
-  document.body.classList.toggle("edit-mode");
-  applyScale();
-}
-
 export async function saveTemplate() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.classList.add("active");
