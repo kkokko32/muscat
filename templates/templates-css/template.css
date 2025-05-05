@@ -228,6 +228,10 @@ body.inside-preview .view-controls {
 
 /* 편집 버튼 */
 .edit-btn {
+  position: absolute;
+  top: 20px;
+  left: calc(50% - 1260px); /* 템플릿 좌측 외부 위치 (2480px / 2 + 20px 여유) */
+  z-index: 1000;
   background-color: #292929;
   color: #aafc3e;
   border: 1px solid #aafc3e;
