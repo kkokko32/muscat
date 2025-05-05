@@ -160,7 +160,9 @@ async function handleSaveTemplate() {
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
 
-    const templateId = window.location.pathname.split("/").pop().replace(".html", "");
+    const pathname = window.location.pathname;
+    const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
+    const templateId = fileName.replace(".html", "") || "template-001";
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
