@@ -62,8 +62,9 @@ async function loadTemplate() {
 
     const newFrame = tempDom.querySelector(".template-frame");
     if (newFrame && wrapper) {
-      wrapper.replaceWith(newFrame);
-      newFrame.id = "templateFrame"; // ID 유지
+      const cloned = newFrame.cloneNode(true);
+      wrapper.replaceWith(cloned);
+      cloned.id = "templateFrame";
     }
   } catch (e) {
     console.error("템플릿 로드 실패:", e);
