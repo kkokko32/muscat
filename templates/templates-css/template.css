@@ -226,11 +226,22 @@ body.inside-preview .view-controls {
   cursor: pointer;
 }
 
-/* 편집 모드에서 프레임 외곽선 표시 */
-body.edit-mode .template-frame {
-  outline: 4px dashed #cbff6e;
-  outline-offset: -20px;
-  transition: outline 0.3s ease;
+/* 편집 버튼 */
+.edit-btn {
+  background-color: #292929;
+  color: #aafc3e;
+  border: 1px solid #aafc3e;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-btn:hover {
+  background-color: #aafc3e;
+  color: #292929;
 }
 
 /* 이미지 편집 마스크 컨테이너 */
