@@ -1,3 +1,4 @@
+
 /* 템플릿 공통 스타일 */
 html, body {
   margin: 0;
@@ -6,13 +7,11 @@ html, body {
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
 }
-
 body::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+  display: none;
 }
-
 .template-page {
   background-color: #292929;
   margin-top: 0;
@@ -22,7 +21,6 @@ body::-webkit-scrollbar {
   display: block;
   color: white;
 }
-
 .template-frame {
   border-radius: 20px;
   margin: 80px auto 0;
@@ -34,7 +32,6 @@ body::-webkit-scrollbar {
   align-items: center;
   justify-content: flex-start;
 }
-
 .logo-preview {
   width: 150px;
   height: 150px;
@@ -42,7 +39,6 @@ body::-webkit-scrollbar {
   display: block;
   margin: 0 auto 20px;
 }
-
 iframe {
   overflow: hidden;
   border: none;
@@ -57,7 +53,6 @@ iframe {
   flex-direction: column;
   gap: 12px;
 }
-
 .template-buttons button {
   width: 60px;
   height: 60px;
@@ -69,7 +64,6 @@ iframe {
   border-radius: 100%;
   cursor: pointer;
 }
-
 .template-close {
   position: fixed;
   top: 20px;
@@ -95,25 +89,21 @@ iframe {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .save-btn:hover,
 .download-btn:hover {
   border-color: #cbff6e;
   color: #cbff6e;
   background: none;
 }
-
 .save-btn.active {
   color: #cbff6e;
   border-color: #cbff6e;
 }
-
 .save-btn.active:hover {
   background: none;
   color: #cbff6e;
   border-color: #cbff6e;
 }
-
 .delete-btn {
   color: #fff;
   background: none;
@@ -124,71 +114,68 @@ iframe {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .delete-btn:hover {
   border-color: #cbff6e;
   color: #cbff6e;
   background: none;
 }
-
 .delete-btn.active {
   color: #cbff6e;
   border-color: #cbff6e;
 }
-
 .delete-btn.active:hover {
   background: none;
   color: #cbff6e;
   border-color: #cbff6e;
 }
 
+/* 로딩 오버레이 */
 .loading-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
   z-index: 9999;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
 }
-
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #fff;
-  border-top: 5px solid #aafc3e;
+.loading-overlay.active {
+  display: flex;
+}
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #ccc;
+  border-top-color: #aafc3e;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
 
-/* ✅ 썸네일 추천 디자인 공통 스타일 */
+/* 썸네일 추천 디자인 */
 .template-footer {
   color: white;
   text-align: center;
 }
-
 .template-footer .footer-section {
   margin-bottom: 60px;
 }
-
 .template-footer .footer-section h3 {
   color: white;
   margin-bottom: 12px;
   font-size: 18px;
 }
-
 .thumbnail-list {
   display: flex;
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
 }
-
 .thumbnail-list img {
   width: 270px;
   height: 230px;
@@ -197,14 +184,14 @@ iframe {
   cursor: pointer;
 }
 
-/* 뷰어 내에서는 버튼 숨김 처리 */
+/* 버튼 숨김 */
 body.inside-preview .template-buttons,
 body.inside-preview .template-close,
 body.inside-preview .view-controls {
   display: none !important;
 }
 
-/* 핸들 기본 숨김 설정 */
+/* 편집 모드 핸들 */
 .resize-handle {
   position: absolute;
   z-index: 999;
@@ -214,20 +201,14 @@ body.inside-preview .view-controls {
   border: 2px solid black;
   display: none;
 }
-
-/* 편집 모드에서 핸들 보이기 */
 body.edit-mode .resize-handle {
   display: block;
 }
-
-/* 편집 모드에서 템플릿 외곽선 표시 */
 body.edit-mode .template-frame {
   outline: 4px dashed #cbff6e;
   outline-offset: -20px;
   transition: outline 0.3s ease;
 }
-
-/* 핸들 위치 수동 계산용 초기화 */
 .resize-handle.top-left,
 .resize-handle.top-right,
 .resize-handle.bottom-left,
@@ -236,35 +217,27 @@ body.edit-mode .template-frame {
   left: unset !important;
 }
 
-/* 이미지 편집 컨테이너 */
+/* 이미지 편집 */
 .image-edit-container {
   position: relative;
   width: 500px;
   height: 500px;
   margin: 0 auto;
-  overflow: hidden; /* 기본은 잘림 처리 */
+  overflow: hidden;
 }
-
-/* 편집 모드일 경우 확장된 이미지가 보여야 하므로 overflow 해제 */
 body.edit-mode .image-edit-container {
   overflow: visible;
 }
-
-/* 이미지 마스크: 기본은 잘림 */
 .image-edit-mask {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
-
-/* 편집 모드에서 마스크 배경 및 넘침 보이기 */
 body.edit-mode .image-edit-mask {
   overflow: visible;
   background: repeating-conic-gradient(#eee 0% 25%, transparent 0% 50%) 0 / 10px 10px;
 }
-
-/* 편집 이미지 설정 (이미지 직접 배치되는 곳) */
 .main-preview {
   position: absolute;
   top: 0;
@@ -272,4 +245,25 @@ body.edit-mode .image-edit-mask {
   display: block;
   z-index: 1;
   object-fit: cover;
+}
+
+/* 뷰어 컨트롤 */
+.view-controls {
+  position: fixed;
+  top: 150px;
+  left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+}
+.view-controls button {
+  width: 50px;
+  height: 50px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
 }
