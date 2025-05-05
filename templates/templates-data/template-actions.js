@@ -27,13 +27,15 @@ export function resetZoom() {
 
 function applyScale() {
   const frame = document.getElementById("templateFrame");
-  if (frame) {
-    frame.style.position = 'absolute';
-    frame.style.top = '50px';
-    frame.style.left = '50%';
-    frame.style.transform = `translateX(-50%) scale(${currentScale})`;
-    frame.style.transformOrigin = 'top center';
-  }
+  if (!frame) return;
+
+  const baseWidth = 2480;
+  const baseHeight = 3508;
+
+  frame.style.width = `${baseWidth * currentScale}px`;
+  frame.style.height = `${baseHeight * currentScale}px`;
+  frame.style.transform = `translateX(-50%) scale(${currentScale})`;
+  frame.style.transformOrigin = 'top center';
 }
 
 export function toggleEditMode() {
@@ -70,7 +72,12 @@ export async function saveTemplate() {
   };
 
   const docRef = await addDoc(collection(db, "savedTemplates"), {
-    uid: user.uid, brand, slogan, thumbnailUrl, logoUrl: logoDownloadUrl, mainUrl,
+    uid: user.uid,
+    brand,
+    slogan,
+    thumbnailUrl,
+    logoUrl: logoDownloadUrl,
+    mainUrl,
     createdAt: serverTimestamp(),
   });
 
@@ -106,7 +113,9 @@ export async function deleteTemplate() {
 export async function downloadTemplate() {
   const frame = document.getElementById("templateFrame");
   const canvas = await html2canvas(frame, {
-    useCORS: true, scale: 1, backgroundColor: null
+    useCORS: true,
+    scale: 1,
+    backgroundColor: null
   });
 
   const imgData = canvas.toDataURL("image/jpeg", 1.0);
@@ -121,16 +130,19 @@ export async function downloadTemplate() {
   pdf.save("template.pdf");
 }
 
-// ✅ 페이지 진입 시 초기 처리
+// ✅ 페이지 진입 시 초기 처리 및 줌 바인딩
 window.addEventListener("DOMContentLoaded", () => {
-  const overlay = document.getElementById("loadingOverlay");
-  if (overlay) overlay.classList.remove("active");
-
   if (window.top === window.self) {
     document.body.classList.add("view-mode");
     applyScale();
   }
 
-  document.documentElement.style.overflowY = 'auto';
-  document.body.style.overflowY = 'auto';
+  document.getElementById("saveTemplateBtn")?.addEventListener("click", saveTemplate);
+  document.getElementById("deleteTemplateBtn")?.addEventListener("click", deleteTemplate);
+  document.getElementById("downloadBtn")?.addEventListener("click", downloadTemplate);
+
+  // HTML에서 직접 호출할 수 있도록 바인딩
+  window.zoomIn = zoomIn;
+  window.zoomOut = zoomOut;
+  window.resetZoom = resetZoom;
 });
