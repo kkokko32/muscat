@@ -51,28 +51,23 @@ async function loadTemplate() {
     const ref = doc(db, "savedTemplates", currentDocId);
     const snapshot = await getDoc(ref);
     if (!snapshot.exists()) return;
-  
+
     const data = snapshot.data();
     const response = await fetch(data.htmlUrl);
     const htmlText = await response.text();
-  
-    // 기존 templateFrame 가져오기
+
     const wrapper = document.getElementById("templateFrame");
-  
-    // 새 HTML 생성
     const tempDom = document.createElement("div");
     tempDom.innerHTML = htmlText;
-  
+
     const newFrame = tempDom.querySelector(".template-frame");
-  
-    // 전체 프레임 교체
     if (newFrame && wrapper) {
       wrapper.replaceWith(newFrame);
       newFrame.id = "templateFrame"; // ID 유지
     }
   } catch (e) {
     console.error("템플릿 로드 실패:", e);
-  }  
+  }
 }
 
 function waitForImageLoad(imageElement) {
@@ -115,7 +110,8 @@ async function handleSaveTemplate() {
   if (!user) return alert("로그인이 필요합니다.");
 
   showLoading();
-  const frame = document.querySelector(".template-frame");
+
+  const frame = document.getElementById("templateFrame");
   if (!frame) return alert("템플릿이 존재하지 않습니다.");
 
   const brand = frame.querySelector(".brand-name")?.innerText || "";
@@ -176,8 +172,7 @@ async function handleSaveTemplate() {
 
     savedDocId = docRef.id;
     alert("템플릿이 서버에 저장되었습니다!");
-    
-    // ✅ 현재 페이지가 템플릿 상세 페이지일 경우에만 URL 변경
+
     if (window.location.pathname.includes("template-")) {
       window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
     }
@@ -222,7 +217,7 @@ function setupDownload() {
       allowTaint: false,
       backgroundColor: null,
       imageTimeout: 3000,
-      scale: 2 // 더 고해상도 캡처
+      scale: 2
     });
 
     const imgData = canvas.toDataURL("image/jpeg", 1.0);
