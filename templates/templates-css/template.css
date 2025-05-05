@@ -241,6 +241,16 @@ body.edit-mode .template-frame {
   margin: 0 auto;
 }
 
+.image-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.3); /* 틀 밖 흐리게 처리 */
+  pointer-events: none;
+  z-index: 10;
+}
+
+
 /* 마스크: 기본은 overflow hidden */
 .image-edit-mask {
   position: relative;

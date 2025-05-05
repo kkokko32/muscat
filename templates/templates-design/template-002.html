@@ -70,7 +70,20 @@
       <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
       <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
       <img alt="로고 이미지" class="logo-preview" id="editableLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-      <img alt="메인 이미지" class="main-preview" id="editableMain" src="" crossorigin="anonymous" style="width: 300px; height: 300px; object-fit: cover;" />
+      <div class="image-container" style="
+        position: absolute;
+        top: 500px;
+        left: 1000px;
+        width: 400px;
+        height: 500px;
+        overflow: hidden;
+        border: 1px dashed #aaa;
+      ">
+        <img id="mainImage"
+            src=""
+            class="main-preview"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: auto;" />
+      </div>
     </div>
 
     <button class="template-close" onclick="window.history.back()">&times;</button>
