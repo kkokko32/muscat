@@ -69,20 +69,12 @@
     <div class="template-frame" id="templateFrame" style="position: relative; width: 2480px; height: 3508px; background-color: #f3d9aa;">
       <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
       <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
-      <img alt="로고 이미지" class="logo-preview" id="editableLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-      <div class="image-container" style="
-        position: absolute;
-        top: 500px;
-        left: 1000px;
-        width: 400px;
-        height: 500px;
-        overflow: hidden;
-        border: 1px dashed #aaa;
-      ">
-        <img id="mainImage"
-            src=""
-            class="main-preview"
-            style="position: absolute; top: 0; left: 0; width: 100%; height: auto;" />
+      <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous"
+           style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
+      
+      <div class="image-container" style="position: absolute; top: 500px; left: 1000px; width: 400px; height: 500px; overflow: hidden; border: 1px dashed #aaa;">
+        <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
+             style="position: absolute; top: 0; left: 0; width: 100%; height: auto;" />
       </div>
     </div>
 
@@ -103,7 +95,6 @@
     function showLoading() {
       document.getElementById("loadingOverlay").classList.add("active");
     }
-
     function hideLoading() {
       document.getElementById("loadingOverlay").classList.remove("active");
     }
@@ -113,8 +104,7 @@
   <script type="module" src="/muscat/templates/templates-data/template-actions.js"></script>
   <script type="module" src="/muscat/templates/templates-data/edit-mode.js"></script>
 
-
-  <!-- 데이터 반영 및 Moveable 초기화 -->
+  <!-- 데이터 반영 -->
   <script type="module">
     window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
@@ -124,39 +114,13 @@
 
       const brandEl = document.querySelector(".brand-name");
       const sloganEl = document.querySelector(".brand-slogan");
-      const logoEl = document.getElementById("editableLogo");
-      const mainEl = document.getElementById("editableMain");
+      const logoEl = document.getElementById("brandLogo");
+      const mainEl = document.getElementById("mainImage");
 
       if (brand && brandEl) brandEl.textContent = brand;
       if (slogan && sloganEl) sloganEl.textContent = slogan;
       if (logoUrl && logoEl) logoEl.src = logoUrl;
       if (mainUrl && mainEl) mainEl.src = mainUrl;
-
-      // ✅ Moveable 적용
-      [logoEl, mainEl].forEach(target => {
-        if (!target) return;
-
-        const moveable = new Moveable(document.body, {
-          target,
-          draggable: true,
-          resizable: true,
-          throttleDrag: 1,
-          throttleResize: 1,
-          keepRatio: false,
-          origin: false,
-        });
-
-        moveable
-          .on("drag", ({ target, left, top }) => {
-            target.style.left = `${left}px`;
-            target.style.top = `${top}px`;
-            target.style.position = "absolute";
-          })
-          .on("resize", ({ target, width, height }) => {
-            target.style.width = `${width}px`;
-            target.style.height = `${height}px`;
-          });
-      });
     });
   </script>
 </body>
