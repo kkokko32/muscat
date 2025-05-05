@@ -106,28 +106,60 @@
   <script type="module" src="/muscat/templates/templates-data/template-actions.js"></script>
   <script type="module" src="/muscat/templates/templates-data/edit-mode.js"></script>
 
-  <!-- 데이터 반영 (docId 없을 때만 실행) -->
-  <script type="module">
-    const currentDocId = new URLSearchParams(location.search).get("docId");
+  <!-- ✅ Firestore 저장된 템플릿 불러오기 -->
+<script type="module">
+  import { db } from "/muscat/common/firebase-init.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    if (!currentDocId) {
-      window.addEventListener("DOMContentLoaded", () => {
-        const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
-        const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
-        const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
-        const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+  async function loadTemplateFromFirestore(docId) {
+    try {
+      const ref = doc(db, "savedTemplates", docId);
+      const snapshot = await getDoc(ref);
+      if (!snapshot.exists()) return;
 
-        const brandEl = document.querySelector(".brand-name");
-        const sloganEl = document.querySelector(".brand-slogan");
-        const logoEl = document.getElementById("brandLogo");
-        const mainEl = document.getElementById("mainImage");
+      const data = snapshot.data();
+      const response = await fetch(data.htmlUrl);
+      const htmlText = await response.text();
 
-        if (brand && brandEl) brandEl.textContent = brand;
-        if (slogan && sloganEl) sloganEl.textContent = slogan;
-        if (logoUrl && logoEl) logoEl.src = logoUrl;
-        if (mainUrl && mainEl) mainEl.src = mainUrl;
-      });
+      const wrapper = document.getElementById("templateFrame");
+      const tempDom = document.createElement("div");
+      tempDom.innerHTML = htmlText;
+
+      const newFrame = tempDom.querySelector(".template-frame");
+      if (newFrame && wrapper) {
+        const cloned = newFrame.cloneNode(true);
+        wrapper.replaceWith(cloned);
+        cloned.id = "templateFrame";
+      }
+    } catch (e) {
+      console.error("불러오기 실패:", e);
     }
-  </script>
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const docId = new URLSearchParams(location.search).get("docId");
+
+    if (docId) {
+      loadTemplateFromFirestore(docId);
+    } else {
+      // 기본 (임시 저장된 local/sessionStorage) 데이터 불러오기
+      const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
+      const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
+      const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
+      const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+
+      const brandEl = document.querySelector(".brand-name");
+      const sloganEl = document.querySelector(".brand-slogan");
+      const logoEl = document.getElementById("brandLogo");
+      const mainEl = document.getElementById("mainImage");
+
+      if (brand && brandEl) brandEl.textContent = brand;
+      if (slogan && sloganEl) sloganEl.textContent = slogan;
+      if (logoUrl && logoEl) logoEl.src = logoUrl;
+      if (mainUrl && mainEl) mainEl.src = mainUrl;
+    }
+  });
+</script>
+
 </body>
 </html>
