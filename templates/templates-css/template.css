@@ -50,12 +50,13 @@ iframe {
 
 /* 우측 고정 버튼 영역 */
 .template-buttons {
-  position: absolute;
-  top: 5px;
-  right: -80px;
+  position: fixed;
+  top: 150px;
+  right: 30px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  z-index: 9999;
 }
 
 .template-buttons button {
