@@ -51,30 +51,28 @@ async function loadTemplate() {
     const ref = doc(db, "savedTemplates", currentDocId);
     const snapshot = await getDoc(ref);
     if (!snapshot.exists()) return;
-
+  
     const data = snapshot.data();
     const response = await fetch(data.htmlUrl);
     const htmlText = await response.text();
-
+  
+    // 기존 templateFrame 가져오기
     const wrapper = document.getElementById("templateFrame");
+  
+    // 새 HTML 생성
     const tempDom = document.createElement("div");
     tempDom.innerHTML = htmlText;
-
+  
     const newFrame = tempDom.querySelector(".template-frame");
+  
+    // 전체 프레임 교체
     if (newFrame && wrapper) {
-      const brand = newFrame.querySelector(".brand-name")?.innerText || "";
-      const slogan = newFrame.querySelector(".brand-slogan")?.innerText || "";
-      const logo = newFrame.querySelector(".logo-preview")?.src || "";
-      const image = newFrame.querySelector(".main-preview")?.src || "";
-
-      if (wrapper.querySelector(".brand-name")) wrapper.querySelector(".brand-name").innerText = brand;
-      if (wrapper.querySelector(".brand-slogan")) wrapper.querySelector(".brand-slogan").innerText = slogan;
-      if (wrapper.querySelector(".logo-preview")) wrapper.querySelector(".logo-preview").src = logo;
-      if (wrapper.querySelector(".main-preview")) wrapper.querySelector(".main-preview").src = image;
+      wrapper.replaceWith(newFrame);
+      newFrame.id = "templateFrame"; // ID 유지
     }
   } catch (e) {
     console.error("템플릿 로드 실패:", e);
-  }
+  }  
 }
 
 function waitForImageLoad(imageElement) {
