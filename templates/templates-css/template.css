@@ -242,9 +242,20 @@ body.inside-preview .view-controls {
   transition: all 0.2s ease;
 }
 
+body.edit-mode .edit-btn {
+  background-color: #aafc3e;
+  color: #292929;
+  border: none;
+}
+
 .edit-btn:hover {
   background-color: #aafc3e;
   color: #292929;
+  border: none;
+}
+
+body.inside-preview .edit-btn {
+  display: none !important;
 }
 
 /* 이미지 편집 마스크 컨테이너 */
