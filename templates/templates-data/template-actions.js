@@ -156,4 +156,6 @@ window.addEventListener("DOMContentLoaded", () => {
   window.zoomIn = zoomIn;
   window.zoomOut = zoomOut;
   window.resetZoom = resetZoom;
+  window.toggleEditMode = toggleEditMode; 
+
 });
