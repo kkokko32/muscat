@@ -26,16 +26,15 @@ export function resetZoom() {
 }
 
 function applyScale() {
-  const frame = document.getElementById("templateFrame");
-  if (!frame) return;
+  const scaleContainer = document.querySelector(".scale-container");
+  if (!scaleContainer) return;
 
-  const baseWidth = 2480;
-  const baseHeight = 3508;
-
-  frame.style.width = `${baseWidth * currentScale}px`;
-  frame.style.height = `${baseHeight * currentScale}px`;
-  frame.style.transform = `translateX(-50%) scale(${currentScale})`;
-  frame.style.transformOrigin = 'top center';
+  if (document.body.classList.contains("edit-mode")) {
+    scaleContainer.style.transform = "none";
+  } else {
+    scaleContainer.style.transform = `scale(${currentScale})`;
+    scaleContainer.style.transformOrigin = "top center";
+  }
 }
 
 export async function saveTemplate() {
@@ -136,7 +135,7 @@ export async function downloadTemplate() {
   pdf.save("template.pdf");
 }
 
-// ✅ 페이지 진입 시 초기 처리 및 줌 바인딩
+// ✅ 초기 진입 시 view-mode + scale 적용
 window.addEventListener("DOMContentLoaded", () => {
   if (window.top === window.self) {
     document.body.classList.add("view-mode");
@@ -147,9 +146,8 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("deleteTemplateBtn")?.addEventListener("click", deleteTemplate);
   document.getElementById("downloadBtn")?.addEventListener("click", downloadTemplate);
 
-  // HTML에서 직접 호출할 수 있도록 바인딩
+  // HTML에서 호출 가능하도록 export
   window.zoomIn = zoomIn;
   window.zoomOut = zoomOut;
   window.resetZoom = resetZoom;
-
 });
