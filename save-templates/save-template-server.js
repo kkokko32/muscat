@@ -160,9 +160,19 @@ async function handleSaveTemplate() {
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
 
-    const pathname = window.location.pathname;
-    const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
-    const templateId = fileName.replace(".html", "") || "template-001";
+    let templateId = "template-001"; // 기본값
+
+    try {
+      const pathname = window.location.pathname;
+      const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
+      const id = fileName.replace(".html", "");
+      if (id && id.startsWith("template-")) {
+        templateId = id;
+      }
+    } catch (e) {
+      console.warn("templateId 추출 실패, 기본값 사용:", e);
+    }
+
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
