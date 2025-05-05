@@ -102,7 +102,9 @@
   import { collection, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { ref, uploadString, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-  let currentScale = 0.416;
+  
+  
+  currentScale = 0.416;
   let savedDocId = null;
   let uploadedPaths = {};
 
@@ -304,6 +306,14 @@
     }
 
     updateTemplateContent({ brand, slogan, logoUrl, mainUrl });
+
+    const mainImage = document.getElementById("mainImage");
+    if (mainImage) {
+      mainImage.onload = () => {
+        updateResizeHandlesPosition();
+      };
+    }
+
     document.getElementById("saveTemplateBtn").onclick = saveTemplate;
     document.getElementById("deleteTemplateBtn").onclick = deleteTemplate;
     document.getElementById("downloadBtn").onclick = downloadTemplate;
