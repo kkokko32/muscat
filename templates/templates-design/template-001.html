@@ -106,24 +106,28 @@
   <script type="module" src="/muscat/templates/templates-data/template-actions.js"></script>
   <script type="module" src="/muscat/templates/templates-data/edit-mode.js"></script>
 
-  <!-- 데이터 반영 -->
+  <!-- 데이터 반영 (docId 없을 때만 실행) -->
   <script type="module">
-    window.addEventListener("DOMContentLoaded", () => {
-      const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
-      const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
-      const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
-      const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+    const currentDocId = new URLSearchParams(location.search).get("docId");
 
-      const brandEl = document.querySelector(".brand-name");
-      const sloganEl = document.querySelector(".brand-slogan");
-      const logoEl = document.getElementById("brandLogo");
-      const mainEl = document.getElementById("mainImage");
+    if (!currentDocId) {
+      window.addEventListener("DOMContentLoaded", () => {
+        const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
+        const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
+        const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
+        const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
 
-      if (brand && brandEl) brandEl.textContent = brand;
-      if (slogan && sloganEl) sloganEl.textContent = slogan;
-      if (logoUrl && logoEl) logoEl.src = logoUrl;
-      if (mainUrl && mainEl) mainEl.src = mainUrl;
-    });
+        const brandEl = document.querySelector(".brand-name");
+        const sloganEl = document.querySelector(".brand-slogan");
+        const logoEl = document.getElementById("brandLogo");
+        const mainEl = document.getElementById("mainImage");
+
+        if (brand && brandEl) brandEl.textContent = brand;
+        if (slogan && sloganEl) sloganEl.textContent = slogan;
+        if (logoUrl && logoEl) logoEl.src = logoUrl;
+        if (mainUrl && mainEl) mainEl.src = mainUrl;
+      });
+    }
   </script>
 </body>
 </html>
