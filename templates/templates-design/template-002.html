@@ -21,21 +21,18 @@
       margin: 0;
     }
 
-    html, body {
-      overflow-y: auto;
-    }
-
     .loading-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.7);
       z-index: 9999;
       display: none;
       align-items: center;
       justify-content: center;
+    }
+
+    .loading-overlay.active {
+      display: flex;
     }
 
     .loading-spinner {
@@ -48,13 +45,7 @@
     }
 
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .loading-overlay.active {
-      display: flex;
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -69,6 +60,7 @@
       <button onclick="zoomOut()">-</button>
       <button onclick="resetZoom()">100%</button>
       <button onclick="zoomIn()">+</button>
+      <button onclick="toggleEditMode()">편집</button>
     </div>
 
     <div class="template-frame" id="templateFrame" style="position: relative; width: 2480px; height: 3508px; background-color: #f3d9aa;">
@@ -79,7 +71,6 @@
     </div>
 
     <button class="template-close" onclick="window.history.back()">&times;</button>
-
     <div class="template-buttons">
       <button id="saveTemplateBtn" class="save-btn">저장</button>
       <button id="deleteTemplateBtn" class="delete-btn" disabled>삭제</button>
@@ -91,24 +82,21 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <!-- 공통 기능 스크립트 -->
-  <script type="module" src="/muscat/templates/templates-data/template-actions.js"></script>
-
-  <!-- 로딩 show/hide 함수 -->
+  <!-- 로딩 함수 -->
   <script>
     function showLoading() {
-      document.getElementById("loadingOverlay")?.classList.add("active");
+      document.getElementById("loadingOverlay").classList.add("active");
     }
 
     function hideLoading() {
-      document.getElementById("loadingOverlay")?.classList.remove("active");
+      document.getElementById("loadingOverlay").classList.remove("active");
     }
-
-    // 로딩 숨기기 (초기화)
-    window.addEventListener("DOMContentLoaded", hideLoading);
   </script>
 
-  <!-- 템플릿별 브랜드/이미지 반영 -->
+  <!-- 기능 연결 -->
+  <script type="module" src="/muscat/templates/templates-data/template-actions.js"></script>
+
+  <!-- 데이터 반영 -->
   <script type="module">
     window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
