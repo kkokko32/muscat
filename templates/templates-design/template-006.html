@@ -10,28 +10,29 @@
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
 
   <style>
-    html, body {
-      height: 100%;
+    body.view-mode .template-frame {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.416);
+      transform-origin: top center;
+      width: 2400px;
+      height: 3508px;
       margin: 0;
-      overflow-y: scroll;
-      scrollbar-width: none; /* Firefox */
-    }
-    body::-webkit-scrollbar {
-      display: none; /* Chrome, Safari */
     }
 
-    /* 로딩 오버레이 스타일 */
     .loading-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.7);
       z-index: 9999;
       display: none;
       align-items: center;
       justify-content: center;
+    }
+
+    .loading-overlay.active {
+      display: flex;
     }
 
     .loading-spinner {
@@ -44,57 +45,59 @@
     }
 
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .loading-overlay.active {
-      display: flex;
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
+
 <body class="template-page">
-  <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
 
-  <div class="template-frame" id="templateFrame" style="position: relative; width: 1200px; height: 800px; background-color: #353130;" >
-    <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
-    <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
-    <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-    <img alt="메인 이미지" class="main-preview" id="mainImage" src="" style="width: 300px; height: 300px; object-fit: cover;" />
+  <div class="template-wrapper">
+    <div class="view-controls">
+      <button onclick="zoomOut()">-</button>
+      <button onclick="resetZoom()">100%</button>
+      <button onclick="zoomIn()">+</button>
+      <button onclick="toggleEditMode()">편집</button>
+    </div>
+
+    <div class="template-frame" id="templateFrame" style="position: relative; width: 2480px; height: 3508px; background-color: #f3d9aa;">
+      <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
+      <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
+      <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous" style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
+      <img alt="메인 이미지" class="main-preview" id="mainImage" src="" crossorigin="anonymous" style="width: 300px; height: 300px; object-fit: cover;" />
+    </div>
 
     <button class="template-close" onclick="window.history.back()">&times;</button>
     <div class="template-buttons">
       <button id="saveTemplateBtn" class="save-btn">저장</button>
-      <button id="deleteTemplateBtn" class="delete-btn">삭제</button>
+      <button id="deleteTemplateBtn" class="delete-btn" disabled>삭제</button>
       <button id="downloadBtn" class="download-btn">다운로드</button>
     </div>
   </div>
 
+  <!-- html2canvas, jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+  <!-- 로딩 함수 -->
   <script>
-    window.addEventListener("message", (event) => {
-      const data = event.data;
-      if (!data) return;
+    function showLoading() {
+      document.getElementById("loadingOverlay").classList.add("active");
+    }
 
-      const brandEl = document.querySelector(".brand-name");
-      const sloganEl = document.querySelector(".brand-slogan");
-      const logoEl = document.querySelector(".logo-preview");
-      const mainEl = document.querySelector(".main-preview");
-
-      if (data.brand && brandEl) brandEl.textContent = data.brand;
-      if (data.slogan && sloganEl) sloganEl.textContent = data.slogan;
-      if (data.logoUrl && logoEl) logoEl.src = data.logoUrl;
-      if (data.mainImageUrl && mainEl) mainEl.src = data.mainImageUrl;
-    });
+    function hideLoading() {
+      document.getElementById("loadingOverlay").classList.remove("active");
+    }
   </script>
 
-  <script>
+  <!-- 기능 연결 -->
+  <script type="module" src="/muscat/templates/templates-data/template-actions.js"></script>
+
+  <!-- 데이터 반영 -->
+  <script type="module">
     window.addEventListener("DOMContentLoaded", () => {
       const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
       const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
