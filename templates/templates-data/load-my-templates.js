@@ -120,9 +120,10 @@ async function loadMyTemplates() {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
     
-      const templateId = data.templateId || "template-001";  // ← 여기 추가됨
+      const templateId = data.templateId || "template-001";  // ✅ 여기가 핵심
       window.location.href = `/muscat/templates/templates-design/${templateId}.html?docId=${docId}`;
     };
+    
     
 
     fragment.appendChild(wrapper);
