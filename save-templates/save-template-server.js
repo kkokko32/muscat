@@ -160,6 +160,10 @@ async function handleSaveTemplate() {
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
 
+    // 템플릿 ID 추출
+    const templateId = window.location.pathname.split("/").pop().replace(".html", "");
+
+    // Firestore에 저장
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
       brand,
@@ -168,6 +172,7 @@ async function handleSaveTemplate() {
       imageUrl,
       thumbnailUrl,
       htmlUrl,
+      templateId, 
       createdAt: serverTimestamp()
     });
 
