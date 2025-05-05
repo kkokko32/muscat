@@ -226,36 +226,11 @@ body.inside-preview .view-controls {
   cursor: pointer;
 }
 
-/* 편집 핸들 기본 숨김 */
-.resize-handle {
-  position: absolute;
-  z-index: 999;
-  width: 12px;
-  height: 12px;
-  background: white;
-  border: 2px solid black;
-  display: none;
-}
-
-/* 편집 모드에서 핸들 표시 */
-body.edit-mode .resize-handle {
-  display: block;
-}
-
 /* 편집 모드에서 프레임 외곽선 표시 */
 body.edit-mode .template-frame {
   outline: 4px dashed #cbff6e;
   outline-offset: -20px;
   transition: outline 0.3s ease;
-}
-
-/* 핸들 수동 위치 조정 (JS에서 위치 계산 기준으로 top/left를 설정) */
-.resize-handle.top-left,
-.resize-handle.top-right,
-.resize-handle.bottom-left,
-.resize-handle.bottom-right {
-  top: unset !important;
-  left: unset !important;
 }
 
 /* 이미지 편집 마스크 컨테이너 */
