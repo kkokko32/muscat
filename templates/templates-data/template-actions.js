@@ -44,51 +44,62 @@ export function toggleEditMode() {
 }
 
 export async function saveTemplate() {
-  const frame = document.getElementById("templateFrame");
-  const brand = document.getElementById("brandName")?.textContent || "";
-  const slogan = document.getElementById("brandDesc")?.textContent || "";
-  const logoUrl = document.getElementById("brandLogo")?.src || "";
-  const mainUrl = document.getElementById("mainImage")?.src || "";
+  const overlay = document.getElementById("loadingOverlay");
+  if (overlay) overlay.classList.add("active");
 
-  const canvas = await html2canvas(frame, { useCORS: true, scale: 1 });
-  const thumbnailDataUrl = canvas.toDataURL("image/jpeg", 0.9);
+  try {
+    const frame = document.getElementById("templateFrame");
+    const brand = document.getElementById("brandName")?.textContent || "";
+    const slogan = document.getElementById("brandDesc")?.textContent || "";
+    const logoUrl = document.getElementById("brandLogo")?.src || "";
+    const mainUrl = document.getElementById("mainImage")?.src || "";
 
-  const user = auth.currentUser;
-  if (!user) return alert("로그인이 필요합니다.");
+    const canvas = await html2canvas(frame, { useCORS: true, scale: 1 });
+    const thumbnailDataUrl = canvas.toDataURL("image/jpeg", 0.9);
 
-  const timestamp = Date.now();
-  const thumbnailRef = ref(storage, `savedTemplates/images/${user.uid}_${timestamp}_thumbnail.jpg`);
-  await uploadString(thumbnailRef, thumbnailDataUrl, 'data_url');
-  const thumbnailUrl = await getDownloadURL(thumbnailRef);
+    const user = auth.currentUser;
+    if (!user) return alert("로그인이 필요합니다.");
 
-  const logoBlob = await fetch(logoUrl).then(r => r.blob());
-  const logoRef = ref(storage, `savedTemplates/images/${user.uid}_${timestamp}_logo.jpg`);
-  await uploadBytes(logoRef, logoBlob);
-  const logoDownloadUrl = await getDownloadURL(logoRef);
+    const timestamp = Date.now();
+    const thumbnailRef = ref(storage, `savedTemplates/images/${user.uid}_${timestamp}_thumbnail.jpg`);
+    await uploadString(thumbnailRef, thumbnailDataUrl, 'data_url');
+    const thumbnailUrl = await getDownloadURL(thumbnailRef);
 
-  uploadedPaths = {
-    thumbnailPath: thumbnailRef.fullPath,
-    logoPath: logoRef.fullPath,
-  };
+    const logoBlob = await fetch(logoUrl).then(r => r.blob());
+    const logoRef = ref(storage, `savedTemplates/images/${user.uid}_${timestamp}_logo.jpg`);
+    await uploadBytes(logoRef, logoBlob);
+    const logoDownloadUrl = await getDownloadURL(logoRef);
 
-  const docRef = await addDoc(collection(db, "savedTemplates"), {
-    uid: user.uid,
-    brand,
-    slogan,
-    thumbnailUrl,
-    logoUrl: logoDownloadUrl,
-    mainUrl,
-    createdAt: serverTimestamp(),
-  });
+    uploadedPaths = {
+      thumbnailPath: thumbnailRef.fullPath,
+      logoPath: logoRef.fullPath,
+    };
 
-  savedDocId = docRef.id;
-  sessionStorage.setItem("savedDocId", savedDocId);
+    const docRef = await addDoc(collection(db, "savedTemplates"), {
+      uid: user.uid,
+      brand,
+      slogan,
+      thumbnailUrl,
+      logoUrl: logoDownloadUrl,
+      mainUrl,
+      createdAt: serverTimestamp(),
+    });
 
-  document.getElementById("saveTemplateBtn").disabled = true;
-  document.getElementById("deleteTemplateBtn").disabled = false;
+    savedDocId = docRef.id;
+    sessionStorage.setItem("savedDocId", savedDocId);
 
-  if (confirm("저장 완료되었습니다!\n\n내 작업실로 이동할까요?")) {
-    window.location.href = "/muscat/save-templates/my-save.html";
+    document.getElementById("saveTemplateBtn").disabled = true;
+    document.getElementById("deleteTemplateBtn").disabled = false;
+
+    if (confirm("저장 완료되었습니다!\n\n내 작업실로 이동할까요?")) {
+      window.location.href = "/muscat/save-templates/my-save.html";
+    }
+
+  } catch (err) {
+    console.error("저장 오류:", err);
+    alert("저장 중 오류가 발생했습니다.");
+  } finally {
+    if (overlay) overlay.classList.remove("active");
   }
 }
 
