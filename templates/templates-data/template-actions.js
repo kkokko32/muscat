@@ -28,7 +28,11 @@ export function resetZoom() {
 function applyScale() {
   const frame = document.getElementById("templateFrame");
   if (frame) {
+    frame.style.position = 'absolute';
+    frame.style.top = '50px';
+    frame.style.left = '50%';
     frame.style.transform = `translateX(-50%) scale(${currentScale})`;
+    frame.style.transformOrigin = 'top center';
   }
 }
 
@@ -116,3 +120,17 @@ export async function downloadTemplate() {
   pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
   pdf.save("template.pdf");
 }
+
+// ✅ 페이지 진입 시 초기 처리
+window.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("loadingOverlay");
+  if (overlay) overlay.classList.remove("active");
+
+  if (window.top === window.self) {
+    document.body.classList.add("view-mode");
+    applyScale();
+  }
+
+  document.documentElement.style.overflowY = 'auto';
+  document.body.style.overflowY = 'auto';
+});
