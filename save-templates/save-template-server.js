@@ -160,7 +160,6 @@ async function handleSaveTemplate() {
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
 
-    // 템플릿 ID 추출
     const templateId = window.location.pathname.split("/").pop().replace(".html", "");
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
@@ -171,7 +170,7 @@ async function handleSaveTemplate() {
       imageUrl,
       thumbnailUrl,
       htmlUrl,
-      templateId,  
+      templateId,
       createdAt: serverTimestamp()
     });
 
