@@ -63,12 +63,4 @@ function observeEditMode() {
 // ✅ DOM 로드 시 감지 시작
 window.addEventListener("DOMContentLoaded", () => {
   observeEditMode();
-
-  // 만약 처음부터 편집 모드였다면 즉시 반영
-  if (document.body.classList.contains("edit-mode")) {
-    editableTargets.forEach(selector => {
-      const el = document.querySelector(selector);
-      if (el) enableMoveable(el);
-    });
-  }
 });
