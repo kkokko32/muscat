@@ -5,13 +5,14 @@ const editableTargets = [
     ".brand-name",
     ".brand-slogan",
     "#brandLogo",
-    ".image-container img"  // mainImage는 컨테이너 내부 제한
+    ".image-container img" // mainImage는 컨테이너 내부 제한
   ];
   
   const moveables = [];
   
+  // ✅ Moveable 적용 함수
   function enableMoveable(target) {
-    const isImageInContainer = target.closest('.image-container');
+    const isImageInContainer = target.closest(".image-container");
   
     const moveable = new window.Moveable(document.body, {
       target,
@@ -21,7 +22,7 @@ const editableTargets = [
       keepRatio: false,
       edge: false,
       pinchable: false,
-      bounds: isImageInContainer ? ".image-container" : { left: 0, top: 0 },
+      bounds: isImageInContainer ? ".image-container" : { left: 0, top: 0 }
     });
   
     moveable
@@ -41,9 +42,15 @@ const editableTargets = [
     moveables.push(moveable);
   }
   
+  // ✅ 모든 moveable 인스턴스 제거
   function destroyAllMoveables() {
     moveables.forEach(m => m.destroy());
     moveables.length = 0;
+  }
+  
+  // ✅ 편집 모드 토글 함수 (전역 바인딩용)
+  function toggleEditMode() {
+    document.body.classList.toggle("edit-mode");
   }
   
   // ✅ 편집 모드 전환 감지
@@ -59,14 +66,17 @@ const editableTargets = [
       }
     });
   
-    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
   }
   
-  // ✅ DOM 로드 시 감지 시작
+  // ✅ DOM 로드 시 초기화
   window.addEventListener("DOMContentLoaded", () => {
     observeEditMode();
   
-    // 진입 시 edit-mode 상태면 즉시 반영
+    // 진입 시 edit-mode가 이미 있으면 즉시 적용
     if (document.body.classList.contains("edit-mode")) {
       editableTargets.forEach(selector => {
         const el = document.querySelector(selector);
@@ -74,4 +84,7 @@ const editableTargets = [
       });
     }
   });
+  
+  // ✅ HTML에서 직접 호출 가능하도록 바인딩
+  window.toggleEditMode = toggleEditMode;
   
