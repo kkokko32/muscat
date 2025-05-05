@@ -134,12 +134,12 @@ async function loadMyTemplates() {
   }
 }
 
-// ✅ Storage 경로 추출 및 삭제 함수
+// ✅ Storage 경로 추출 및 삭제 함수 (안전하게 수정됨)
 async function deleteFromStorage(url) {
-  if (!url.includes("firebasestorage.googleapis.com")) return;
-  const path = decodeURIComponent(new URL(url).pathname.split("/o/")[1]).split("?")[0];
-  const ref = storageRef(storage, path);
+  if (!url || typeof url !== "string" || !url.includes("firebasestorage.googleapis.com")) return;
   try {
+    const path = decodeURIComponent(new URL(url).pathname.split("/o/")[1]).split("?")[0];
+    const ref = storageRef(storage, path);
     await deleteObject(ref);
   } catch (e) {
     console.warn("Storage 삭제 실패 (무시):", e.message);
@@ -160,12 +160,16 @@ async function handleDelete() {
       const data = snapshot.exists() ? snapshot.data() : null;
 
       if (data) {
-        await Promise.all([
-          deleteFromStorage(data.logoUrl),
-          deleteFromStorage(data.imageUrl),
-          deleteFromStorage(data.thumbnailUrl),
-          deleteFromStorage(data.htmlUrl)
-        ]);
+        const deleteTargets = [
+          data.logoUrl,
+          data.imageUrl,
+          data.thumbnailUrl,
+          data.htmlUrl
+        ];
+
+        for (const url of deleteTargets) {
+          await deleteFromStorage(url);
+        }
       }
 
       await deleteDoc(docRef);
@@ -176,6 +180,7 @@ async function handleDelete() {
   loadMyTemplates();
 }
 
+// ✅ Masonry 레이아웃 적용
 function applyMasonryLayout() {
   const container = document.querySelector(".template-list");
   if (!container) return;
@@ -195,6 +200,7 @@ function applyMasonryLayout() {
   });
 }
 
+// ✅ 관리 모드 토글
 window.addEventListener("DOMContentLoaded", () => {
   const manageBtn = document.getElementById("manageModeBtn");
   if (manageBtn) {
