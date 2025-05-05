@@ -102,26 +102,24 @@
   import { collection, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { ref, uploadString, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-  
-  
-  currentScale = 0.416;
+  window.currentScale = 0.416;
   let savedDocId = null;
   let uploadedPaths = {};
 
   window.zoomIn = function () {
-    currentScale = Math.min(currentScale + 0.1, 2);
+    window.currentScale = Math.min(window.currentScale + 0.1, 2);
     applyScale();
     updateResizeHandlesPosition();
   };
 
   window.zoomOut = function () {
-    currentScale = Math.max(currentScale - 0.1, 0.1);
+    window.currentScale = Math.max(window.currentScale - 0.1, 0.1);
     applyScale();
     updateResizeHandlesPosition();
   };
 
   window.resetZoom = function () {
-    currentScale = 1.0;
+    window.currentScale = 1.0;
     applyScale();
     updateResizeHandlesPosition();
   };
@@ -132,7 +130,7 @@
       frame.style.position = 'absolute';
       frame.style.top = '50px';
       frame.style.left = '50%';
-      frame.style.transform = `translateX(-50%) scale(${currentScale})`;
+      frame.style.transform = `translateX(-50%) scale(${window.currentScale})`;
       frame.style.transformOrigin = 'top center';
     }
   }
@@ -309,9 +307,7 @@
 
     const mainImage = document.getElementById("mainImage");
     if (mainImage) {
-      mainImage.onload = () => {
-        updateResizeHandlesPosition();
-      };
+      mainImage.onload = () => updateResizeHandlesPosition();
     }
 
     document.getElementById("saveTemplateBtn").onclick = saveTemplate;
@@ -328,6 +324,7 @@
 
   window.addEventListener("resize", updateResizeHandlesPosition);
 </script>
+
 
 
 
