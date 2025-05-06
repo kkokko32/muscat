@@ -161,21 +161,33 @@ async function handleSaveTemplate() {
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
 
-    let templateId = "template-001"; // 기본값
+    // ✅ templateId 명확히 추출
+    let templateId = "template-001"; // fallback 기본값
 
     try {
-      const pathname = window.location.pathname;
-      const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
-      console.log("Full Path:", pathname);
-      console.log("Extracted File Name:", fileName);
-      const id = fileName.replace(".html", "");
-      console.log("Extracted Template ID:", id);
-      if (id && id.startsWith("template-")) {
+      const url = new URL(window.location.href);
+      const pathname = url.pathname;
+      const fileName = pathname.split("/").pop();
+      const id = fileName?.split(".html")[0];
+      if (id?.startsWith("template-")) {
         templateId = id;
       }
+      console.log("✅ 추출된 templateId:", templateId);
     } catch (e) {
-      console.warn("templateId 추출 실패, 기본값 사용:", e);
+      console.warn("❌ templateId 추출 실패, 기본값 사용:", e);
     }
+
+    // ✅ 로그 추가
+    console.log("🔥 저장될 템플릿 정보:", {
+      uid: user.uid,
+      brand,
+      slogan,
+      logoUrl,
+      imageUrl,
+      thumbnailUrl,
+      htmlUrl,
+      templateId
+    });
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
