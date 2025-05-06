@@ -119,12 +119,10 @@ async function loadMyTemplates() {
     wrapper.onclick = (e) => {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
-    
-      const templateId = data.templateId || "template-001";  // ✅ 여기가 핵심
+
+      const templateId = data.templateId?.trim() || "template-001";
       window.location.href = `/muscat/templates/templates-design/${templateId}.html?docId=${docId}`;
     };
-    
-    
 
     fragment.appendChild(wrapper);
   });
@@ -138,7 +136,7 @@ async function loadMyTemplates() {
   }
 }
 
-// ✅ Storage 경로 추출 및 삭제 함수 (안전하게 수정됨)
+// ✅ Storage 경로 추출 및 삭제 함수
 async function deleteFromStorage(url) {
   if (!url || typeof url !== "string" || !url.includes("firebasestorage.googleapis.com")) return;
   try {

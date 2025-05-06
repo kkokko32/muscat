@@ -160,8 +160,8 @@ async function handleSaveTemplate() {
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
 
-    let templateId = "template-001"; // 기본값
-
+    // ✅ 템플릿 ID 추출
+    let templateId = "template-001";
     try {
       const pathname = window.location.pathname;
       const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
@@ -172,7 +172,6 @@ async function handleSaveTemplate() {
     } catch (e) {
       console.warn("templateId 추출 실패, 기본값 사용:", e);
     }
-
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
