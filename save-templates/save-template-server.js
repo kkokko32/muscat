@@ -1,3 +1,4 @@
+// 파일 출처: [200†save-template-server.js]
 import { db, auth, storage } from "/muscat/common/firebase-init.js";
 import {
   collection,
@@ -162,26 +163,19 @@ async function handleSaveTemplate() {
 
     let templateId = "template-001"; // 기본값
 
-      try {
-        const pathname = window.location.pathname;
-        const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
-        
-        // 디버깅: 파일명 출력
-        console.log("Full Path:", pathname);
-        console.log("Extracted File Name:", fileName);
-
-        const id = fileName.replace(".html", "");
-        
-        // 디버깅: 추출된 templateId 출력
-        console.log("Extracted Template ID:", id);
-        
-        if (id && id.startsWith("template-")) {
-          templateId = id;
-        }
-      } catch (e) {
-        console.warn("templateId 추출 실패, 기본값 사용:", e);
+    try {
+      const pathname = window.location.pathname;
+      const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
+      console.log("Full Path:", pathname);
+      console.log("Extracted File Name:", fileName);
+      const id = fileName.replace(".html", "");
+      console.log("Extracted Template ID:", id);
+      if (id && id.startsWith("template-")) {
+        templateId = id;
       }
-
+    } catch (e) {
+      console.warn("templateId 추출 실패, 기본값 사용:", e);
+    }
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
