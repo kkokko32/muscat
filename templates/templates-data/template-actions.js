@@ -12,19 +12,30 @@ function applyScale() {
   }
 }
 
-zoomInBtn?.addEventListener("click", () => {
+function zoomIn() {
   scale += 0.1;
   applyScale();
-});
+}
 
-zoomOutBtn?.addEventListener("click", () => {
+function zoomOut() {
   scale = Math.max(0.1, scale - 0.1);
   applyScale();
-});
+}
 
-resetZoomBtn?.addEventListener("click", () => {
+function resetZoom() {
   scale = 1;
   applyScale();
+}
+
+// ✅ window 바인딩 (onclick 대응)
+window.zoomIn = zoomIn;
+window.zoomOut = zoomOut;
+window.resetZoom = resetZoom;
+
+// ✅ 진입 시 view-mode 자동 적용
+window.addEventListener("DOMContentLoaded", () => {
+  document.body.classList.add("view-mode");
+  applyScale(); // 초기 스케일 적용
 });
 
 // 💾 다운로드 기능
@@ -68,13 +79,8 @@ downloadBtn?.addEventListener("click", async () => {
   pdf.save("template.pdf");
 });
 
-//  저장/삭제 기능 연결
+// 💾 저장/삭제 기능 연결
 import { handleSaveTemplate, handleDeleteTemplate } from "/muscat/save-templates/save-template-server.js";
 
 document.getElementById("saveTemplateBtn")?.addEventListener("click", handleSaveTemplate);
 document.getElementById("deleteTemplateBtn")?.addEventListener("click", handleDeleteTemplate);
-
-// 확대/축소 기능
-window.zoomOut = zoomOut;
-window.zoomIn = zoomIn;
-window.resetZoom = resetZoom;
