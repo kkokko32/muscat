@@ -1,4 +1,4 @@
-import { db, auth } from "/muscat/common/firebase-init.js";
+import { db, auth, storage } from "/muscat/common/firebase-init.js";
 import {
   collection,
   addDoc,
@@ -21,6 +21,20 @@ function stripToken(url) {
   } catch {
     return url;
   }
+}
+
+const params = new URLSearchParams(window.location.search);
+const currentDocId = params.get("docId");
+let savedDocId = null;
+
+function showLoading() {
+  const overlay = document.getElementById("loadingOverlay");
+  if (overlay) overlay.style.display = "flex";
+}
+
+function hideLoading() {
+  const overlay = document.getElementById("loadingOverlay");
+  if (overlay) overlay.style.display = "none";
 }
 
 function waitForImageLoad(imageElement) {
@@ -58,14 +72,11 @@ function isDataUrl(url) {
   return url.startsWith("data:");
 }
 
-const saveBtn = document.getElementById("saveTemplateBtn");
-const deleteBtn = document.getElementById("deleteTemplateBtn");
-const params = new URLSearchParams(window.location.search);
-const currentDocId = params.get("docId");
-
 async function handleSaveTemplate() {
   const user = auth.currentUser;
   if (!user) return alert("로그인이 필요합니다.");
+
+  showLoading();
 
   const frame = document.getElementById("templateFrame");
   if (!frame) return alert("템플릿이 존재하지 않습니다.");
@@ -76,7 +87,10 @@ async function handleSaveTemplate() {
   const imageImg = frame.querySelector(".main-preview");
 
   try {
-    await Promise.all([waitForImageLoad(logoImg), waitForImageLoad(imageImg)]);
+    await Promise.all([
+      waitForImageLoad(logoImg),
+      waitForImageLoad(imageImg)
+    ]);
 
     const frameHTML = frame.outerHTML;
     const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
@@ -95,17 +109,19 @@ async function handleSaveTemplate() {
     const logoExt = getImageExtension(logoImg?.src || "");
     const imageExt = getImageExtension(imageImg?.src || "");
 
-    const logoUrl = logoImg?.src
-      ? (isDataUrl(logoImg.src)
+    let logoUrl = "";
+    if (logoImg?.src) {
+      logoUrl = isDataUrl(logoImg.src)
         ? await uploadImageToStorage(logoImg.src, `${basePath}/logo.${logoExt}`)
-        : stripToken(logoImg.src))
-      : "";
+        : stripToken(logoImg.src);
+    }
 
-    const imageUrl = imageImg?.src
-      ? (isDataUrl(imageImg.src)
+    let imageUrl = "";
+    if (imageImg?.src) {
+      imageUrl = isDataUrl(imageImg.src)
         ? await uploadImageToStorage(imageImg.src, `${basePath}/main.${imageExt}`)
-        : stripToken(imageImg.src))
-      : "";
+        : stripToken(imageImg.src);
+    }
 
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
@@ -119,7 +135,7 @@ async function handleSaveTemplate() {
         templateId = id;
       }
     } catch (e) {
-      console.warn("❌ templateId 추출 실패:", e);
+      console.warn("templateId 추출 실패, 기본값 사용:", e);
     }
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
@@ -134,11 +150,17 @@ async function handleSaveTemplate() {
       createdAt: serverTimestamp()
     });
 
+    savedDocId = docRef.id;
     alert("템플릿이 서버에 저장되었습니다!");
-    window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
+
+    if (window.location.pathname.includes("template-")) {
+      window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
+    }
   } catch (e) {
-    console.error("저장 실패:", e);
-    alert("저장 중 오류 발생\n" + (e.message || e));
+    console.error("저장 실패:", e.message || e);
+    alert("저장 중 오류가 발생했습니다.\n" + (e.message || e));
+  } finally {
+    hideLoading();
   }
 }
 
@@ -155,9 +177,8 @@ async function handleDeleteTemplate() {
     alert("템플릿이 삭제되었습니다.");
   } catch (e) {
     console.error("삭제 실패:", e.message || e);
-    alert("삭제 중 오류 발생\n" + (e.message || e));
+    alert("삭제 중 오류가 발생했습니다.\n" + (e.message || e));
   }
 }
 
-saveBtn?.addEventListener("click", handleSaveTemplate);
-deleteBtn?.addEventListener("click", handleDeleteTemplate);
+export { handleSaveTemplate, handleDeleteTemplate };
