@@ -119,20 +119,6 @@ async function handleSaveTemplate() {
   const logoImg = frame.querySelector(".logo-preview");
   const imageImg = frame.querySelector(".main-preview");
 
-  // ✅ templateId 추출 (가장 먼저 실행)
-  let templateId = "template-001";
-  try {
-    const pathname = window.location.pathname;
-    const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
-    const id = fileName.replace(".html", "");
-    if (id && id.startsWith("template-")) {
-      templateId = id;
-    }
-    console.log("✅ 추출된 templateId:", templateId);
-  } catch (e) {
-    console.warn("❌ templateId 추출 실패, 기본값 사용:", e);
-  }
-
   try {
     await Promise.all([
       waitForImageLoad(logoImg),
@@ -170,10 +156,35 @@ async function handleSaveTemplate() {
         : stripToken(imageImg.src);
     }
 
-    const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
+    // 🔸 templateId 추출 (정상 위치에 위치)
+    let templateId = "template-001";
+    try {
+      const pathname = window.location.pathname;
+      const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
+      const id = fileName.replace(".html", "");
+      if (id && id.startsWith("template-")) {
+        templateId = id;
+      }
+      console.log("✅ 추출된 templateId:", templateId);
+    } catch (e) {
+      console.warn("❌ templateId 추출 실패, 기본값 사용:", e);
+    }
+
+    // 🔸 HTML 저장
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
 
-    // ✅ Firestore에 저장
+    // 🔸 확인 로그
+    console.log("🔥 저장될 템플릿 정보:", {
+      uid: user.uid,
+      brand,
+      slogan,
+      logoUrl,
+      imageUrl,
+      thumbnailUrl,
+      htmlUrl,
+      templateId
+    });
+
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
       brand,
