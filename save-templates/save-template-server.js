@@ -44,6 +44,7 @@ let savedDocId = null;
 
 console.log("✅ save-template-server.js 연결됨");
 
+// ✅ 기존 .template-frame DOM 유지하면서 내용만 갱신
 async function loadTemplate() {
   if (!currentDocId) return;
 
@@ -62,9 +63,9 @@ async function loadTemplate() {
 
     const newFrame = tempDom.querySelector(".template-frame");
     if (newFrame && wrapper) {
-      const cloned = newFrame.cloneNode(true);
-      wrapper.replaceWith(cloned);
-      cloned.id = "templateFrame";
+      wrapper.innerHTML = newFrame.innerHTML;
+      wrapper.setAttribute("style", newFrame.getAttribute("style") || "");
+      wrapper.className = newFrame.className;
     }
   } catch (e) {
     console.error("템플릿 로드 실패:", e);
@@ -160,7 +161,6 @@ async function handleSaveTemplate() {
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
 
-    // ✅ 템플릿 ID 추출
     let templateId = "template-001";
     try {
       const pathname = window.location.pathname;
