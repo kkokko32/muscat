@@ -1,4 +1,4 @@
-import { db, auth, storage } from "/muscat/common/firebase-init.js";
+import { db, auth } from "/muscat/common/firebase-init.js";
 import {
   collection,
   addDoc,
@@ -14,59 +14,12 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-// ✅ token 제거 함수
 function stripToken(url) {
   try {
     const u = new URL(url);
     return `${u.origin}${u.pathname}?alt=media`;
   } catch {
     return url;
-  }
-}
-
-function showLoading() {
-  const overlay = document.getElementById("loadingOverlay");
-  if (overlay) overlay.style.display = "flex";
-}
-
-function hideLoading() {
-  const overlay = document.getElementById("loadingOverlay");
-  if (overlay) overlay.style.display = "none";
-}
-
-const saveBtn = document.getElementById("saveTemplateBtn");
-const deleteBtn = document.getElementById("deleteTemplateBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-
-const params = new URLSearchParams(window.location.search);
-const currentDocId = params.get("docId");
-let savedDocId = null;
-
-console.log("✅ save-template-server.js 연결됨");
-
-async function loadTemplate() {
-  if (!currentDocId) return;
-  try {
-    const ref = doc(db, "savedTemplates", currentDocId);
-    const snapshot = await getDoc(ref);
-    if (!snapshot.exists()) return;
-
-    const data = snapshot.data();
-    const response = await fetch(data.htmlUrl);
-    const htmlText = await response.text();
-
-    const wrapper = document.getElementById("templateFrame");
-    const tempDom = document.createElement("div");
-    tempDom.innerHTML = htmlText;
-
-    const newFrame = tempDom.querySelector(".template-frame");
-    if (newFrame && wrapper) {
-      const cloned = newFrame.cloneNode(true);
-      wrapper.replaceWith(cloned);
-      cloned.id = "templateFrame";
-    }
-  } catch (e) {
-    console.error("템플릿 로드 실패:", e);
   }
 }
 
@@ -105,11 +58,14 @@ function isDataUrl(url) {
   return url.startsWith("data:");
 }
 
+const saveBtn = document.getElementById("saveTemplateBtn");
+const deleteBtn = document.getElementById("deleteTemplateBtn");
+const params = new URLSearchParams(window.location.search);
+const currentDocId = params.get("docId");
+
 async function handleSaveTemplate() {
   const user = auth.currentUser;
   if (!user) return alert("로그인이 필요합니다.");
-
-  showLoading();
 
   const frame = document.getElementById("templateFrame");
   if (!frame) return alert("템플릿이 존재하지 않습니다.");
@@ -120,10 +76,7 @@ async function handleSaveTemplate() {
   const imageImg = frame.querySelector(".main-preview");
 
   try {
-    await Promise.all([
-      waitForImageLoad(logoImg),
-      waitForImageLoad(imageImg)
-    ]);
+    await Promise.all([waitForImageLoad(logoImg), waitForImageLoad(imageImg)]);
 
     const frameHTML = frame.outerHTML;
     const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
@@ -142,21 +95,21 @@ async function handleSaveTemplate() {
     const logoExt = getImageExtension(logoImg?.src || "");
     const imageExt = getImageExtension(imageImg?.src || "");
 
-    let logoUrl = "";
-    if (logoImg?.src) {
-      logoUrl = isDataUrl(logoImg.src)
+    const logoUrl = logoImg?.src
+      ? (isDataUrl(logoImg.src)
         ? await uploadImageToStorage(logoImg.src, `${basePath}/logo.${logoExt}`)
-        : stripToken(logoImg.src);
-    }
+        : stripToken(logoImg.src))
+      : "";
 
-    let imageUrl = "";
-    if (imageImg?.src) {
-      imageUrl = isDataUrl(imageImg.src)
+    const imageUrl = imageImg?.src
+      ? (isDataUrl(imageImg.src)
         ? await uploadImageToStorage(imageImg.src, `${basePath}/main.${imageExt}`)
-        : stripToken(imageImg.src);
-    }
+        : stripToken(imageImg.src))
+      : "";
 
-    // 🔸 templateId 추출 (정상 위치에 위치)
+    const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
+    const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
+
     let templateId = "template-001";
     try {
       const pathname = window.location.pathname;
@@ -165,25 +118,9 @@ async function handleSaveTemplate() {
       if (id && id.startsWith("template-")) {
         templateId = id;
       }
-      console.log("✅ 추출된 templateId:", templateId);
     } catch (e) {
-      console.warn("❌ templateId 추출 실패, 기본값 사용:", e);
+      console.warn("❌ templateId 추출 실패:", e);
     }
-
-    // 🔸 HTML 저장
-    const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
-
-    // 🔸 확인 로그
-    console.log("🔥 저장될 템플릿 정보:", {
-      uid: user.uid,
-      brand,
-      slogan,
-      logoUrl,
-      imageUrl,
-      thumbnailUrl,
-      htmlUrl,
-      templateId
-    });
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
@@ -197,17 +134,11 @@ async function handleSaveTemplate() {
       createdAt: serverTimestamp()
     });
 
-    savedDocId = docRef.id;
     alert("템플릿이 서버에 저장되었습니다!");
-
-    if (window.location.pathname.includes("template-")) {
-      window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
-    }
+    window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
   } catch (e) {
-    console.error("저장 실패:", e.message || e);
-    alert("저장 중 오류가 발생했습니다.\n" + (e.message || e));
-  } finally {
-    hideLoading();
+    console.error("저장 실패:", e);
+    alert("저장 중 오류 발생\n" + (e.message || e));
   }
 }
 
@@ -224,47 +155,9 @@ async function handleDeleteTemplate() {
     alert("템플릿이 삭제되었습니다.");
   } catch (e) {
     console.error("삭제 실패:", e.message || e);
-    alert("삭제 중 오류가 발생했습니다.\n" + (e.message || e));
+    alert("삭제 중 오류 발생\n" + (e.message || e));
   }
 }
-
-function setupDownload() {
-  downloadBtn?.addEventListener("click", async () => {
-    const frame = document.querySelector(".template-frame");
-    const logo = frame.querySelector(".logo-preview");
-    const image = frame.querySelector(".main-preview");
-
-    await Promise.all([
-      waitForImageLoad(logo),
-      waitForImageLoad(image)
-    ]);
-
-    const canvas = await html2canvas(frame, {
-      useCORS: true,
-      allowTaint: false,
-      backgroundColor: null,
-      imageTimeout: 3000,
-      scale: 2
-    });
-
-    const imgData = canvas.toDataURL("image/jpeg", 1.0);
-    const pdf = new jspdf.jsPDF({
-      orientation: "portrait",
-      unit: "px",
-      format: [canvas.width, canvas.height]
-    });
-
-    pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
-    pdf.save("template.pdf");
-  });
-}
-
-auth.onAuthStateChanged(user => {
-  if (user) {
-    setupDownload();
-    loadTemplate();
-  }
-});
 
 saveBtn?.addEventListener("click", handleSaveTemplate);
 deleteBtn?.addEventListener("click", handleDeleteTemplate);
