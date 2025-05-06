@@ -51,9 +51,8 @@
     }
 
     body.view-mode .scale-container {
-    transform: scale(0.416);
-    transform-origin: top center;
-  }
+      transform: scale(0.416);
+    }
 
     .template-frame {
       position: relative;
@@ -72,9 +71,9 @@
   <div class="template-wrapper">
     <button class="edit-btn" onclick="toggleEditMode()">편집</button>
     <div class="view-controls">
-      <button id="zoomOutBtn" onclick="zoomOut()">-</button>
-      <button id="resetZoomBtn" onclick="resetZoom()">100%</button>
-      <button id="zoomInBtn" onclick="zoomIn()">+</button>
+      <button onclick="zoomOut()">-</button>
+      <button onclick="resetZoom()">100%</button>
+      <button onclick="zoomIn()">+</button>
     </div>
 
     <div class="scale-container">
@@ -84,7 +83,7 @@
         <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous"
              style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
         
-        <div class="image-container" style="position: absolute; top: 500px; left: 1000px; width: 400px; height: 500px; overflow: hidden;">
+        <div class="image-container" style="position: absolute; top: 500px; left: 1000px; width: 400px; height: 500px; overflow: hidden; border: 1px dashed #aaa;">
           <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
                style="position: absolute; top: 0; left: 0; width: 100%; height: auto;" />
         </div>
@@ -106,61 +105,61 @@
   <!-- 기능 연결 -->
   <script type="module" src="/muscat/templates/templates-data/template-actions.js"></script>
   <script type="module" src="/muscat/templates/templates-data/edit-mode.js"></script>
-  <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
+
   <!-- ✅ Firestore 저장된 템플릿 불러오기 -->
-  <script type="module">
-    import { db } from "/muscat/common/firebase-init.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+<script type="module">
+  import { db } from "/muscat/common/firebase-init.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    async function loadTemplateFromFirestore(docId) {
-      try {
-        const ref = doc(db, "savedTemplates", docId);
-        const snapshot = await getDoc(ref);
-        if (!snapshot.exists()) return;
+  async function loadTemplateFromFirestore(docId) {
+    try {
+      const ref = doc(db, "savedTemplates", docId);
+      const snapshot = await getDoc(ref);
+      if (!snapshot.exists()) return;
 
-        const data = snapshot.data();
-        const response = await fetch(data.htmlUrl);
-        const htmlText = await response.text();
+      const data = snapshot.data();
+      const response = await fetch(data.htmlUrl);
+      const htmlText = await response.text();
 
-        const wrapper = document.getElementById("templateFrame");
-        const tempDom = document.createElement("div");
-        tempDom.innerHTML = htmlText;
+      const wrapper = document.getElementById("templateFrame");
+      const tempDom = document.createElement("div");
+      tempDom.innerHTML = htmlText;
 
-        const newFrame = tempDom.querySelector(".template-frame");
-        if (newFrame && wrapper) {
-          const cloned = newFrame.cloneNode(true);
-          wrapper.replaceWith(cloned);
-          cloned.id = "templateFrame";
-        }
-      } catch (e) {
-        console.error("불러오기 실패:", e);
+      const newFrame = tempDom.querySelector(".template-frame");
+      if (newFrame && wrapper) {
+        const cloned = newFrame.cloneNode(true);
+        wrapper.replaceWith(cloned);
+        cloned.id = "templateFrame";
       }
+    } catch (e) {
+      console.error("불러오기 실패:", e);
     }
+  }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const docId = new URLSearchParams(location.search).get("docId");
+  window.addEventListener("DOMContentLoaded", () => {
+    const docId = new URLSearchParams(location.search).get("docId");
 
-      if (docId) {
-        loadTemplateFromFirestore(docId);
-      } else {
-        // 기본 (임시 저장된 local/sessionStorage) 데이터 불러오기
-        const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
-        const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
-        const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
-        const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+    if (docId) {
+      loadTemplateFromFirestore(docId);
+    } else {
+      // 기본 (임시 저장된 local/sessionStorage) 데이터 불러오기
+      const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
+      const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
+      const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
+      const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
 
-        const brandEl = document.querySelector(".brand-name");
-        const sloganEl = document.querySelector(".brand-slogan");
-        const logoEl = document.getElementById("brandLogo");
-        const mainEl = document.getElementById("mainImage");
+      const brandEl = document.querySelector(".brand-name");
+      const sloganEl = document.querySelector(".brand-slogan");
+      const logoEl = document.getElementById("brandLogo");
+      const mainEl = document.getElementById("mainImage");
 
-        if (brand && brandEl) brandEl.textContent = brand;
-        if (slogan && sloganEl) sloganEl.textContent = slogan;
-        if (logoUrl && logoEl) logoEl.src = logoUrl;
-        if (mainUrl && mainEl) mainEl.src = mainUrl;
-      }
-    });
-  </script>
+      if (brand && brandEl) brandEl.textContent = brand;
+      if (slogan && sloganEl) sloganEl.textContent = slogan;
+      if (logoUrl && logoEl) logoEl.src = logoUrl;
+      if (mainUrl && mainEl) mainEl.src = mainUrl;
+    }
+  });
+</script>
 
 </body>
 </html>

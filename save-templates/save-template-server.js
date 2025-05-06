@@ -14,6 +14,7 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
+// ✅ token 제거 함수
 function stripToken(url) {
   try {
     const u = new URL(url);
@@ -23,10 +24,6 @@ function stripToken(url) {
   }
 }
 
-const params = new URLSearchParams(window.location.search);
-const currentDocId = params.get("docId");
-let savedDocId = null;
-
 function showLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
@@ -35,6 +32,43 @@ function showLoading() {
 function hideLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
+}
+
+const saveBtn = document.getElementById("saveTemplateBtn");
+const deleteBtn = document.getElementById("deleteTemplateBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+
+const params = new URLSearchParams(window.location.search);
+const currentDocId = params.get("docId");
+let savedDocId = null;
+
+console.log("✅ save-template-server.js 연결됨");
+
+async function loadTemplate() {
+  if (!currentDocId) return;
+
+  try {
+    const ref = doc(db, "savedTemplates", currentDocId);
+    const snapshot = await getDoc(ref);
+    if (!snapshot.exists()) return;
+
+    const data = snapshot.data();
+    const response = await fetch(data.htmlUrl);
+    const htmlText = await response.text();
+
+    const wrapper = document.getElementById("templateFrame");
+    const tempDom = document.createElement("div");
+    tempDom.innerHTML = htmlText;
+
+    const newFrame = tempDom.querySelector(".template-frame");
+    if (newFrame && wrapper) {
+      const cloned = newFrame.cloneNode(true);
+      wrapper.replaceWith(cloned);
+      cloned.id = "templateFrame";
+    }
+  } catch (e) {
+    console.error("템플릿 로드 실패:", e);
+  }
 }
 
 function waitForImageLoad(imageElement) {
@@ -126,7 +160,8 @@ async function handleSaveTemplate() {
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
 
-    let templateId = "template-001";
+    let templateId = "template-001"; // 기본값
+
     try {
       const pathname = window.location.pathname;
       const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
@@ -137,6 +172,7 @@ async function handleSaveTemplate() {
     } catch (e) {
       console.warn("templateId 추출 실패, 기본값 사용:", e);
     }
+
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
@@ -181,4 +217,43 @@ async function handleDeleteTemplate() {
   }
 }
 
-export { handleSaveTemplate, handleDeleteTemplate };
+function setupDownload() {
+  downloadBtn?.addEventListener("click", async () => {
+    const frame = document.querySelector(".template-frame");
+    const logo = frame.querySelector(".logo-preview");
+    const image = frame.querySelector(".main-preview");
+
+    await Promise.all([
+      waitForImageLoad(logo),
+      waitForImageLoad(image)
+    ]);
+
+    const canvas = await html2canvas(frame, {
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: null,
+      imageTimeout: 3000,
+      scale: 2
+    });
+
+    const imgData = canvas.toDataURL("image/jpeg", 1.0);
+    const pdf = new jspdf.jsPDF({
+      orientation: "portrait",
+      unit: "px",
+      format: [canvas.width, canvas.height]
+    });
+
+    pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
+    pdf.save("template.pdf");
+  });
+}
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+    setupDownload();
+    loadTemplate();
+  }
+});
+
+saveBtn?.addEventListener("click", handleSaveTemplate);
+deleteBtn?.addEventListener("click", handleDeleteTemplate);
