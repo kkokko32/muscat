@@ -1,29 +1,30 @@
 // 🔍 확대/축소/초기화 기능
-let scale = 1;
-const zoomInBtn = document.getElementById("zoomInBtn");
-const zoomOutBtn = document.getElementById("zoomOutBtn");
-const resetZoomBtn = document.getElementById("resetZoomBtn");
-const templateFrame = document.getElementById("templateFrame");
+let currentScale = 1;
 
 function applyScale() {
-  if (templateFrame) {
-    templateFrame.style.transform = `scale(${scale})`;
-    templateFrame.style.transformOrigin = "top center";
+  const scaleContainer = document.querySelector(".scale-container");
+  if (!scaleContainer) return;
+
+  if (document.body.classList.contains("edit-mode")) {
+    scaleContainer.style.transform = "none";
+  } else {
+    scaleContainer.style.transform = `scale(${currentScale})`;
+    scaleContainer.style.transformOrigin = "top center";
   }
 }
 
 function zoomIn() {
-  scale += 0.1;
+  currentScale += 0.1;
   applyScale();
 }
 
 function zoomOut() {
-  scale = Math.max(0.1, scale - 0.1);
+  currentScale = Math.max(0.1, currentScale - 0.1);
   applyScale();
 }
 
 function resetZoom() {
-  scale = 1;
+  currentScale = 1;
   applyScale();
 }
 
@@ -32,10 +33,10 @@ window.zoomIn = zoomIn;
 window.zoomOut = zoomOut;
 window.resetZoom = resetZoom;
 
-// ✅ 진입 시 view-mode 자동 적용
+// ✅ 진입 시 view-mode 적용
 window.addEventListener("DOMContentLoaded", () => {
   document.body.classList.add("view-mode");
-  applyScale(); // 초기 스케일 적용
+  applyScale(); // 초기에 축소 적용
 });
 
 // 💾 다운로드 기능
