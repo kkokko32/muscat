@@ -36,7 +36,8 @@ window.resetZoom = resetZoom;
 // ✅ 진입 시 view-mode 적용
 window.addEventListener("DOMContentLoaded", () => {
   document.body.classList.add("view-mode");
-  applyScale(); // 초기에 축소 적용
+  currentScale = 0.416; // 최초 진입 시 축소 비율 적용
+  applyScale();
 });
 
 // 💾 다운로드 기능
