@@ -178,9 +178,9 @@ async function handleSaveTemplate() {
       brand,
       slogan,
       logoUrl,
-      imageUrl,
-      thumbnailUrl,
-      htmlUrl,
+      imageUrl,          
+      thumbnailUrl,      
+      htmlUrl,          
       templateId,
       createdAt: serverTimestamp()
     });
