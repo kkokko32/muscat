@@ -69,7 +69,7 @@ downloadBtn?.addEventListener("click", async () => {
 });
 
 //  저장/삭제 기능 연결
-import { handleSaveTemplate, handleDeleteTemplate } from "./save-template-server.js";
+import { handleSaveTemplate, handleDeleteTemplate } from "/muscat/save-templates/save-template-server.js";
 
 document.getElementById("saveTemplateBtn")?.addEventListener("click", handleSaveTemplate);
 document.getElementById("deleteTemplateBtn")?.addEventListener("click", handleDeleteTemplate);
