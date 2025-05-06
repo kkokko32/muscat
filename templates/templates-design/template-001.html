@@ -51,8 +51,9 @@
     }
 
     body.view-mode .scale-container {
-      transform: scale(0.416);
-    }
+    transform: scale(0.416);
+    transform-origin: top center;
+  }
 
     .template-frame {
       position: relative;
@@ -83,7 +84,7 @@
         <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous"
              style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
         
-        <div class="image-container" style="position: absolute; top: 500px; left: 1000px; width: 400px; height: 500px; overflow: hidden; border: 1px dashed #aaa;">
+        <div class="image-container" style="position: absolute; top: 500px; left: 1000px; width: 400px; height: 500px; overflow: hidden;">
           <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
                style="position: absolute; top: 0; left: 0; width: 100%; height: auto;" />
         </div>

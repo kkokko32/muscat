@@ -33,10 +33,10 @@ window.zoomIn = zoomIn;
 window.zoomOut = zoomOut;
 window.resetZoom = resetZoom;
 
-// ✅ 진입 시 view-mode 적용
+// ✅ 진입 시 view-mode 적용 및 초기 축소
 window.addEventListener("DOMContentLoaded", () => {
   document.body.classList.add("view-mode");
-  currentScale = 0.416; // 최초 진입 시 축소 비율 적용
+  currentScale = 0.416;   // ✅ 초기 스케일 강제 적용
   applyScale();
 });
 
