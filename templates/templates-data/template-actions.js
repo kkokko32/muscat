@@ -68,8 +68,13 @@ downloadBtn?.addEventListener("click", async () => {
   pdf.save("template.pdf");
 });
 
-// ✅ 저장/삭제 기능 연결
+//  저장/삭제 기능 연결
 import { handleSaveTemplate, handleDeleteTemplate } from "./save-template-server.js";
 
 document.getElementById("saveTemplateBtn")?.addEventListener("click", handleSaveTemplate);
 document.getElementById("deleteTemplateBtn")?.addEventListener("click", handleDeleteTemplate);
+
+// 확대/축소 기능
+window.zoomOut = zoomOut;
+window.zoomIn = zoomIn;
+window.resetZoom = resetZoom;
