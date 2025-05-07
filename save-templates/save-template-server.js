@@ -14,7 +14,6 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-// ✅ token 제거 함수
 function stripToken(url) {
   try {
     const u = new URL(url);
@@ -44,7 +43,6 @@ let savedDocId = null;
 
 console.log("✅ save-template-server.js 연결됨");
 
-// ✅ 기존 .template-frame DOM 유지하면서 내용만 갱신
 async function loadTemplate() {
   if (!currentDocId) return;
 
@@ -173,17 +171,22 @@ async function handleSaveTemplate() {
     console.log("✅ htmlUrl 확인:", htmlUrl);
     if (!htmlUrl) throw new Error("htmlUrl 저장 실패");
 
+    // ✅ templateId 안전하게 추출
     let templateId = "template-001";
     try {
-      const pathname = window.location.pathname;
-      const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
+      const pathname = window.location.pathname || "";
+      const fileName = pathname.split("/").pop()?.split("?")[0] || "";
       const id = fileName.replace(".html", "");
-      if (id && id.startsWith("template-")) {
+      if (id.startsWith("template-")) {
         templateId = id;
+      } else {
+        console.warn("템플릿 ID가 유효하지 않음, 기본값 사용");
       }
     } catch (e) {
       console.warn("templateId 추출 실패, 기본값 사용:", e);
     }
+
+    console.log("✅ 저장할 templateId:", templateId);
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
