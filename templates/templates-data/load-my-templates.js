@@ -120,10 +120,12 @@ async function loadMyTemplates() {
       if (e.target.classList.contains("select-checkbox")) return;
       if (isManaging) return;
 
+      // ✅ templateId 보정 처리
       let templateId = (data.templateId || "").trim();
-      if (!templateId || !templateId.startsWith("template-")) {
+      if (!templateId || templateId === "undefined" || !templateId.startsWith("template-")) {
         templateId = "template-001";
       }
+
       window.location.href = `/muscat/templates/templates-design/${templateId}.html?docId=${docId}`;
     };
 
