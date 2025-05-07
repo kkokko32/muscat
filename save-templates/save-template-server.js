@@ -54,6 +54,11 @@ async function loadTemplate() {
     if (!snapshot.exists()) return;
 
     const data = snapshot.data();
+    if (!data.htmlUrl) {
+      alert("템플릿 HTML 정보가 누락되어 로드할 수 없습니다.");
+      return;
+    }
+
     const response = await fetch(data.htmlUrl);
     const htmlText = await response.text();
 
@@ -96,11 +101,16 @@ async function uploadImageToStorage(base64Data, path) {
 }
 
 async function uploadHTMLToStorage(htmlString, path) {
-  const blob = new Blob([htmlString], { type: 'text/html' });
-  const storageRef = ref(storage, path);
-  const snapshot = await uploadBytes(storageRef, blob);
-  const url = await getDownloadURL(snapshot.ref);
-  return stripToken(url);
+  try {
+    const blob = new Blob([htmlString], { type: 'text/html' });
+    const storageRef = ref(storage, path);
+    const snapshot = await uploadBytes(storageRef, blob);
+    const url = await getDownloadURL(snapshot.ref);
+    return stripToken(url);
+  } catch (e) {
+    console.error("❌ template.html 업로드 실패:", e.message || e);
+    return null;
+  }
 }
 
 function isDataUrl(url) {
@@ -160,6 +170,8 @@ async function handleSaveTemplate() {
 
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
+    console.log("✅ htmlUrl 확인:", htmlUrl);
+    if (!htmlUrl) throw new Error("htmlUrl 저장 실패");
 
     let templateId = "template-001";
     try {
@@ -178,9 +190,9 @@ async function handleSaveTemplate() {
       brand,
       slogan,
       logoUrl,
-      imageUrl,          
-      thumbnailUrl,      
-      htmlUrl,          
+      imageUrl,
+      thumbnailUrl,
+      htmlUrl,
       templateId,
       createdAt: serverTimestamp()
     });
