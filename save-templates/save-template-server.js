@@ -93,9 +93,10 @@ async function uploadImageToStorage(base64Data, path) {
 async function uploadHTMLToStorage(htmlString, path) {
   const blob = new Blob([htmlString], { type: 'text/html' });
   const storageRef = ref(storage, path);
+  console.log("📂 HTML 업로드 경로:", path);
   const snapshot = await uploadBytes(storageRef, blob);
   const url = await getDownloadURL(snapshot.ref);
-  console.log("📦 저장된 원본 URL:", url);
+  console.log("📦 HTML 저장된 URL:", url);
   return stripToken(url);
 }
 
@@ -157,7 +158,7 @@ async function handleSaveTemplate() {
 
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}_thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
-    console.log("✅ htmlUrl 저장 주소:", htmlUrl);
+    console.log("✅ 최종 HTML URL:", htmlUrl);
     if (!htmlUrl) {
       hideLoading();
       alert("디자인 저장 실패: HTML 저장에 실패했습니다.");
