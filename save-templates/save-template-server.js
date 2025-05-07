@@ -144,7 +144,9 @@ async function handleSaveTemplate() {
       return alert("디자인 저장 실패: HTML 저장 중 오류 발생");
     }
 
+    // ✅ 아래 조건 추가 필요
     if (!htmlUrl) {
+      console.warn("❗ HTML URL이 비어 있음. Firestore 저장 중단");
       hideLoading();
       return alert("디자인 저장 실패: HTML URL 누락");
     }
