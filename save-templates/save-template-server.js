@@ -14,6 +14,7 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
+// 토큰 제거 함수
 function stripToken(url) {
   try {
     const u = new URL(url);
@@ -27,7 +28,6 @@ function showLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
-
 function hideLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -41,71 +41,40 @@ const params = new URLSearchParams(window.location.search);
 const currentDocId = params.get("docId");
 let savedDocId = null;
 
-async function loadTemplate() {
-  if (!currentDocId) return;
-  try {
-    const ref = doc(db, "savedTemplates", currentDocId);
-    const snapshot = await getDoc(ref);
-    if (!snapshot.exists()) return;
-
-    const data = snapshot.data();
-    const response = await fetch(data.htmlUrl);
-    const htmlText = await response.text();
-
-    const wrapper = document.getElementById("templateFrame");
-    const tempDom = document.createElement("div");
-    tempDom.innerHTML = htmlText;
-
-    const newFrame = tempDom.querySelector(".template-frame");
-    if (newFrame && wrapper) {
-      wrapper.innerHTML = newFrame.innerHTML;
-      wrapper.setAttribute("style", newFrame.getAttribute("style") || "");
-      wrapper.className = newFrame.className;
-    }
-  } catch (e) {
-    console.error("템플릿 로드 실패:", e);
-  }
-}
-
-function waitForImageLoad(imageElement) {
-  return new Promise(resolve => {
-    if (!imageElement || !imageElement.src) return resolve();
-    if (imageElement.complete && imageElement.naturalHeight !== 0) return resolve();
-    imageElement.onload = () => resolve();
-    imageElement.onerror = () => resolve();
-  });
-}
-
-function getImageExtension(dataUrl) {
-  if (dataUrl.startsWith("data:image/png")) return "png";
-  if (dataUrl.startsWith("data:image/svg")) return "svg";
-  if (dataUrl.startsWith("data:image/webp")) return "webp";
-  return "jpg";
-}
-
-async function uploadImageToStorage(base64Data, path) {
+async function uploadHTMLToStorage(htmlString, path) {
+  const blob = new Blob([htmlString], { type: 'text/html' });
   const storageRef = ref(storage, path);
-  await uploadString(storageRef, base64Data, 'data_url');
-  const url = await getDownloadURL(storageRef);
+  const snapshot = await uploadBytes(storageRef, blob);
+  const url = await getDownloadURL(snapshot.ref);
+  console.log("📦 저장된 원본 URL:", url); // 확인용 로그
   return stripToken(url);
 }
 
-async function uploadHTMLToStorage(htmlString, path) {
-  try {
-      const blob = new Blob([htmlString], { type: 'text/html' });
-    const storageRef = ref(storage, path);
-    const snapshot = await uploadBytes(storageRef, blob);
-    const url = await getDownloadURL(snapshot.ref);
-    console.log("📦 저장된 원본 URL:", url);
-    return stripToken(url);
-  } catch (e) {
-    console.error("❌ HTML 저장 실패:", e.message || e);
-    return null;
-  }
+function waitForImageLoad(img) {
+  return new Promise(resolve => {
+    if (!img || !img.src) return resolve();
+    if (img.complete && img.naturalHeight !== 0) return resolve();
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+  });
+}
+
+function getImageExtension(url) {
+  if (url.startsWith("data:image/png")) return "png";
+  if (url.startsWith("data:image/svg")) return "svg";
+  if (url.startsWith("data:image/webp")) return "webp";
+  return "jpg";
 }
 
 function isDataUrl(url) {
   return url.startsWith("data:");
+}
+
+async function uploadImageToStorage(base64Data, path) {
+  const storageRef = ref(storage, path);
+  await uploadString(storageRef, base64Data, "data_url");
+  const url = await getDownloadURL(storageRef);
+  return stripToken(url);
 }
 
 async function handleSaveTemplate() {
@@ -122,14 +91,12 @@ async function handleSaveTemplate() {
   const imageImg = frame.querySelector(".main-preview");
 
   try {
-    await Promise.all([
-      waitForImageLoad(logoImg),
-      waitForImageLoad(imageImg)
-    ]);
+    await Promise.all([waitForImageLoad(logoImg), waitForImageLoad(imageImg)]);
 
     const frameHTML = frame.outerHTML;
-    const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
 
+    // 캔버스로 썸네일 생성
+    const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
     const resizedCanvas = document.createElement("canvas");
     const ctx = resizedCanvas.getContext("2d");
     const maxWidth = 400;
@@ -161,16 +128,14 @@ async function handleSaveTemplate() {
     }
 
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}_thumbnail.jpg`);
+
+    // ✅ HTML 저장 및 로그 출력
     const htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
-    if (!htmlUrl) {
-      hideLoading();
-      alert("디자인 저장 실패: HTML 파일 업로드에 실패했습니다.");
-      return;
-    }
     console.log("✅ htmlUrl 저장 주소:", htmlUrl);
+
     if (!htmlUrl) {
       hideLoading();
-      alert("디자인 저장 실패: HTML 저장에 실패했습니다.");
+      alert("디자인 저장 실패: HTML 저장 실패");
       return;
     }
 
@@ -198,17 +163,15 @@ async function handleSaveTemplate() {
       createdAt: serverTimestamp()
     };
 
-    console.log("🔥 Firestore 저장 payload:", payload);
+    console.log("🔥 Firestore 저장 payload:", payload); // 🔍 이 로그에서 htmlUrl이 잘 들어있는지 확인
 
     const docRef = await addDoc(collection(db, "savedTemplates"), payload);
     savedDocId = docRef.id;
     alert("템플릿이 서버에 저장되었습니다!");
-    if (window.location.pathname.includes("template-")) {
-      window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
-    }
+    window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
   } catch (e) {
-    console.error("저장 실패:", e.message || e);
-    alert("저장 중 오류가 발생했습니다.\n" + (e.message || e));
+    console.error("❌ 저장 실패:", e);
+    alert("저장 중 오류가 발생했습니다\n" + (e.message || e));
   } finally {
     hideLoading();
   }
@@ -237,10 +200,7 @@ function setupDownload() {
     const logo = frame.querySelector(".logo-preview");
     const image = frame.querySelector(".main-preview");
 
-    await Promise.all([
-      waitForImageLoad(logo),
-      waitForImageLoad(image)
-    ]);
+    await Promise.all([waitForImageLoad(logo), waitForImageLoad(image)]);
 
     const canvas = await html2canvas(frame, {
       useCORS: true,
