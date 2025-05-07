@@ -1,4 +1,3 @@
-// ✅ 저장 오류 디버깅 반영 완료본
 import { db, auth, storage } from "/muscat/common/firebase-init.js";
 import {
   collection,
@@ -15,6 +14,7 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
+// 토큰 제거 함수
 function stripToken(url) {
   try {
     const u = new URL(url);
@@ -28,7 +28,6 @@ function showLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
-
 function hideLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -36,22 +35,28 @@ function hideLoading() {
 
 const saveBtn = document.getElementById("saveTemplateBtn");
 const deleteBtn = document.getElementById("deleteTemplateBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+
+console.log("✅ saveBtn 존재 여부:", !!saveBtn);  // 버튼 연결 체크
 
 const params = new URLSearchParams(window.location.search);
 const currentDocId = params.get("docId");
 let savedDocId = null;
 
 async function uploadHTMLToStorage(htmlString, path) {
+  console.log("uploadHTMLToStorage 진입:", path);
+  console.log("📄 HTML 내용 길이:", htmlString.length);
+
   try {
-    console.log("📤 uploadHTMLToStorage 진입:", path);
-    const blob = new Blob([htmlString], { type: 'text/html' });
+    const blob = new Blob([htmlString], { type: "text/html" });
+    console.log("🟢 HTML blob size:", blob.size);
     const storageRef = ref(storage, path);
     const snapshot = await uploadBytes(storageRef, blob);
     const url = await getDownloadURL(snapshot.ref);
     console.log("📦 저장된 원본 URL:", url);
     return stripToken(url);
   } catch (err) {
-    console.error("❌ HTML 업로드 실패:", err);
+    console.error("❌ HTML 저장 실패:", err);
     return null;
   }
 }
@@ -85,6 +90,7 @@ async function uploadImageToStorage(base64Data, path) {
 
 async function handleSaveTemplate() {
   console.log("🧪 handleSaveTemplate 시작됨");
+
   const user = auth.currentUser;
   if (!user) return alert("로그인이 필요합니다.");
   showLoading();
@@ -101,6 +107,7 @@ async function handleSaveTemplate() {
     await Promise.all([waitForImageLoad(logoImg), waitForImageLoad(imageImg)]);
 
     const frameHTML = frame.outerHTML;
+    console.log("🧾 frame.outerHTML 길이:", frameHTML.length);
 
     const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
     const resizedCanvas = document.createElement("canvas");
@@ -135,6 +142,7 @@ async function handleSaveTemplate() {
 
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}_thumbnail.jpg`);
     const htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
+
     console.log("✅ 최종 htmlUrl:", htmlUrl);
 
     if (!htmlUrl) {
@@ -148,9 +156,11 @@ async function handleSaveTemplate() {
       const pathname = window.location.pathname;
       const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
       const id = fileName.replace(".html", "");
-      if (id && id.startsWith("template-")) templateId = id;
+      if (id && id.startsWith("template-")) {
+        templateId = id;
+      }
     } catch (e) {
-      console.warn("templateId 추출 실패, 기본값 사용:", e);
+      console.warn("templateId 추출 실패:", e);
     }
 
     const payload = {
@@ -165,18 +175,19 @@ async function handleSaveTemplate() {
       createdAt: serverTimestamp()
     };
 
-    console.log("🔥 Firestore 저장 payload:", JSON.stringify(payload, null, 2));
+    console.log("🔥 Firestore 저장 payload:", payload);
+
     const docRef = await addDoc(collection(db, "savedTemplates"), payload);
     savedDocId = docRef.id;
-    alert("템플릿이 서버에 저장되었습니다!");
+    alert("저장 완료되었습니다!\n내 작업실로 이동할까요?");
     window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
   } catch (e) {
-    console.error("❌ 저장 실패:", e);
-    alert("저장 중 오류가 발생했습니다\n" + (e.message || e));
+    console.error("❌ 저장 중 오류:", e);
+    alert("저장 중 오류 발생\n" + (e.message || e));
   } finally {
     hideLoading();
   }
 }
 
 saveBtn?.addEventListener("click", handleSaveTemplate);
-console.log("✅ saveBtn 존재 여부:", !!saveBtn);
+deleteBtn?.addEventListener("click", handleDeleteTemplate);
