@@ -111,13 +111,14 @@
       try {
         const ref = doc(db, "savedTemplates", docId);
         const snapshot = await getDoc(ref);
-        if (!snapshot.exists()) return;
+        if (!snapshot.exists()) {
+          console.warn("❌ 문서 없음");
+          return;
+        }
 
         const data = snapshot.data();
-
-        // ✅ htmlUrl이 없으면 중단
         if (!data.htmlUrl) {
-          console.warn("htmlUrl 없음 → fetch 중단");
+          console.warn("❌ htmlUrl 없음 → fetch 중단");
           return;
         }
 
@@ -145,7 +146,7 @@
           if (mainEl && data.imageUrl) mainEl.src = data.imageUrl;
         }
       } catch (e) {
-        console.error("불러오기 실패:", e);
+        console.error("🔥 템플릿 로드 실패:", e);
       }
     }
 
@@ -153,6 +154,7 @@
       const docId = new URLSearchParams(location.search).get("docId");
 
       if (docId) {
+        console.log("📥 docId:", docId);
         loadTemplateFromFirestore(docId);
       } else {
         const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
