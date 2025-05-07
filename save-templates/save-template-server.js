@@ -4,7 +4,6 @@ import {
   addDoc,
   deleteDoc,
   doc,
-  getDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
@@ -36,26 +35,9 @@ const saveBtn = document.getElementById("saveTemplateBtn");
 const deleteBtn = document.getElementById("deleteTemplateBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 
-console.log("✅ saveBtn 존재 여부:", !!saveBtn);
-
 const params = new URLSearchParams(window.location.search);
 const currentDocId = params.get("docId");
 let savedDocId = null;
-
-async function uploadHTMLToStorage(htmlString, path) {
-  try {
-    console.log("🚀 HTML 업로드 시작:", path);
-    const blob = new Blob([htmlString], { type: 'text/html' });
-    const storageRef = ref(storage, path);
-    const snapshot = await uploadBytes(storageRef, blob);
-    const url = await getDownloadURL(snapshot.ref);
-    console.log("📦 저장된 원본 URL:", url);
-    return stripToken(url);
-  } catch (e) {
-    console.error("❌ uploadHTMLToStorage 실패:", e);
-    throw e;
-  }
-}
 
 function waitForImageLoad(img) {
   return new Promise(resolve => {
@@ -84,8 +66,20 @@ async function uploadImageToStorage(base64Data, path) {
   return stripToken(url);
 }
 
+async function uploadHTMLToStorage(htmlString, path) {
+  try {
+    const blob = new Blob([htmlString], { type: "text/html" });
+    const storageRef = ref(storage, path);
+    const snapshot = await uploadBytes(storageRef, blob);
+    const url = await getDownloadURL(snapshot.ref);
+    return stripToken(url);
+  } catch (e) {
+    console.error("❌ uploadHTMLToStorage 실패:", e);
+    throw e;
+  }
+}
+
 async function handleSaveTemplate() {
-  console.log("🧪 handleSaveTemplate 시작됨");
   const user = auth.currentUser;
   if (!user) return alert("로그인이 필요합니다.");
   showLoading();
@@ -102,7 +96,6 @@ async function handleSaveTemplate() {
     await Promise.all([waitForImageLoad(logoImg), waitForImageLoad(imageImg)]);
 
     const frameHTML = frame.outerHTML;
-    console.log("📩 HTML 업로드 전 frameHTML:", frameHTML?.slice(0, 100));
 
     const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
     const resizedCanvas = document.createElement("canvas");
@@ -137,18 +130,16 @@ async function handleSaveTemplate() {
 
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}_thumbnail.jpg`);
 
+    // ✅ HTML 업로드
     let htmlUrl = "";
     try {
       htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
-      console.log("✅ htmlUrl 저장 주소:", htmlUrl);
     } catch (e) {
-      console.error("❌ HTML 업로드 실패:", e);
       hideLoading();
       return alert("디자인 저장 실패: HTML 저장 중 오류 발생");
     }
 
     if (!htmlUrl) {
-      console.warn("❗ HTML URL이 비어 있음. Firestore 저장 중단");
       hideLoading();
       return alert("디자인 저장 실패: HTML URL 누락");
     }
@@ -162,7 +153,7 @@ async function handleSaveTemplate() {
         templateId = id;
       }
     } catch (e) {
-      console.warn("templateId 추출 실패, 기본값 사용:", e);
+      console.warn("templateId 추출 실패:", e);
     }
 
     const payload = {
@@ -177,10 +168,9 @@ async function handleSaveTemplate() {
       createdAt: serverTimestamp()
     };
 
-    console.log("🔥 Firestore 저장 payload:", payload);
-
     const docRef = await addDoc(collection(db, "savedTemplates"), payload);
     savedDocId = docRef.id;
+
     alert("저장 완료되었습니다!\n내 작업실로 이동할까요?");
     window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
   } catch (e) {
