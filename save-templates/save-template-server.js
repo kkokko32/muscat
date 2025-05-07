@@ -14,7 +14,7 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-// 토큰 제거 함수
+// 토큰 제거
 function stripToken(url) {
   try {
     const u = new URL(url);
@@ -34,6 +34,8 @@ function hideLoading() {
 }
 
 const saveBtn = document.getElementById("saveTemplateBtn");
+console.log("✅ saveBtn 존재 여부:", !!saveBtn);  // ← ③ 버튼 연결 확인용 로그
+
 const deleteBtn = document.getElementById("deleteTemplateBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 
@@ -41,12 +43,14 @@ const params = new URLSearchParams(window.location.search);
 const currentDocId = params.get("docId");
 let savedDocId = null;
 
+// ✅ HTML 업로드 함수
 async function uploadHTMLToStorage(htmlString, path) {
+  console.log("🧪 uploadHTMLToStorage 진입:", path);
   const blob = new Blob([htmlString], { type: 'text/html' });
   const storageRef = ref(storage, path);
   const snapshot = await uploadBytes(storageRef, blob);
   const url = await getDownloadURL(snapshot.ref);
-  console.log("📦 저장된 원본 URL:", url); // 확인용 로그
+  console.log("📦 저장된 원본 URL:", url);
   return stripToken(url);
 }
 
@@ -77,7 +81,10 @@ async function uploadImageToStorage(base64Data, path) {
   return stripToken(url);
 }
 
+// ✅ 템플릿 저장 함수
 async function handleSaveTemplate() {
+  console.log("🧪 handleSaveTemplate 시작됨");  // ← ② 실행 확인용 로그
+
   const user = auth.currentUser;
   if (!user) return alert("로그인이 필요합니다.");
   showLoading();
@@ -95,7 +102,7 @@ async function handleSaveTemplate() {
 
     const frameHTML = frame.outerHTML;
 
-    // 캔버스로 썸네일 생성
+    // 썸네일 생성
     const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
     const resizedCanvas = document.createElement("canvas");
     const ctx = resizedCanvas.getContext("2d");
@@ -129,7 +136,6 @@ async function handleSaveTemplate() {
 
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}_thumbnail.jpg`);
 
-    // ✅ HTML 저장 및 로그 출력
     const htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
     console.log("✅ htmlUrl 저장 주소:", htmlUrl);
 
@@ -163,7 +169,7 @@ async function handleSaveTemplate() {
       createdAt: serverTimestamp()
     };
 
-    console.log("🔥 Firestore 저장 payload:", payload); // 🔍 이 로그에서 htmlUrl이 잘 들어있는지 확인
+    console.log("🔥 Firestore 저장 payload:", payload);
 
     const docRef = await addDoc(collection(db, "savedTemplates"), payload);
     savedDocId = docRef.id;
@@ -177,6 +183,7 @@ async function handleSaveTemplate() {
   }
 }
 
+// ✅ 삭제 함수
 async function handleDeleteTemplate() {
   const user = auth.currentUser;
   if (!user) return alert("로그인이 필요합니다.");
@@ -194,6 +201,7 @@ async function handleDeleteTemplate() {
   }
 }
 
+// ✅ 다운로드 PDF
 function setupDownload() {
   downloadBtn?.addEventListener("click", async () => {
     const frame = document.querySelector(".template-frame");
