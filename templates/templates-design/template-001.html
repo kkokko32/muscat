@@ -8,7 +8,6 @@
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
-
   <script src="https://unpkg.com/moveable/dist/moveable.min.js"></script>
 
   <style>
@@ -112,11 +111,12 @@
         const ref = doc(db, "savedTemplates", docId);
         const snapshot = await getDoc(ref);
         if (!snapshot.exists()) {
-          console.warn("❌ 문서 없음");
+          console.warn("❌ 문서 없음:", docId);
           return;
         }
 
         const data = snapshot.data();
+
         if (!data.htmlUrl) {
           console.warn("❌ htmlUrl 없음 → fetch 중단");
           return;
@@ -146,15 +146,15 @@
           if (mainEl && data.imageUrl) mainEl.src = data.imageUrl;
         }
       } catch (e) {
-        console.error("🔥 템플릿 로드 실패:", e);
+        console.error("❌ 템플릿 로드 실패:", e);
       }
     }
 
     window.addEventListener("DOMContentLoaded", () => {
       const docId = new URLSearchParams(location.search).get("docId");
+      console.log("📥 docId:", docId);
 
       if (docId) {
-        console.log("📥 docId:", docId);
         loadTemplateFromFirestore(docId);
       } else {
         const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
