@@ -14,6 +14,7 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
+// ✅ token 제거 함수
 function stripToken(url) {
   try {
     const u = new URL(url);
@@ -52,11 +53,6 @@ async function loadTemplate() {
     if (!snapshot.exists()) return;
 
     const data = snapshot.data();
-    if (!data.htmlUrl) {
-      alert("템플릿 HTML 정보가 누락되어 로드할 수 없습니다.");
-      return;
-    }
-
     const response = await fetch(data.htmlUrl);
     const htmlText = await response.text();
 
@@ -92,10 +88,15 @@ function getImageExtension(dataUrl) {
 }
 
 async function uploadImageToStorage(base64Data, path) {
-  const storageRef = ref(storage, path);
-  await uploadString(storageRef, base64Data, 'data_url');
-  const url = await getDownloadURL(storageRef);
-  return stripToken(url);
+  try {
+    const storageRef = ref(storage, path);
+    await uploadString(storageRef, base64Data, 'data_url');
+    const url = await getDownloadURL(storageRef);
+    return stripToken(url);
+  } catch (e) {
+    console.warn("이미지 업로드 실패:", e);
+    return null;
+  }
 }
 
 async function uploadHTMLToStorage(htmlString, path) {
@@ -106,7 +107,7 @@ async function uploadHTMLToStorage(htmlString, path) {
     const url = await getDownloadURL(snapshot.ref);
     return stripToken(url);
   } catch (e) {
-    console.error("❌ template.html 업로드 실패:", e.message || e);
+    console.warn("HTML 업로드 실패:", e);
     return null;
   }
 }
@@ -148,45 +149,45 @@ async function handleSaveTemplate() {
     const thumbnailDataUrl = resizedCanvas.toDataURL("image/jpeg", 0.4);
 
     const timestamp = Date.now();
-    const basePath = `users/${user.uid}/${timestamp}`;
+    const basePath = `savedTemplates/images/${user.uid}_${timestamp}`;
+
     const logoExt = getImageExtension(logoImg?.src || "");
     const imageExt = getImageExtension(imageImg?.src || "");
 
     let logoUrl = "";
     if (logoImg?.src) {
       logoUrl = isDataUrl(logoImg.src)
-        ? await uploadImageToStorage(logoImg.src, `${basePath}/logo.${logoExt}`)
+        ? await uploadImageToStorage(logoImg.src, `${basePath}_logo.${logoExt}`)
         : stripToken(logoImg.src);
     }
 
     let imageUrl = "";
     if (imageImg?.src) {
       imageUrl = isDataUrl(imageImg.src)
-        ? await uploadImageToStorage(imageImg.src, `${basePath}/main.${imageExt}`)
+        ? await uploadImageToStorage(imageImg.src, `${basePath}_main.${imageExt}`)
         : stripToken(imageImg.src);
     }
 
-    const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}/thumbnail.jpg`);
-    const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath}/template.html`);
-    console.log("✅ htmlUrl 확인:", htmlUrl);
-    if (!htmlUrl) throw new Error("htmlUrl 저장 실패");
+    const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}_thumbnail.jpg`);
+    if (!thumbnailUrl) throw new Error("썸네일 저장 실패");
 
-    // ✅ templateId 안전하게 추출
-    let templateId = "template-001";
-    try {
-      const pathname = window.location.pathname || "";
-      const fileName = pathname.split("/").pop()?.split("?")[0] || "";
-      const id = fileName.replace(".html", "");
-      if (id.startsWith("template-")) {
-        templateId = id;
-      } else {
-        console.warn("템플릿 ID가 유효하지 않음, 기본값 사용");
-      }
-    } catch (e) {
-      console.warn("templateId 추출 실패, 기본값 사용:", e);
+    const htmlUrl = await uploadHTMLToStorage(frameHTML, `${basePath.replace("images", "htmls")}.html`);
+    if (!htmlUrl) {
+      alert("디자인 저장 실패: template.html 업로드가 실패했습니다");
+      return;
     }
 
-    console.log("✅ 저장할 templateId:", templateId);
+    let templateId = "template-001";
+    try {
+      const pathname = window.location.pathname;
+      const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
+      const id = fileName.replace(".html", "");
+      if (id && id.startsWith("template-")) {
+        templateId = id;
+      }
+    } catch (e) {
+      console.warn("templateId 추출 실패:", e);
+    }
 
     const docRef = await addDoc(collection(db, "savedTemplates"), {
       uid: user.uid,
@@ -206,6 +207,7 @@ async function handleSaveTemplate() {
     if (window.location.pathname.includes("template-")) {
       window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
     }
+
   } catch (e) {
     console.error("저장 실패:", e.message || e);
     alert("저장 중 오류가 발생했습니다.\n" + (e.message || e));
