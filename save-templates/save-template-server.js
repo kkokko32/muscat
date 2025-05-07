@@ -96,16 +96,12 @@ async function uploadImageToStorage(base64Data, path) {
 }
 
 async function uploadHTMLToStorage(htmlString, path) {
-  try {
-    const blob = new Blob([htmlString], { type: 'text/html' });
-    const storageRef = ref(storage, path);
-    const snapshot = await uploadBytes(storageRef, blob);
-    const url = await getDownloadURL(snapshot.ref);
-    return stripToken(url);
-  } catch (e) {
-    console.warn("HTML 업로드 실패:", e);
-    return null;
-  }
+  const blob = new Blob([htmlString], { type: 'text/html' });
+  const storageRef = ref(storage, path);
+  const snapshot = await uploadBytes(storageRef, blob);
+  const url = await getDownloadURL(snapshot.ref);
+  console.log("저장된 원본 URL:", url); 
+  return stripToken(url);
 }
 
 function isDataUrl(url) {
@@ -165,6 +161,7 @@ async function handleSaveTemplate() {
 
     const htmlPath = basePath.replace("images", "htmls") + ".html";
     const htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
+    console.log("✅ htmlUrl 저장 주소:", htmlUrl);
     if (!htmlUrl) {
       alert("디자인 저장 실패: template.html 업로드가 실패했습니다.");
       return;
