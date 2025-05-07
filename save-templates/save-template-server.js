@@ -1,4 +1,3 @@
-// ✅ 저장 오류 디버깅 반영 완료본
 import { db, auth, storage } from "/muscat/common/firebase-init.js";
 import {
   collection,
@@ -28,7 +27,6 @@ function showLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
-
 function hideLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -36,24 +34,23 @@ function hideLoading() {
 
 const saveBtn = document.getElementById("saveTemplateBtn");
 const deleteBtn = document.getElementById("deleteTemplateBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+
+console.log("✅ saveBtn 존재 여부:", !!saveBtn); // ③ 버튼 연결 확인
 
 const params = new URLSearchParams(window.location.search);
 const currentDocId = params.get("docId");
 let savedDocId = null;
 
 async function uploadHTMLToStorage(htmlString, path) {
-  try {
-    console.log("📤 uploadHTMLToStorage 진입:", path);
-    const blob = new Blob([htmlString], { type: 'text/html' });
-    const storageRef = ref(storage, path);
-    const snapshot = await uploadBytes(storageRef, blob);
-    const url = await getDownloadURL(snapshot.ref);
-    console.log("📦 저장된 원본 URL:", url);
-    return stripToken(url);
-  } catch (err) {
-    console.error("❌ HTML 업로드 실패:", err);
-    return null;
-  }
+  console.log("🚀 HTML 업로드 시작:", path); // 함수 진입 로그
+  console.log("🧾 htmlString 미리보기:", htmlString?.slice(0, 100));
+  const blob = new Blob([htmlString], { type: 'text/html' });
+  const storageRef = ref(storage, path);
+  const snapshot = await uploadBytes(storageRef, blob);
+  const url = await getDownloadURL(snapshot.ref);
+  console.log("📦 저장된 원본 URL:", url);
+  return stripToken(url);
 }
 
 function waitForImageLoad(img) {
@@ -101,6 +98,7 @@ async function handleSaveTemplate() {
     await Promise.all([waitForImageLoad(logoImg), waitForImageLoad(imageImg)]);
 
     const frameHTML = frame.outerHTML;
+    console.log("📩 HTML 업로드 전 frameHTML:", frameHTML?.slice(0, 100));
 
     const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
     const resizedCanvas = document.createElement("canvas");
@@ -134,13 +132,21 @@ async function handleSaveTemplate() {
     }
 
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}_thumbnail.jpg`);
-    const htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
-    console.log("✅ 최종 htmlUrl:", htmlUrl);
+
+    // HTML 저장 (에러 체크 추가)
+    let htmlUrl = "";
+    try {
+      htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
+      console.log("✅ htmlUrl 저장 주소:", htmlUrl);
+    } catch (e) {
+      console.error("❌ HTML 업로드 실패:", e);
+      hideLoading();
+      return alert("디자인 저장 실패: HTML 저장 중 오류 발생");
+    }
 
     if (!htmlUrl) {
       hideLoading();
-      alert("디자인 저장 실패: HTML 저장 실패");
-      return;
+      return alert("디자인 저장 실패: HTML URL 누락");
     }
 
     let templateId = "template-001";
@@ -148,7 +154,9 @@ async function handleSaveTemplate() {
       const pathname = window.location.pathname;
       const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
       const id = fileName.replace(".html", "");
-      if (id && id.startsWith("template-")) templateId = id;
+      if (id && id.startsWith("template-")) {
+        templateId = id;
+      }
     } catch (e) {
       console.warn("templateId 추출 실패, 기본값 사용:", e);
     }
@@ -165,18 +173,71 @@ async function handleSaveTemplate() {
       createdAt: serverTimestamp()
     };
 
-    console.log("🔥 Firestore 저장 payload:", JSON.stringify(payload, null, 2));
+    console.log("🔥 Firestore 저장 payload:", payload);
+
     const docRef = await addDoc(collection(db, "savedTemplates"), payload);
     savedDocId = docRef.id;
-    alert("템플릿이 서버에 저장되었습니다!");
+    alert("저장 완료되었습니다!\n내 작업실로 이동할까요?");
     window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
   } catch (e) {
     console.error("❌ 저장 실패:", e);
-    alert("저장 중 오류가 발생했습니다\n" + (e.message || e));
+    alert("저장 중 오류 발생\n" + (e.message || e));
   } finally {
     hideLoading();
   }
 }
 
+async function handleDeleteTemplate() {
+  const user = auth.currentUser;
+  if (!user) return alert("로그인이 필요합니다.");
+  if (!currentDocId) return alert("삭제할 템플릿이 없습니다.");
+
+  const confirmDelete = confirm("정말 삭제하시겠습니까?");
+  if (!confirmDelete) return;
+
+  try {
+    await deleteDoc(doc(db, "savedTemplates", currentDocId));
+    alert("템플릿이 삭제되었습니다.");
+  } catch (e) {
+    console.error("삭제 실패:", e.message || e);
+    alert("삭제 중 오류가 발생했습니다.\n" + (e.message || e));
+  }
+}
+
+function setupDownload() {
+  downloadBtn?.addEventListener("click", async () => {
+    const frame = document.querySelector(".template-frame");
+    const logo = frame.querySelector(".logo-preview");
+    const image = frame.querySelector(".main-preview");
+
+    await Promise.all([waitForImageLoad(logo), waitForImageLoad(image)]);
+
+    const canvas = await html2canvas(frame, {
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: null,
+      imageTimeout: 3000,
+      scale: 2
+    });
+
+    const imgData = canvas.toDataURL("image/jpeg", 1.0);
+    const pdf = new jspdf.jsPDF({
+      orientation: "portrait",
+      unit: "px",
+      format: [canvas.width, canvas.height]
+    });
+
+    pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
+    pdf.save("template.pdf");
+  });
+}
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+    setupDownload();
+    loadTemplate?.(); // 만약 외부에서 정의되어 있으면 실행
+  }
+});
+
 saveBtn?.addEventListener("click", handleSaveTemplate);
-console.log("✅ saveBtn 존재 여부:", !!saveBtn);
+deleteBtn?.addEventListener("click", handleDeleteTemplate);
