@@ -1,152 +1,77 @@
-import { db, storage, auth } from "/muscat/common/firebase-init.js";
-import {
-  collection, addDoc, deleteDoc, doc, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import {
-  ref, uploadString, uploadBytes, getDownloadURL, deleteObject
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+// ✅ template-actions.js — 확대/축소/다운로드 전용 (삭제 기능 제거됨)
+import html2canvas from "https://cdn.skypack.dev/html2canvas";
+import { jsPDF } from "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
 
-let currentScale = 0.416;
-let savedDocId = null;
-let uploadedPaths = {};
+// 확대 축소 관련 변수
+let scale = 1.0;
 
+// 확대
 export function zoomIn() {
-  currentScale = Math.min(currentScale + 0.1, 2);
-  applyScale();
+  scale += 0.1;
+  applyZoom();
 }
 
+// 축소
 export function zoomOut() {
-  currentScale = Math.max(currentScale - 0.1, 0.1);
-  applyScale();
+  scale = Math.max(0.1, scale - 0.1);
+  applyZoom();
 }
 
+// 100% 초기화
 export function resetZoom() {
-  currentScale = 1.0;
-  applyScale();
+  scale = 1.0;
+  applyZoom();
 }
 
-function applyScale() {
-  const scaleContainer = document.querySelector(".scale-container");
-  if (!scaleContainer) return;
-
-  if (document.body.classList.contains("edit-mode")) {
-    scaleContainer.style.transform = "none";
-  } else {
-    scaleContainer.style.transform = `scale(${currentScale})`;
-    scaleContainer.style.transformOrigin = "top center";
+// 확대/축소 적용 함수
+function applyZoom() {
+  const container = document.querySelector(".scale-container");
+  if (container) {
+    container.style.transform = `scale(${scale})`;
   }
 }
 
-export async function saveTemplate() {
-  const overlay = document.getElementById("loadingOverlay");
-  if (overlay) overlay.classList.add("active");
+// 다운로드 기능
+const downloadBtn = document.getElementById("downloadBtn");
+if (downloadBtn) {
+  downloadBtn.addEventListener("click", async () => {
+    const frame = document.querySelector(".template-frame");
+    if (!frame) return;
 
-  try {
-    const frame = document.getElementById("templateFrame");
-    const brand = document.getElementById("brandName")?.textContent || "";
-    const slogan = document.getElementById("brandDesc")?.textContent || "";
-    const logoUrl = document.getElementById("brandLogo")?.src || "";
-    const mainUrl = document.getElementById("mainImage")?.src || "";
+    const logo = frame.querySelector(".logo-preview");
+    const image = frame.querySelector(".main-preview");
 
-    const canvas = await html2canvas(frame, { useCORS: true, scale: 1 });
-    const thumbnailDataUrl = canvas.toDataURL("image/jpeg", 0.9);
+    await Promise.all([
+      waitForImageLoad(logo),
+      waitForImageLoad(image)
+    ]);
 
-    const user = auth.currentUser;
-    if (!user) return alert("로그인이 필요합니다.");
-
-    const timestamp = Date.now();
-    const thumbnailRef = ref(storage, `savedTemplates/images/${user.uid}_${timestamp}_thumbnail.jpg`);
-    await uploadString(thumbnailRef, thumbnailDataUrl, 'data_url');
-    const thumbnailUrl = await getDownloadURL(thumbnailRef);
-
-    const logoBlob = await fetch(logoUrl).then(r => r.blob());
-    const logoRef = ref(storage, `savedTemplates/images/${user.uid}_${timestamp}_logo.jpg`);
-    await uploadBytes(logoRef, logoBlob);
-    const logoDownloadUrl = await getDownloadURL(logoRef);
-
-    uploadedPaths = {
-      thumbnailPath: thumbnailRef.fullPath,
-      logoPath: logoRef.fullPath,
-    };
-
-    const docRef = await addDoc(collection(db, "savedTemplates"), {
-      uid: user.uid,
-      brand,
-      slogan,
-      thumbnailUrl,
-      logoUrl: logoDownloadUrl,
-      mainUrl,
-      createdAt: serverTimestamp(),
+    const canvas = await html2canvas(frame, {
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: null,
+      imageTimeout: 3000,
+      scale: 2
     });
 
-    savedDocId = docRef.id;
-    sessionStorage.setItem("savedDocId", savedDocId);
+    const imgData = canvas.toDataURL("image/jpeg", 1.0);
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "px",
+      format: [canvas.width, canvas.height]
+    });
 
-    document.getElementById("saveTemplateBtn").disabled = true;
-    document.getElementById("deleteTemplateBtn").disabled = false;
-
-    if (confirm("저장 완료되었습니다!\n\n내 작업실로 이동할까요?")) {
-      window.location.href = "/muscat/save-templates/my-save.html";
-    }
-
-  } catch (err) {
-    console.error("저장 오류:", err);
-    alert("저장 중 오류가 발생했습니다.");
-  } finally {
-    if (overlay) overlay.classList.remove("active");
-  }
-}
-
-export async function deleteTemplate() {
-  if (!savedDocId) return alert("저장된 템플릿이 없습니다.");
-  if (!confirm("정말 삭제하시겠습니까?")) return;
-
-  await deleteDoc(doc(db, "savedTemplates", savedDocId));
-  for (const path of Object.values(uploadedPaths)) {
-    await deleteObject(ref(storage, path)).catch(() => {});
-  }
-
-  savedDocId = null;
-  uploadedPaths = {};
-  sessionStorage.removeItem("savedDocId");
-
-  document.getElementById("saveTemplateBtn").disabled = false;
-  document.getElementById("deleteTemplateBtn").disabled = true;
-  alert("삭제 완료되었습니다!");
-}
-
-export async function downloadTemplate() {
-  const frame = document.getElementById("templateFrame");
-  const canvas = await html2canvas(frame, {
-    useCORS: true,
-    scale: 1,
-    backgroundColor: null
+    pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
+    pdf.save("template.pdf");
   });
-
-  const imgData = canvas.toDataURL("image/jpeg", 1.0);
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({
-    orientation: "portrait",
-    unit: "px",
-    format: [canvas.width, canvas.height]
-  });
-
-  pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
-  pdf.save("template.pdf");
 }
 
-// ✅ 초기 진입 시 view-mode + scale 적용
-window.addEventListener("DOMContentLoaded", () => {
-  if (window.top === window.self) {
-    document.body.classList.add("view-mode");
-    applyScale();
-  }
-
-  document.getElementById("deleteTemplateBtn")?.addEventListener("click", deleteTemplate);
-  document.getElementById("downloadBtn")?.addEventListener("click", downloadTemplate);
-
-  // HTML에서 호출 가능하도록 export
-  window.zoomIn = zoomIn;
-  window.zoomOut = zoomOut;
-  window.resetZoom = resetZoom;
-});
+// 이미지 로딩 보조 함수
+function waitForImageLoad(img) {
+  return new Promise(resolve => {
+    if (!img || !img.src) return resolve();
+    if (img.complete && img.naturalHeight !== 0) return resolve();
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+  });
+}
