@@ -22,7 +22,6 @@ function stripToken(url) {
   }
 }
 
-// ✅ 로딩 오버레이 표시
 function showLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
@@ -39,7 +38,6 @@ console.log("✅ saveBtn 존재 여부:", !!saveBtn);
 const params = new URLSearchParams(window.location.search);
 let savedDocId = null;
 
-// ✅ HTML 업로드
 async function uploadHTMLToStorage(htmlString, path) {
   try {
     console.log("🚀 HTML 업로드 시작:", path);
@@ -55,7 +53,6 @@ async function uploadHTMLToStorage(htmlString, path) {
   }
 }
 
-// ✅ 이미지 로드 대기
 function waitForImageLoad(img) {
   return new Promise(resolve => {
     if (!img || !img.src) return resolve();
@@ -65,7 +62,6 @@ function waitForImageLoad(img) {
   });
 }
 
-// ✅ 확장자 추출
 function getImageExtension(url) {
   if (url.startsWith("data:image/png")) return "png";
   if (url.startsWith("data:image/svg")) return "svg";
@@ -73,10 +69,10 @@ function getImageExtension(url) {
   return "jpg";
 }
 
-// ✅ base64 이미지 업로드
 function isDataUrl(url) {
   return url.startsWith("data:");
 }
+
 async function uploadImageToStorage(base64Data, path) {
   const storageRef = ref(storage, path);
   await uploadString(storageRef, base64Data, "data_url");
@@ -84,7 +80,6 @@ async function uploadImageToStorage(base64Data, path) {
   return stripToken(url);
 }
 
-// ✅ 저장 함수
 async function handleSaveTemplate() {
   console.log("🧪 handleSaveTemplate 시작됨");
 
@@ -173,8 +168,10 @@ async function handleSaveTemplate() {
 
     const docRef = await addDoc(collection(db, "savedTemplates"), payload);
     savedDocId = docRef.id;
-    alert("템플릿이 서버에 저장되었습니다!");
-    window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
+
+    // ✅ 모달 열기
+    const modal = document.getElementById("saveCompleteModal");
+    if (modal) modal.classList.add("active");
   } catch (e) {
     console.error("❌ 저장 실패:", e);
     alert("저장 중 오류 발생\n" + (e.message || e));
@@ -183,5 +180,4 @@ async function handleSaveTemplate() {
   }
 }
 
-// ✅ 저장 버튼 연결
 saveBtn?.addEventListener("click", handleSaveTemplate);
