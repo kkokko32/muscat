@@ -1,4 +1,6 @@
-// ✅ save-template-server.js 전체 코드
+// ✅ 최종본 save-template-server.js
+// ✅ template-actions.js에 기능을 통합한 상태라면 이 파일은 import하지 않아야 함
+// ✅ 이 파일은 백업 용도로 보존하거나 독립 테스트 용도로만 활용할 것
 
 import { db, auth, storage } from "/muscat/common/firebase-init.js";
 import {
@@ -38,6 +40,7 @@ const saveBtn = document.getElementById("saveTemplateBtn");
 const deleteBtn = document.getElementById("deleteTemplateBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 
+console.log("✅ save-template-server.js 로드됨");
 console.log("✅ saveBtn 존재 여부:", !!saveBtn);
 
 const params = new URLSearchParams(window.location.search);
@@ -104,8 +107,6 @@ async function handleSaveTemplate() {
     await Promise.all([waitForImageLoad(logoImg), waitForImageLoad(imageImg)]);
 
     const frameHTML = frame.outerHTML;
-    console.log("📩 HTML 업로드 전 frameHTML:", frameHTML?.slice(0, 100));
-
     const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
     const resizedCanvas = document.createElement("canvas");
     const ctx = resizedCanvas.getContext("2d");
@@ -142,30 +143,21 @@ async function handleSaveTemplate() {
     let htmlUrl = "";
     try {
       htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
-      console.log("✅ htmlUrl 저장 주소:", htmlUrl);
     } catch (e) {
-      console.error("❌ HTML 업로드 실패:", e);
+      console.error("❌ HTML 저장 실패:", e);
       hideLoading();
       return alert("디자인 저장 실패: HTML 저장 중 오류 발생");
     }
 
     if (!htmlUrl) {
-      console.warn("🚫 htmlUrl 없음 → Firestore 저장 중단");
+      console.warn("❗ HTML URL 비어 있음. 저장 중단");
       hideLoading();
       return alert("디자인 저장 실패: HTML URL 누락");
     }
 
-    let templateId = "template-001";
-    try {
-      const pathname = window.location.pathname;
-      const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
-      const id = fileName.replace(".html", "");
-      if (id && id.startsWith("template-")) {
-        templateId = id;
-      }
-    } catch (e) {
-      console.warn("templateId 추출 실패, 기본값 사용:", e);
-    }
+    const pathname = window.location.pathname;
+    const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
+    const templateId = fileName.replace(".html", "");
 
     const payload = {
       uid: user.uid,
@@ -179,20 +171,20 @@ async function handleSaveTemplate() {
       createdAt: serverTimestamp()
     };
 
-    console.log("🔥 Firestore에 저장할 payload:", payload);
+    console.log("🔥 Firestore 저장 payload:", payload);
 
     const docRef = await addDoc(collection(db, "savedTemplates"), payload);
     savedDocId = docRef.id;
-    console.log("🎉 Firestore 저장 성공! docId:", savedDocId);
-
     alert("템플릿이 서버에 저장되었습니다!");
     window.location.href = `${window.location.pathname}?docId=${docRef.id}`;
   } catch (e) {
     console.error("❌ 저장 실패:", e);
-    alert("저장 중 오류가 발생했습니다\n" + (e.message || e));
+    alert("저장 중 오류 발생\n" + (e.message || e));
   } finally {
     hideLoading();
   }
 }
+
+// 현재는 삭제/다운로드 기능은 template-actions.js에 존재하므로 이 파일에서는 제외
 
 saveBtn?.addEventListener("click", handleSaveTemplate);
