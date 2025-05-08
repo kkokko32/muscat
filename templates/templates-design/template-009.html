@@ -8,8 +8,6 @@
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
   <link href="/muscat/templates/templates-css/template.css" rel="stylesheet" />
-
-  <!-- ✅ Moveable CDN -->
   <script src="https://unpkg.com/moveable/dist/moveable.min.js"></script>
 
   <style>
@@ -69,11 +67,11 @@
   </div>
 
   <div class="template-wrapper">
+    <button class="edit-btn" onclick="toggleEditMode()">편집</button>
     <div class="view-controls">
       <button onclick="zoomOut()">-</button>
       <button onclick="resetZoom()">100%</button>
       <button onclick="zoomIn()">+</button>
-      <button onclick="toggleEditMode()">편집</button>
     </div>
 
     <div class="scale-container">
@@ -82,7 +80,7 @@
         <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
         <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous"
              style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
-        
+
         <div class="image-container" style="position: absolute; top: 500px; left: 1000px; width: 400px; height: 500px; overflow: hidden; border: 1px dashed #aaa;">
           <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
                style="position: absolute; top: 0; left: 0; width: 100%; height: auto;" />
@@ -92,37 +90,89 @@
 
     <button class="template-close" onclick="window.history.back()">&times;</button>
     <div class="template-buttons">
-      <button id="saveTemplateBtn" class="save-btn">스크랩</button>
+      <button id="saveTemplateBtn" class="save-btn">저장</button>
       <button id="deleteTemplateBtn" class="delete-btn" disabled>삭제</button>
       <button id="downloadBtn" class="download-btn">다운로드</button>
     </div>
   </div>
 
-  <!-- html2canvas, jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <!-- 기능 연결 -->
   <script type="module" src="/muscat/templates/templates-data/template-actions.js"></script>
   <script type="module" src="/muscat/templates/templates-data/edit-mode.js"></script>
+  <script type="module" src="/muscat/save-templates/save-template-server.js"></script>
 
-  <!-- 데이터 반영 -->
   <script type="module">
+    import { db } from "/muscat/common/firebase-init.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    async function loadTemplateFromFirestore(docId) {
+      try {
+        const ref = doc(db, "savedTemplates", docId);
+        const snapshot = await getDoc(ref);
+        if (!snapshot.exists()) {
+          console.warn("❌ 문서 없음:", docId);
+          return;
+        }
+
+        const data = snapshot.data();
+
+        if (!data.htmlUrl) {
+          console.warn("❌ htmlUrl 없음 → fetch 중단");
+          return;
+        }
+
+        const response = await fetch(data.htmlUrl);
+        const htmlText = await response.text();
+
+        const wrapper = document.getElementById("templateFrame");
+        const tempDom = document.createElement("div");
+        tempDom.innerHTML = htmlText;
+
+        const newFrame = tempDom.querySelector(".template-frame");
+        if (newFrame && wrapper) {
+          const cloned = newFrame.cloneNode(true);
+          cloned.id = "templateFrame";
+          wrapper.replaceWith(cloned);
+
+          const brandEl = cloned.querySelector(".brand-name");
+          const sloganEl = cloned.querySelector(".brand-slogan");
+          const logoEl = cloned.querySelector("#brandLogo");
+          const mainEl = cloned.querySelector("#mainImage");
+
+          if (brandEl && data.brand) brandEl.textContent = data.brand;
+          if (sloganEl && data.slogan) sloganEl.textContent = data.slogan;
+          if (logoEl && data.logoUrl) logoEl.src = data.logoUrl;
+          if (mainEl && data.imageUrl) mainEl.src = data.imageUrl;
+        }
+      } catch (e) {
+        console.error("❌ 템플릿 로드 실패:", e);
+      }
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
-      const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
-      const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
-      const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
-      const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
+      const docId = new URLSearchParams(location.search).get("docId");
+      console.log("📥 docId:", docId);
 
-      const brandEl = document.querySelector(".brand-name");
-      const sloganEl = document.querySelector(".brand-slogan");
-      const logoEl = document.getElementById("brandLogo");
-      const mainEl = document.getElementById("mainImage");
+      if (docId) {
+        loadTemplateFromFirestore(docId);
+      } else {
+        const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
+        const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
+        const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
+        const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
 
-      if (brand && brandEl) brandEl.textContent = brand;
-      if (slogan && sloganEl) sloganEl.textContent = slogan;
-      if (logoUrl && logoEl) logoEl.src = logoUrl;
-      if (mainUrl && mainEl) mainEl.src = mainUrl;
+        const brandEl = document.querySelector(".brand-name");
+        const sloganEl = document.querySelector(".brand-slogan");
+        const logoEl = document.getElementById("brandLogo");
+        const mainEl = document.getElementById("mainImage");
+
+        if (brand && brandEl) brandEl.textContent = brand;
+        if (slogan && sloganEl) sloganEl.textContent = slogan;
+        if (logoUrl && logoEl) logoEl.src = logoUrl;
+        if (mainUrl && mainEl) mainEl.src = mainUrl;
+      }
     });
   </script>
 </body>
