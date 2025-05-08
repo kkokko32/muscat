@@ -101,8 +101,8 @@
   <div class="save-modal" id="saveCompleteModal">
     <div class="modal-box">
       <p>저장 완료되었습니다!<br>작업실로 이동할까요?</p>
-      <button class="modal-confirm" onclick="goToMypage()">이동</button>
-      <button class="modal-cancel" onclick="closeSaveModal()">계속 편집</button>
+      <button class="modal-confirm" onclick="window.location.href='/muscat/save-templates/my-save.html'">이동</button>
+      <button class="modal-cancel" onclick="document.getElementById('saveCompleteModal').classList.remove('active')">계속 편집</button>
     </div>
   </div>
 
