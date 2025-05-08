@@ -3,19 +3,16 @@ import {
   collection,
   addDoc,
   doc,
-  getDoc,
-  deleteDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
   ref,
   uploadString,
   uploadBytes,
-  getDownloadURL,
-  deleteObject
+  getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-// ✅ 토큰 제거
+// ✅ 경로 토큰 제거
 function stripToken(url) {
   try {
     const u = new URL(url);
@@ -25,7 +22,6 @@ function stripToken(url) {
   }
 }
 
-// ✅ 로딩 오버레이
 function showLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
@@ -36,24 +32,27 @@ function hideLoading() {
 }
 
 const saveBtn = document.getElementById("saveTemplateBtn");
-const deleteBtn = document.getElementById("deleteTemplateBtn");
 console.log("✅ save-template-server.js 로드됨");
 console.log("✅ saveBtn 존재 여부:", !!saveBtn);
 
 const params = new URLSearchParams(window.location.search);
-const currentDocId = params.get("docId");
 let savedDocId = null;
 
-// ✅ HTML 저장
 async function uploadHTMLToStorage(htmlString, path) {
-  const blob = new Blob([htmlString], { type: "text/html" });
-  const storageRef = ref(storage, path);
-  const snapshot = await uploadBytes(storageRef, blob);
-  const url = await getDownloadURL(snapshot.ref);
-  return stripToken(url);
+  try {
+    console.log("🚀 HTML 업로드 시작:", path);
+    const blob = new Blob([htmlString], { type: 'text/html' });
+    const storageRef = ref(storage, path);
+    const snapshot = await uploadBytes(storageRef, blob);
+    const url = await getDownloadURL(snapshot.ref);
+    console.log("📦 저장된 원본 URL:", url);
+    return stripToken(url);
+  } catch (e) {
+    console.error("❌ uploadHTMLToStorage 실패:", e);
+    throw e;
+  }
 }
 
-// ✅ 이미지 로드 대기
 function waitForImageLoad(img) {
   return new Promise(resolve => {
     if (!img || !img.src) return resolve();
@@ -63,18 +62,17 @@ function waitForImageLoad(img) {
   });
 }
 
-// ✅ 확장자 추출
 function getImageExtension(url) {
   if (url.startsWith("data:image/png")) return "png";
   if (url.startsWith("data:image/svg")) return "svg";
   if (url.startsWith("data:image/webp")) return "webp";
   return "jpg";
 }
+
 function isDataUrl(url) {
   return url.startsWith("data:");
 }
 
-// ✅ 이미지 업로드
 async function uploadImageToStorage(base64Data, path) {
   const storageRef = ref(storage, path);
   await uploadString(storageRef, base64Data, "data_url");
@@ -82,7 +80,6 @@ async function uploadImageToStorage(base64Data, path) {
   return stripToken(url);
 }
 
-// ✅ 템플릿 저장
 async function handleSaveTemplate() {
   console.log("🧪 handleSaveTemplate 시작됨");
 
@@ -100,6 +97,7 @@ async function handleSaveTemplate() {
 
   try {
     await Promise.all([waitForImageLoad(logoImg), waitForImageLoad(imageImg)]);
+
     const frameHTML = frame.outerHTML;
     const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
 
@@ -134,8 +132,21 @@ async function handleSaveTemplate() {
     }
 
     const thumbnailUrl = await uploadImageToStorage(thumbnailDataUrl, `${basePath}_thumbnail.jpg`);
-    const htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
-    if (!htmlUrl) throw new Error("HTML 저장 실패");
+
+    let htmlUrl = "";
+    try {
+      htmlUrl = await uploadHTMLToStorage(frameHTML, htmlPath);
+    } catch (e) {
+      console.error("❌ HTML 저장 실패:", e);
+      hideLoading();
+      return alert("디자인 저장 실패: HTML 저장 중 오류 발생");
+    }
+
+    if (!htmlUrl) {
+      console.warn("❗ HTML URL 비어 있음. 저장 중단");
+      hideLoading();
+      return alert("디자인 저장 실패: HTML URL 누락");
+    }
 
     const pathname = window.location.pathname;
     const fileName = pathname.substring(pathname.lastIndexOf("/") + 1).split("?")[0];
@@ -153,10 +164,12 @@ async function handleSaveTemplate() {
       createdAt: serverTimestamp()
     };
 
+    console.log("🔥 Firestore 저장 payload:", payload);
+
     const docRef = await addDoc(collection(db, "savedTemplates"), payload);
     savedDocId = docRef.id;
 
-    // 모달 표시
+    // ✅ 모달 열기
     const modal = document.getElementById("saveCompleteModal");
     if (modal) modal.classList.add("active");
   } catch (e) {
@@ -167,48 +180,4 @@ async function handleSaveTemplate() {
   }
 }
 
-// ✅ 템플릿 삭제 (Firestore + Storage)
-async function handleDeleteTemplate() {
-  const user = auth.currentUser;
-  if (!user) return alert("로그인이 필요합니다.");
-  if (!currentDocId) return alert("삭제할 템플릿이 없습니다.");
-
-  const confirmDelete = confirm("정말 삭제하시겠습니까?");
-  if (!confirmDelete) return;
-
-  showLoading();
-  try {
-    const refDoc = doc(db, "savedTemplates", currentDocId);
-    const snapshot = await getDoc(refDoc);
-    if (!snapshot.exists()) throw new Error("문서를 찾을 수 없습니다.");
-
-    const data = snapshot.data();
-    const urls = [data.thumbnailUrl, data.logoUrl, data.imageUrl, data.htmlUrl];
-
-    // Storage에서 삭제
-    for (const url of urls) {
-      if (!url) continue;
-      try {
-        const decodedPath = decodeURIComponent(new URL(url).pathname.split("/o/")[1]);
-        const storageRef = ref(storage, decodedPath);
-        await deleteObject(storageRef);
-      } catch (e) {
-        console.warn("⚠️ Storage 삭제 실패 (무시):", e.message || e);
-      }
-    }
-
-    // Firestore 문서 삭제
-    await deleteDoc(refDoc);
-    alert("템플릿이 삭제되었습니다.");
-    window.location.href = "/muscat/mypage/my-save.html";
-  } catch (e) {
-    console.error("❌ 삭제 실패:", e);
-    alert("삭제 중 오류 발생\n" + (e.message || e));
-  } finally {
-    hideLoading();
-  }
-}
-
-// ✅ 버튼 이벤트 연결
 saveBtn?.addEventListener("click", handleSaveTemplate);
-deleteBtn?.addEventListener("click", handleDeleteTemplate);
