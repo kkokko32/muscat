@@ -1,14 +1,8 @@
-// ✅ 최종본 save-template-server.js
-// ✅ template-actions.js에 기능을 통합한 상태라면 이 파일은 import하지 않아야 함
-// ✅ 이 파일은 백업 용도로 보존하거나 독립 테스트 용도로만 활용할 것
-
 import { db, auth, storage } from "/muscat/common/firebase-init.js";
 import {
   collection,
   addDoc,
-  deleteDoc,
   doc,
-  getDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
@@ -18,6 +12,7 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
+// ✅ 경로 토큰 제거
 function stripToken(url) {
   try {
     const u = new URL(url);
@@ -27,6 +22,7 @@ function stripToken(url) {
   }
 }
 
+// ✅ 로딩 오버레이 표시
 function showLoading() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
@@ -37,16 +33,13 @@ function hideLoading() {
 }
 
 const saveBtn = document.getElementById("saveTemplateBtn");
-const deleteBtn = document.getElementById("deleteTemplateBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-
 console.log("✅ save-template-server.js 로드됨");
 console.log("✅ saveBtn 존재 여부:", !!saveBtn);
 
 const params = new URLSearchParams(window.location.search);
-const currentDocId = params.get("docId");
 let savedDocId = null;
 
+// ✅ HTML 업로드
 async function uploadHTMLToStorage(htmlString, path) {
   try {
     console.log("🚀 HTML 업로드 시작:", path);
@@ -62,6 +55,7 @@ async function uploadHTMLToStorage(htmlString, path) {
   }
 }
 
+// ✅ 이미지 로드 대기
 function waitForImageLoad(img) {
   return new Promise(resolve => {
     if (!img || !img.src) return resolve();
@@ -71,6 +65,7 @@ function waitForImageLoad(img) {
   });
 }
 
+// ✅ 확장자 추출
 function getImageExtension(url) {
   if (url.startsWith("data:image/png")) return "png";
   if (url.startsWith("data:image/svg")) return "svg";
@@ -78,10 +73,10 @@ function getImageExtension(url) {
   return "jpg";
 }
 
+// ✅ base64 이미지 업로드
 function isDataUrl(url) {
   return url.startsWith("data:");
 }
-
 async function uploadImageToStorage(base64Data, path) {
   const storageRef = ref(storage, path);
   await uploadString(storageRef, base64Data, "data_url");
@@ -89,8 +84,10 @@ async function uploadImageToStorage(base64Data, path) {
   return stripToken(url);
 }
 
+// ✅ 저장 함수
 async function handleSaveTemplate() {
   console.log("🧪 handleSaveTemplate 시작됨");
+
   const user = auth.currentUser;
   if (!user) return alert("로그인이 필요합니다.");
   showLoading();
@@ -108,6 +105,7 @@ async function handleSaveTemplate() {
 
     const frameHTML = frame.outerHTML;
     const canvas = await html2canvas(frame, { backgroundColor: null, useCORS: true });
+
     const resizedCanvas = document.createElement("canvas");
     const ctx = resizedCanvas.getContext("2d");
     const maxWidth = 400;
@@ -185,6 +183,5 @@ async function handleSaveTemplate() {
   }
 }
 
-// 현재는 삭제/다운로드 기능은 template-actions.js에 존재하므로 이 파일에서는 제외
-
+// ✅ 저장 버튼 연결
 saveBtn?.addEventListener("click", handleSaveTemplate);
