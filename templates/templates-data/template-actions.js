@@ -142,7 +142,6 @@ window.addEventListener("DOMContentLoaded", () => {
     applyScale();
   }
 
-  document.getElementById("saveTemplateBtn")?.addEventListener("click", saveTemplate);
   document.getElementById("deleteTemplateBtn")?.addEventListener("click", deleteTemplate);
   document.getElementById("downloadBtn")?.addEventListener("click", downloadTemplate);
 
