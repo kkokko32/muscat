@@ -45,14 +45,18 @@ const currentDocId = params.get("docId");
 let savedDocId = null;
 
 async function uploadHTMLToStorage(htmlString, path) {
-  console.log("🚀 HTML 업로드 시작:", path);
-  console.log("🧾 htmlString 미리보기:", htmlString?.slice(0, 100));
-  const blob = new Blob([htmlString], { type: 'text/html' });
-  const storageRef = ref(storage, path);
-  const snapshot = await uploadBytes(storageRef, blob);
-  const url = await getDownloadURL(snapshot.ref);
-  console.log("📦 저장된 원본 URL:", url);
-  return stripToken(url);
+  try {
+    console.log("🚀 HTML 업로드 시작:", path);
+    const blob = new Blob([htmlString], { type: 'text/html' });
+    const storageRef = ref(storage, path);
+    const snapshot = await uploadBytes(storageRef, blob);
+    const url = await getDownloadURL(snapshot.ref);
+    console.log("📦 저장된 원본 URL:", url);
+    return stripToken(url);
+  } catch (e) {
+    console.error("❌ uploadHTMLToStorage 실패:", e);
+    throw e;
+  }
 }
 
 function waitForImageLoad(img) {
