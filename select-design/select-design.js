@@ -108,9 +108,10 @@ function showBrandStep() {
   const step2 = document.getElementById("step2");
   const typing = document.getElementById("brandTypingText");
   const uploadGroup = document.getElementById("brandUploadGroup");
-  const textHelp = document.getElementById("brandTextHelp");
+  const textAlt = document.getElementById("brandTextAlt");
+  const brandDesc = document.getElementById("brandDesc");
 
-  if (!step2 || !typing || !uploadGroup || !textHelp) return;
+  if (!step2 || !typing || !uploadGroup || !textAlt || !brandDesc) return;
 
   step2.classList.remove("disabled");
   typing.classList.remove("hidden");
@@ -120,14 +121,11 @@ function showBrandStep() {
     uploadGroup.classList.add("fade-in");
 
     setTimeout(() => {
-      textHelp.classList.remove("hidden");
-      textHelp.classList.add("fade-in");
+      textAlt.classList.remove("hidden");
+      textAlt.classList.add("fade-in");
 
-      const brandDesc = document.getElementById("brandDesc");
-      if (brandDesc) {
-        brandDesc.classList.remove("hidden");
-        brandDesc.classList.add("fade-in");
-      }
+      brandDesc.classList.remove("hidden");
+      brandDesc.classList.add("fade-in");
     }, 400);
   });
 }
