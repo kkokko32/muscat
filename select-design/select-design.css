@@ -105,7 +105,6 @@ main {
 .button-grid button.active {
   background-color: #c4ff63;
   color: #292929;
-  font-weight: normal;
   border: none;
   opacity: 1;
 }
