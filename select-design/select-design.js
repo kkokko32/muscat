@@ -281,16 +281,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const step1 = document.getElementById("designTargetButtons");
     const helpText = document.getElementById("selectionHelpText");
 
-    typingText?.classList.add("hidden");
-    step1?.classList.remove("hidden", "text-fade-out");
-    step1?.classList.add("visible");
-    helpText?.classList.remove("hidden");
-    helpText?.classList.add("visible");
-
-    showBrandStep(); // step2 직접 진입
-    sessionStorage.removeItem("returnFromTemplate");
-    return; // ✅ 타자기 애니메이션 생략
+  // ✅ 문구 복원
+  if (typingText) {
+    typingText.innerText = "디자인 대상을 선택하세요";
+    typingText.classList.remove("hidden");
+    typingText.classList.remove("text-fade-out");
   }
+
+  step1?.classList.remove("hidden", "text-fade-out");
+  step1?.classList.add("visible");
+  helpText?.classList.remove("hidden");
+  helpText?.classList.add("visible");
+
+  showBrandStep(); // step2 직접 진입
+  sessionStorage.removeItem("returnFromTemplate");
+  return; // ✅ 타자기 애니메이션 생략
+}
+
 
   setTimeout(() => {
     const modal = document.getElementById("exampleModal");
