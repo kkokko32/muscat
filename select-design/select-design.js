@@ -103,11 +103,9 @@ window.selectConcept = (button) => {
   });
   if (window.msnry) window.msnry.layout();
 
-  // ✅ 타자기 문구 흐려지게 처리
   const typingText = document.getElementById("typingText");
   if (typingText) typingText.classList.add("text-fade-out");
 
-  // 브랜드 입력 단계 등장
   showBrandStep();
 };
 
@@ -127,7 +125,6 @@ function showBrandStep() {
   typing.classList.remove("hidden");
 
   typeEffect("브랜드 로고를 넣어볼게요\n로고 이미지 파일이 있으신가요?", "brandTypingText", () => {
-    // ✅ 문구 색상 변경 처리
     document.getElementById("brandTypingText")?.classList.add("text-fade-out");
 
     uploadGroup.classList.remove("hidden");
@@ -268,7 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
- // ✅ 진입 시 타자기 → 버튼 → 도움말 문구 → 색상 전환
   const typingText = document.getElementById("typingText");
   if (typingText) typingText.classList.remove("hidden");
 
@@ -279,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
         targetButtons.classList.remove("hidden");
         targetButtons.classList.add("visible");
 
-        // ✅ 타자기 문구 자동 색상 전환
+        // ✅ 색상 전환 시점: 버튼 등장 직후
         typingText.classList.add("text-fade-out");
 
         setTimeout(() => {
@@ -292,3 +288,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 500);
     }
   });
+});
