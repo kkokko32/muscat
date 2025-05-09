@@ -39,6 +39,42 @@ window.insertBrandTextInsteadOfLogo = () => {
     brandNameInput.classList.remove("hidden");
     brandNameInput.classList.add("fade-in");
     brandNameInput.focus();
+
+    // 이미지 제거 (iframe 내 모든 brandLogo 숨기기)
+    document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
+      const doc = iframe.contentDocument || iframe.contentWindow?.document;
+      const logoImg = doc?.getElementById("brandLogo");
+      if (logoImg) logoImg.style.display = "none";
+
+      // 기존 텍스트 div가 없으면 새로 추가
+      let textDiv = doc?.getElementById("brandLogoText");
+      if (!textDiv) {
+        textDiv = doc.createElement("div");
+        textDiv.id = "brandLogoText";
+        textDiv.style.fontSize = "28px";
+        textDiv.style.fontWeight = "bold";
+        textDiv.style.color = "#333";
+        textDiv.style.marginBottom = "40px";
+        textDiv.style.textAlign = "center";
+
+        // 로고 이미지 바로 아래 위치에 삽입
+        const logoImgContainer = logoImg?.parentNode;
+        if (logoImgContainer) logoImgContainer.insertBefore(textDiv, logoImg.nextSibling);
+      }
+
+      // 초기 텍스트 설정
+      textDiv.textContent = brandNameInput.value || "브랜드명";
+    });
+
+    // 입력 시 텍스트 반영
+    brandNameInput.addEventListener("input", () => {
+      document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        const textDiv = doc?.getElementById("brandLogoText");
+        if (textDiv) textDiv.textContent = brandNameInput.value || "브랜드명";
+      });
+      updateLocalStorage();
+    });
   }
 };
 
