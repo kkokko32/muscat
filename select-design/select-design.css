@@ -421,7 +421,8 @@ body.inside-preview .template-frame {
 }
 
 .help-text.visible {
-  opacity: 0.8;
+  opacity: 1;
+  color: #ccc;
 }
 
 .example-btn {
@@ -429,13 +430,13 @@ body.inside-preview .template-frame {
   background-color: #434343;
   border: none;
   border-radius: 4px;
-  color: #eee; 
+  color: #eee !important;
   font-size: 12px;
   cursor: pointer;
 }
 
 .example-btn:hover {
-  color: #292929;      
+  color: #292929 !important;     
   background-color: #ccc;
 }
 
