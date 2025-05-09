@@ -406,7 +406,7 @@ body.inside-preview .template-frame {
 }
 
 .help-text.visible {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .example-btn {
