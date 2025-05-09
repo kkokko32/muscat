@@ -393,12 +393,12 @@ body.inside-preview .template-frame {
 }
 
 .example-btn {
-  padding: 5px 2px;
+  padding: 4px 8px;
   background-color: #434343;
   border: none;
   border-radius: 4px;
   color: white;
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
 }
 
