@@ -267,38 +267,41 @@ function resizeSingleIframe(iframe) {
 
 // ✅ 초기화
 document.addEventListener("DOMContentLoaded", () => {
-  // ✅ '디자인 시작하기'로 새 진입한 경우 복귀 기록 및 스텝 초기화
-  if (sessionStorage.getItem("entryType") === "new") {
+  const entryType = sessionStorage.getItem("entryType");
+
+  // ✅ 새 진입이면 상태 초기화
+  if (entryType === "new") {
     sessionStorage.removeItem("returnFromTemplate");
-    sessionStorage.removeItem("currentStep"); // step2 자동 진입 방지
-    sessionStorage.removeItem("entryType");   // 플래그 제거
+    sessionStorage.removeItem("currentStep");
+    sessionStorage.removeItem("entryType");
   }
 
-// ✅ 상세페이지에서 복귀 시: 타자기 효과 생략하고 바로 step2 진입
-const isReturn = sessionStorage.getItem("returnFromTemplate") === "true";
-if (isReturn && sessionStorage.getItem("currentStep") === "brand") {
-  const typingText = document.getElementById("typingText");
-  const step1 = document.getElementById("designTargetButtons");
-  const helpText = document.getElementById("selectionHelpText");
+  // ✅ 복귀 진입 (디자인 시작 버튼이 아닌 경우)
+  const isReturn = entryType !== "new";
+  if (isReturn) {
+    const typingText = document.getElementById("typingText");
+    const step1 = document.getElementById("designTargetButtons");
+    const helpText = document.getElementById("selectionHelpText");
 
-  // ✅ 문구 복원 + 색상 복원
-  if (typingText) {
-    typingText.innerText = "디자인 대상을 선택하세요";
-    typingText.classList.remove("hidden");
-    typingText.classList.add("text-fade-out"); // 색상 복원
+    if (typingText) {
+      typingText.innerText = "디자인 대상을 선택하세요";
+      typingText.classList.remove("hidden");
+      typingText.classList.add("text-fade-out");
+    }
+    step1?.classList.remove("hidden", "text-fade-out");
+    step1?.classList.add("visible");
+    helpText?.classList.remove("hidden");
+    helpText?.classList.add("visible");
+
+    if (sessionStorage.getItem("currentStep") === "brand") {
+      showBrandStep();
+    }
+
+    sessionStorage.removeItem("entryType");
+    return; // ✅ 타자기 생략
   }
 
-  step1?.classList.remove("hidden", "text-fade-out");
-  step1?.classList.add("visible");
-  helpText?.classList.remove("hidden");
-  helpText?.classList.add("visible");
-
-  showBrandStep(); // step2 직접 진입
-  sessionStorage.removeItem("returnFromTemplate");
-  return; // ✅ 타자기 애니메이션 생략
-}
-
-
+  // ✅ 정상 애니메이션 흐름 (디자인 시작 버튼으로 진입한 경우)
   setTimeout(() => {
     const modal = document.getElementById("exampleModal");
     if (modal) modal.classList.remove("active");
@@ -355,10 +358,10 @@ if (isReturn && sessionStorage.getItem("currentStep") === "brand") {
   }
 
   const typingText = document.getElementById("typingText");
-  if (typingText)
+  if (typingText) {
     typingText.classList.remove("hidden");
     typingText.textContent = "디자인 대상을 선택하세요";
-  
+  }
 
   typeEffect("디자인 대상을 선택하세요", "typingText", () => {
     const targetButtons = document.getElementById("designTargetButtons");
@@ -376,16 +379,15 @@ if (isReturn && sessionStorage.getItem("currentStep") === "brand") {
             helpText.classList.add("visible");
           }
 
-          // ✅ 저장된 스텝이 brand이면 step2 자동 실행
           const savedStep = sessionStorage.getItem("currentStep");
           if (savedStep === "brand") {
             showBrandStep();
           }
-
         }, 400);
       }, 500);
     }
   });
 });
+
 
 
