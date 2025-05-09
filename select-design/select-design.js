@@ -191,8 +191,9 @@ function resizeSingleIframe(iframe) {
 
 // ✅ 초기화
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("exampleModal")?.classList.remove("active");
-
+  const modal = document.getElementById("exampleModal");
+  if (modal) modal.classList.remove("active");
+  
   document.querySelectorAll(".template-card").forEach(card => {
     card.classList.add("visible");
   });
