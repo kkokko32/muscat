@@ -28,7 +28,7 @@
 
       <div class="button-grid hidden" id="designTargetButtons">
         <!-- <button class="active" onclick="selectConcept(this)">전체</button> -->
-        <button class="dimmed" onclick="selectConcept(this)">이벤트 배너0</button>
+        <button class="dimmed" onclick="selectConcept(this)">이벤트 배너1</button>
         <button class="dimmed" onclick="selectConcept(this)">메뉴판</button>
         <button class="dimmed" onclick="selectConcept(this)">할인 전단지</button>
         <button class="dimmed" onclick="selectConcept(this)">홍보물</button>
@@ -47,17 +47,17 @@
 
     <!-- Step 2: 브랜드 정보 입력 -->
     <div class="step disabled" id="step2">
-     <p id="brandTypingText" class="typing-text hidden"></p>
+      <p id="brandTypingText" class="typing-text hidden"></p>
 
-
-    <div id="brandUploadGroup" class="hidden">
-      <button class="upload-btn" id="logoUploadBtn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
-      <input accept="image/*" id="logoInput" style="display: none" type="file" />
-    </div>
+      <div id="brandUploadGroup" class="hidden">
+        <button class="upload-btn" id="logoUploadBtn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
+        <input accept="image/*" id="logoInput" style="display: none" type="file" />
+      </div>
 
       <div id="brandTextAlt" style="display:none;">
         <input id="brandName" placeholder="브랜드 명을 입력하세요" type="text" />
       </div>
+
       <input id="brandDesc" class="hidden" placeholder="브랜드명을 입력하세요" type="text" />
     </div>
 
