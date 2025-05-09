@@ -261,6 +261,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ✅ 진입 시 타자기 → 버튼 → 도움말 문구 (전체 자동 선택 제거됨)
+  const typingText = document.getElementById("typingText");
+  if (typingText) typingText.classList.remove("hidden");
+
   typeEffect("디자인 대상을 선택하세요", "typingText", () => {
     const targetButtons = document.getElementById("designTargetButtons");
     if (targetButtons) {
