@@ -58,7 +58,6 @@
       height: 3508px;
       background-color: #f3d9aa;
     }
-
   </style>
 </head>
 
@@ -97,7 +96,6 @@
     </div>
   </div>
 
-  <!-- ✅ 저장 완료 모달 -->
   <div class="save-modal" id="saveCompleteModal">
     <div class="modal-box">
       <p>저장 완료되었습니다!<br>작업실로 이동할까요?</p>
@@ -164,12 +162,20 @@
           const brandEl = cloned.querySelector(".brand-name");
           const sloganEl = cloned.querySelector(".brand-slogan");
           const logoEl = cloned.querySelector("#brandLogo");
+          const logoTextEl = cloned.querySelector("#brandLogoText");
           const mainEl = cloned.querySelector("#mainImage");
 
           if (brandEl && data.brand) brandEl.textContent = data.brand;
           if (sloganEl && data.slogan) sloganEl.textContent = data.slogan;
           if (logoEl && data.logoUrl) logoEl.src = data.logoUrl;
           if (mainEl && data.imageUrl) mainEl.src = data.imageUrl;
+
+          // ✅ 로고 텍스트 vs 이미지 선택적으로 노출
+          if (logoEl && logoEl.style.display === "none" && logoTextEl) {
+            logoTextEl.style.display = "block";
+          } else if (logoEl) {
+            logoEl.style.display = "block";
+          }
         }
       } catch (e) {
         console.error("❌ 템플릿 로드 실패:", e);
@@ -191,7 +197,14 @@
         const brandEl = document.querySelector(".brand-name");
         const sloganEl = document.querySelector(".brand-slogan");
         const logoEl = document.getElementById("brandLogo");
+        const logoTextEl = document.getElementById("brandLogoText");
         const mainEl = document.getElementById("mainImage");
+
+        if (logoEl && logoEl.style.display === "none" && logoTextEl) {
+          logoTextEl.style.display = "block";
+        } else if (logoEl) {
+          logoEl.style.display = "block";
+        }
 
         if (brand && brandEl) brandEl.textContent = brand;
         if (slogan && sloganEl) sloganEl.textContent = slogan;
