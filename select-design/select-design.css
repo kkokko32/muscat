@@ -431,13 +431,13 @@ body.inside-preview .template-frame {
   background-color: #434343;
   border: none;
   border-radius: 4px;
-  color: eee;
+  color: #eee; 
   font-size: 12px;
   cursor: pointer;
 }
 
 .example-btn:hover {
-  color: 292929;
+  color: #292929;      
   background-color: #fff;
 }
 
