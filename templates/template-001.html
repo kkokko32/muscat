@@ -82,7 +82,7 @@
              style="width: 400px; height: 400px; object-fit: contain; margin-bottom: 40px;" />
         <div id="brandLogoText" style="display:none; font-size:200px; font-weight:bold; color:#333; margin-bottom:40px; text-align:center;"></div>
 
-        <div class="image-container" style="position: absolute; top: 500px; left: 1000px; width: 400px; height: 500px; overflow: hidden; border: 1px dashed #aaa;">
+        <div class="image-container" style="position: absolute; top: 800px; left: 1000px; width: 400px; height: 500px; overflow: hidden; border: 1px dashed #aaa;">
           <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
                style="position: absolute; top: 0; left: 0; width: 100%; height: auto;" />
         </div>
@@ -134,66 +134,65 @@
   import { db } from "/muscat/common/firebase-init.js";
   import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  async function loadTemplateFromFirestore(docId) {
-    try {
-      const ref = doc(db, "savedTemplates", docId);
-      const snapshot = await getDoc(ref);
-      if (!snapshot.exists()) {
-        console.warn("❌ 문서 없음:", docId);
-        return;
-      }
-
-      const data = snapshot.data();
-      if (!data.htmlUrl) {
-        console.warn("❌ htmlUrl 없음 → fetch 중단");
-        return;
-      }
-
-      const response = await fetch(data.htmlUrl);
-      const htmlText = await response.text();
-
-      const wrapper = document.getElementById("templateFrame");
-      const tempDom = document.createElement("div");
-      tempDom.innerHTML = htmlText;
-
-      const newFrame = tempDom.querySelector(".template-frame");
-      if (newFrame && wrapper) {
-        const cloned = newFrame.cloneNode(true);
-        cloned.id = "templateFrame";
-        wrapper.replaceWith(cloned);
-
-        const brandEl = cloned.querySelector(".brand-name");
-        const sloganEl = cloned.querySelector(".brand-slogan");
-        const logoEl = cloned.querySelector("#brandLogo");
-        const logoTextEl = cloned.querySelector("#brandLogoText");
-        const mainEl = cloned.querySelector("#mainImage");
-
-        if (brandEl && data.brand) brandEl.textContent = data.brand;
-        if (sloganEl && data.slogan) sloganEl.textContent = data.slogan;
-
-        if (data.logoUrl?.startsWith("__TEXT__:")) {
-          // 텍스트 로고 처리
-          const text = data.logoUrl.replace("__TEXT__:", "");
-          if (logoEl) logoEl.style.display = "none";
-          if (logoTextEl) {
-            logoTextEl.textContent = text;
-            logoTextEl.style.display = "block";
-          }
-        } else {
-          // 이미지 로고 처리
-          if (logoEl && data.logoUrl) {
-            logoEl.src = data.logoUrl;
-            logoEl.style.display = "block";
-          }
-          if (logoTextEl) logoTextEl.style.display = "none";
-        }
-
-        if (mainEl && data.imageUrl) mainEl.src = data.imageUrl;
-      }
-    } catch (e) {
-      console.error("❌ 템플릿 로드 실패:", e);
+ async function loadTemplateFromFirestore(docId) {
+  try {
+    const ref = doc(db, "savedTemplates", docId);
+    const snapshot = await getDoc(ref);
+    if (!snapshot.exists()) {
+      console.warn("❌ 문서 없음:", docId);
+      return;
     }
+
+    const data = snapshot.data();
+    if (!data.htmlUrl) {
+      console.warn("❌ htmlUrl 없음 → fetch 중단");
+      return;
+    }
+
+    const response = await fetch(data.htmlUrl);
+    const htmlText = await response.text();
+
+    const wrapper = document.getElementById("templateFrame");
+    const tempDom = document.createElement("div");
+    tempDom.innerHTML = htmlText;
+
+    const newFrame = tempDom.querySelector(".template-frame");
+    if (newFrame && wrapper) {
+      const cloned = newFrame.cloneNode(true);
+      cloned.id = "templateFrame";
+      wrapper.replaceWith(cloned);
+
+      const brandEl = cloned.querySelector(".brand-name");
+      const sloganEl = cloned.querySelector(".brand-slogan");
+      const logoEl = cloned.querySelector("#brandLogo");
+      const logoTextEl = cloned.querySelector("#brandLogoText");
+      const mainEl = cloned.querySelector("#mainImage");
+
+      if (brandEl && data.brand) brandEl.textContent = data.brand;
+      if (sloganEl && data.slogan) sloganEl.textContent = data.slogan;
+
+      // ✅ 로고 텍스트 vs 이미지 분기 처리
+      if (data.logoUrl?.startsWith("__TEXT__:")) {
+        const text = data.logoUrl.replace("__TEXT__:", "");
+        if (logoEl) logoEl.style.display = "none";
+        if (logoTextEl) {
+          logoTextEl.textContent = text;
+          logoTextEl.style.display = "block";
+        }
+      } else {
+        if (logoEl && data.logoUrl) {
+          logoEl.src = data.logoUrl;
+          logoEl.style.display = "block";
+        }
+        if (logoTextEl) logoTextEl.style.display = "none";
+      }
+
+      if (mainEl && data.imageUrl) mainEl.src = data.imageUrl;
+    }
+  } catch (e) {
+    console.error("❌ 템플릿 로드 실패:", e);
   }
+}
 
   window.addEventListener("DOMContentLoaded", () => {
     const docId = new URLSearchParams(location.search).get("docId");

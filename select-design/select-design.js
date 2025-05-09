@@ -348,7 +348,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const typingText = document.getElementById("typingText");
-  if (typingText) typingText.classList.remove("hidden");
+  if (typingText)
+    typingText.classList.remove("hidden");
+    typingText.textContent = "디자인 대상을 선택하세요";
+  
 
   typeEffect("디자인 대상을 선택하세요", "typingText", () => {
     const targetButtons = document.getElementById("designTargetButtons");
