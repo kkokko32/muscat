@@ -22,8 +22,6 @@ header.global-header nav a:not(.menu_d):hover {
   font-weight: 600 !important;
 }
 
-
-
 body {
   overflow: auto;
 }
@@ -95,6 +93,41 @@ main {
   border: none;
 }
 
+/* 타자기 효과 텍스트 */
+.typing-text {
+  font-size: 18px;
+  font-weight: 400;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid #c4ff63;
+  width: 0;
+  animation: typing 2s steps(30, end) forwards, blink 0.7s step-end infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  from, to { border-color: transparent; }
+  50% { border-color: #c4ff63; }
+}
+
+/* 버튼박스 등장 제어 */
+.button-grid.hidden {
+  display: none;
+}
+
+.button-grid.visible {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 브랜드 입력 관련 */
 .brand-guide,
 .upload-label {
   margin: 16px 2px 5px;
@@ -145,6 +178,15 @@ input[disabled] {
   cursor: pointer;
 }
 
+/* 업로드 비활성화 */
+.upload-btn.disabled {
+  background-color: #888 !important;
+  color: #ccc !important;
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 /* 템플릿 고정 안내 문구 */
 .template-info-fixed {
   position: absolute;
@@ -155,7 +197,7 @@ input[disabled] {
   width: 600px;
   text-align: center;
   background-color: #fcfcfc;
-  padding: 0; /* 패딩 제거로 높이 최소화 */
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -244,7 +286,7 @@ body.inside-preview .template-frame {
   text-decoration: underline;
 }
 
-/* 기존 concept-filter (현재는 사용하지 않음, 유지할 경우) */
+/* 필터 버튼 */
 .concept-filter {
   display: flex;
   justify-content: center;
@@ -271,7 +313,6 @@ body.inside-preview .template-frame {
   font-weight: bold;
 }
 
-/* ✅ 새로 추가된 inline concept filter 버튼 */
 .inline-concept-filter {
   display: flex;
   justify-content: center;
@@ -294,4 +335,40 @@ body.inside-preview .template-frame {
 .inline-concept-filter button.active {
   border-bottom: 2px solid #292929;
   font-weight: bold;
+}
+
+/* 예시 모달 */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  width: 1000px;
+  height: 1000px;
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-content .close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
 }
