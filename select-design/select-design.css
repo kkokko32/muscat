@@ -75,7 +75,7 @@ main {
 
 .button-grid button {
   background: none;
-  border: 1px solid #aaa;
+  border: 1px solid #cccccc;
   color: white;
   padding: 8px 12px;
   margin: 4px 2px 2px 0;
@@ -84,6 +84,9 @@ main {
   min-width: 60px;
   height: 38px;
   text-align: center;
+  opacity: 1;
+  transition: all 0.3s ease;
+
 }
 
 .button-grid button.active {
@@ -91,6 +94,17 @@ main {
   color: #292929;
   font-weight:normal;
   border: none;
+  opacity: 1;
+}
+
+/* 비활성화된 버튼 (opacity 처리용) */
+.button-grid button.dimmed {
+  opacity: 0.5;
+}
+
+/* hover 시는 항상 opacity 1 */
+.button-grid button:hover {
+  opacity: 1;
 }
 
 /* 타자기 효과 텍스트 */

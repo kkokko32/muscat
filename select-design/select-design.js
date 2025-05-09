@@ -78,7 +78,11 @@ window.goToTemplate = (filename) => {
 
 // ✅ 디자인 대상 선택 → 다음 단계
 window.selectConcept = (button) => {
-  document.querySelectorAll("#designTargetButtons button").forEach(btn => btn.classList.remove("active"));
+  const buttons = document.querySelectorAll("#designTargetButtons button");
+  buttons.forEach(btn => {
+    btn.classList.remove("active");
+    btn.classList.remove("dimmed");
+  });
   button.classList.add("active");
 
   const selectedConcept = button.innerText;
@@ -90,6 +94,14 @@ window.selectConcept = (button) => {
       card.classList.remove("visible");
     }
   });
+
+  // 비활성화 처리
+  buttons.forEach(btn => {
+    if (!btn.classList.contains("active")) {
+      btn.classList.add("dimmed");
+    }
+  });
+
   if (window.msnry) window.msnry.layout();
 
   const step2 = document.getElementById("step2");
@@ -106,7 +118,11 @@ window.selectConcept = (button) => {
 
 // ✅ 스타일 선택 필터링
 window.selectStyle = (button) => {
-  document.querySelectorAll(".inline-concept-filter button").forEach(btn => btn.classList.remove("active"));
+  const buttons = document.querySelectorAll(".inline-concept-filter button");
+  buttons.forEach(btn => {
+    btn.classList.remove("active");
+    btn.classList.remove("dimmed");
+  });
   button.classList.add("active");
 
   const selectedStyle = button.innerText;
@@ -118,6 +134,14 @@ window.selectStyle = (button) => {
       card.classList.remove("visible");
     }
   });
+
+  // 비활성화 처리
+  buttons.forEach(btn => {
+    if (!btn.classList.contains("active")) {
+      btn.classList.add("dimmed");
+    }
+  });
+
   if (window.msnry) window.msnry.layout();
 };
 
@@ -180,7 +204,6 @@ function resizeSingleIframe(iframe) {
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("exampleModal")?.classList.remove("active");
 
-  // 모든 템플릿 강제 visible
   document.querySelectorAll(".template-card").forEach(card => {
     card.classList.add("visible");
   });
@@ -224,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ 타자기 → 0.5초 후 버튼 등장 → 전체 버튼 자동 선택
+  // ✅ 타자기 → 0.5초 후 버튼 등장 → 전체 자동 선택
   typeEffect("디자인 대상을 선택하세요", "typingText", () => {
     const targetButtons = document.getElementById("designTargetButtons");
     if (targetButtons) {
@@ -235,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const allButton = [...targetButtons.querySelectorAll("button")].find(btn => btn.innerText === "전체");
         if (allButton) {
           allButton.classList.add("active");
-          window.selectStyle?.(allButton);
+          window.selectConcept(allButton); // 선택 시 바로 전체 필터링도 적용
         }
       }, 500);
     }
