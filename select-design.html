@@ -18,52 +18,56 @@
 
   <main>
     <aside class="sidebar">
-      <!-- Step 1: 디자인 대상 선택 -->
-      <div class="step active" id="step1">
-        <p id="typingText" class="typing-text"></p>
+  <div class="sidebar-inner">
 
-        <div class="button-grid hidden" id="designTargetButtons">
-          <!-- <button class="active" onclick="selectConcept(this)">전체</button> -->
-          <button class="dimmed" onclick="selectConcept(this)">이벤트 배너2</button>
-          <button class="dimmed" onclick="selectConcept(this)">메뉴판</button>
-          <button class="dimmed" onclick="selectConcept(this)">할인 전단지</button>
-          <button class="dimmed" onclick="selectConcept(this)">홍보물</button>
-          <button class="dimmed" onclick="selectConcept(this)">SNS 이미지</button>
-          <button class="dimmed" onclick="selectConcept(this)">포스터</button>
-          <button class="dimmed" onclick="selectConcept(this)">명함</button>
-          <button class="dimmed" onclick="selectConcept(this)">디자인 제작하기</button>
-          <button class="dimmed" onclick="selectConcept(this)">건너뛰기</button>
-          <button class="dimmed" onclick="selectConcept(this)">스티커</button>
-          <button class="dimmed" onclick="selectConcept(this)">AI 추천</button>
-        </div>
+    <!-- Step 1: 디자인 대상 선택 -->
+    <div class="step active" id="step1">
+      <p id="typingText" class="typing-text"></p>
 
-        <!-- ✅ 도움말 문구: 초기 숨김 -->
-        <p id="selectionHelpText" class="help-text hidden">
-          선택이 어려우신가요? <button class="example-btn" onclick="openExampleModal()">예시 보기</button>
-        </p>
+      <div class="button-grid hidden" id="designTargetButtons">
+        <!-- <button class="active" onclick="selectConcept(this)">전체</button> -->
+        <button class="dimmed" onclick="selectConcept(this)">이벤트 배너0</button>
+        <button class="dimmed" onclick="selectConcept(this)">메뉴판</button>
+        <button class="dimmed" onclick="selectConcept(this)">할인 전단지</button>
+        <button class="dimmed" onclick="selectConcept(this)">홍보물</button>
+        <button class="dimmed" onclick="selectConcept(this)">SNS 이미지</button>
+        <button class="dimmed" onclick="selectConcept(this)">포스터</button>
+        <button class="dimmed" onclick="selectConcept(this)">명함</button>
+        <button class="dimmed" onclick="selectConcept(this)">디자인 제작하기</button>
+        <button class="dimmed" onclick="selectConcept(this)">건너뛰기</button>
+        <button class="dimmed" onclick="selectConcept(this)">스티커</button>
+        <button class="dimmed" onclick="selectConcept(this)">AI 추천</button>
       </div>
 
-      <!-- Step 2: 브랜드 정보 입력 -->
-      <div class="step disabled" id="step2">
-        <p id="brandTypingText" class="typing-text"></p>
+      <!-- ✅ 도움말 문구: 초기 숨김 -->
+      <p id="selectionHelpText" class="help-text hidden">
+        선택이 어려우신가요? <button class="example-btn" onclick="openExampleModal()">예시 보기</button>
+      </p>
+    </div>
 
-        <div id="brandUploadGroup" class="hidden">
-          <p>로고 이미지 파일이 있으신가요?</p>
-          <button class="upload-btn" id="logoUploadBtn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
-          <input accept="image/*" id="logoInput" style="display: none" type="file" />
-        </div>
+    <!-- Step 2: 브랜드 정보 입력 -->
+    <div class="step disabled" id="step2">
+      <p id="brandTypingText" class="typing-text"></p>
 
-        <p id="brandTextHelp" class="help-text hidden">
-          로고 이미지가 없으신가요? <button class="example-btn" onclick="insertBrandTextInsteadOfLogo()">임의로 넣기</button>
-        </p>
-
-        <div id="brandTextAlt" style="display:none;">
-          <input id="brandName" placeholder="브랜드 명을 입력하세요" type="text" />
-        </div>
-        <input id="brandDesc" class="hidden" placeholder="브랜드명을 입력하세요" type="text" />
+      <div id="brandUploadGroup" class="hidden">
+        <p>로고 이미지 파일이 있으신가요?</p>
+        <button class="upload-btn" id="logoUploadBtn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
+        <input accept="image/*" id="logoInput" style="display: none" type="file" />
       </div>
 
-    </aside>
+      <p id="brandTextHelp" class="help-text hidden">
+        로고 이미지가 없으신가요? <button class="example-btn" onclick="insertBrandTextInsteadOfLogo()">임의로 넣기</button>
+      </p>
+
+      <div id="brandTextAlt" style="display:none;">
+        <input id="brandName" placeholder="브랜드 명을 입력하세요" type="text" />
+      </div>
+      <input id="brandDesc" class="hidden" placeholder="브랜드명을 입력하세요" type="text" />
+    </div>
+
+  </div> <!-- /.sidebar-inner -->
+</aside>
+
 
     <!-- 우측 템플릿 영역 -->
     <section class="content">
