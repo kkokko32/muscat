@@ -81,6 +81,7 @@ main {
 /* 버튼 스타일 */
 .button-grid {
   margin-bottom: 36px;
+  will-change: transform;
 }
 
 .button-grid button {
