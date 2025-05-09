@@ -191,9 +191,12 @@ function resizeSingleIframe(iframe) {
 
 // ✅ 초기화
 document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("exampleModal");
-  if (modal) modal.classList.remove("active");
-  
+  // ✅ 모달 비활성화를 약간 지연
+  setTimeout(() => {
+    const modal = document.getElementById("exampleModal");
+    if (modal) modal.classList.remove("active");
+  }, 100); // 100ms 후 강제 비활성화
+
   document.querySelectorAll(".template-card").forEach(card => {
     card.classList.add("visible");
   });
@@ -237,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ 타자기 → 0.5초 후 버튼 등장 → 전체 자동 선택
+  // ✅ 타자기 → 0.5초 후 버튼 등장 → 전체 자동 선택 → 도움말 문구 0.4초 후 등장
   typeEffect("디자인 대상을 선택하세요", "typingText", () => {
     const targetButtons = document.getElementById("designTargetButtons");
     if (targetButtons) {
@@ -252,15 +255,15 @@ document.addEventListener("DOMContentLoaded", () => {
           window.selectConcept(allButton);
         }
 
-        // ✅ 선택 버튼이 나타난 뒤 0.4초 후 → 도우미 문구 등장
+        // 도움말 문구 등장
         setTimeout(() => {
           const helpText = document.getElementById("selectionHelpText");
           if (helpText) {
             helpText.classList.remove("hidden");
             helpText.classList.add("visible");
           }
-        }, 400); // help 문구는 버튼 등장 후 0.4초 지연
-      }, 500); // 버튼 등장까지 0.5초 지연
+        }, 400);
+      }, 500);
     }
   });
 });
