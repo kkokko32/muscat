@@ -115,9 +115,9 @@ main {
 
 /* 타자기 효과 텍스트 */
 .typing-text {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
-  color: white;
+  color: eee;
   white-space: nowrap;
   overflow: hidden;
   width: 0;
