@@ -217,7 +217,7 @@ input[disabled] {
   border: none;
   cursor: pointer;
   color: #292929;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: bold;
 }
 
@@ -431,13 +431,14 @@ body.inside-preview .template-frame {
   background-color: #434343;
   border: none;
   border-radius: 4px;
-  color: white;
+  color: eee;
   font-size: 12px;
   cursor: pointer;
 }
 
 .example-btn:hover {
-  opacity: 0.9;
+  color: 292929;
+  background-color: #fff;
 }
 
 .hidden {
