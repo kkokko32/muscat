@@ -274,18 +274,18 @@ document.addEventListener("DOMContentLoaded", () => {
     sessionStorage.removeItem("entryType");   // 플래그 제거
   }
 
-  // ✅ 상세페이지에서 복귀 시: 타자기 효과 생략하고 바로 step2 진입
-  const isReturn = sessionStorage.getItem("returnFromTemplate") === "true";
-  if (isReturn && sessionStorage.getItem("currentStep") === "brand") {
-    const typingText = document.getElementById("typingText");
-    const step1 = document.getElementById("designTargetButtons");
-    const helpText = document.getElementById("selectionHelpText");
+// ✅ 상세페이지에서 복귀 시: 타자기 효과 생략하고 바로 step2 진입
+const isReturn = sessionStorage.getItem("returnFromTemplate") === "true";
+if (isReturn && sessionStorage.getItem("currentStep") === "brand") {
+  const typingText = document.getElementById("typingText");
+  const step1 = document.getElementById("designTargetButtons");
+  const helpText = document.getElementById("selectionHelpText");
 
-  // ✅ 문구 복원
+  // ✅ 문구 복원 + 색상 복원
   if (typingText) {
     typingText.innerText = "디자인 대상을 선택하세요";
     typingText.classList.remove("hidden");
-    typingText.classList.remove("text-fade-out");
+    typingText.classList.add("text-fade-out"); // 색상 복원
   }
 
   step1?.classList.remove("hidden", "text-fade-out");
