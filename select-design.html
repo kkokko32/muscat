@@ -1,112 +1,131 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>디자인 선택</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>디자인 시작</title>
+
+  <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
+  <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="/muscat/common/common.css" />
   <link rel="stylesheet" href="/muscat/select-design/select-design.css" />
+  <link rel="stylesheet" href="/muscat/templates/templates-css/template.css" />
+  <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+  <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
 </head>
 <body class="dark">
   <div id="header-placeholder"></div>
 
   <main>
-    <!-- 타자기 텍스트 -->
-    <p id="typingText" class="typing-text"></p>
+    <aside class="sidebar">
+      <!-- Step 1: 디자인 대상 선택 -->
+      <div class="step active" id="step1">
+        <p id="typingText" class="typing-text"></p>
 
-    <!-- 디자인 대상 선택 버튼들 -->
-    <div id="designTargetButtons" class="button-grid hidden">
-      <button class="active" onclick="selectConcept(this)">전체</button>
-      <button class="dimmed" onclick="selectConcept(this)">이벤트 배너1</button>
-      <button class="dimmed" onclick="selectConcept(this)">메뉴판</button>
-      <button class="dimmed" onclick="selectConcept(this)">할인 전단지</button>
-      <button class="dimmed" onclick="selectConcept(this)">홍보물</button>
-      <button class="dimmed" onclick="selectConcept(this)">SNS 이미지</button>
-      <button class="dimmed" onclick="selectConcept(this)">포스터</button>
-      <button class="dimmed" onclick="selectConcept(this)">명함</button>
-      <button class="dimmed" onclick="selectConcept(this)">디자인 제작하기</button>
-      <button class="dimmed" onclick="selectConcept(this)">건너뛰기</button>
-      <button class="dimmed" onclick="selectConcept(this)">스티커</button>
-      <button class="dimmed" onclick="selectConcept(this)">AI 추천</button>
-    </div>
-
-    <!-- 선택이 어려우신가요? 문구 -->
-    <p id="selectionHelpText" class="help-text hidden">
-      선택이 어려우신가요? <span class="link-text" onclick="openExampleModal()">예시 보기</span>
-    </p>
-
-
-    <!-- Step 2: 브랜드 정보 입력 -->
-    <div class="step disabled" id="step2">
-      <p id="brandTypingText" class="typing-text"></p>
-
-      <div id="brandInputArea" class="hidden">
-        <div class="full-width-group">
-          <button id="logoUploadBtn" class="upload-btn" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
-          <input accept="image/*" id="logoInput" type="file" hidden />
-          <p class="help-text">로고 이미지가 없으신가요? <span class="link-text" onclick="insertBrandTextInsteadOfLogo()">임의로 넣기</span></p>
-          <input id="brandTextAlt" type="text" placeholder="브랜드명을 입력하세요" class="input-box" style="display:none;" />
+        <div class="button-grid hidden" id="designTargetButtons">
+          <button class="active" onclick="selectConcept(this)">전체</button>
+          <button class="dimmed" onclick="selectConcept(this)">이벤트 배너2</button>
+          <button class="dimmed" onclick="selectConcept(this)">메뉴판</button>
+          <button class="dimmed" onclick="selectConcept(this)">할인 전단지</button>
+          <button class="dimmed" onclick="selectConcept(this)">홍보물</button>
+          <button class="dimmed" onclick="selectConcept(this)">SNS 이미지</button>
+          <button class="dimmed" onclick="selectConcept(this)">포스터</button>
+          <button class="dimmed" onclick="selectConcept(this)">명함</button>
+          <button class="dimmed" onclick="selectConcept(this)">디자인 제작하기</button>
+          <button class="dimmed" onclick="selectConcept(this)">건너뛰기</button>
+          <button class="dimmed" onclick="selectConcept(this)">스티커</button>
+          <button class="dimmed" onclick="selectConcept(this)">AI 추천</button>
         </div>
 
-        <div class="input-group">
-          <label for="brandName">브랜드명</label>
-          <input type="text" id="brandName" class="input-box" />
-        </div>
+        <!-- ✅ 도움말 문구: 초기 숨김 -->
+        <p id="selectionHelpText" class="help-text hidden">
+          선택이 어려우신가요? <a href="#" onclick="openExampleModal()">[예시 보기]</a>
+        </p>
+      </div>
 
-        <div class="input-group">
-          <label for="brandDesc">슬로건</label>
-          <input type="text" id="brandDesc" class="input-box" disabled />
+      <!-- Step 2: 브랜드 정보 입력 -->
+      <div class="step disabled" id="step2">
+        <p id="brandTypingText" class="typing-text"></p>
+        <div class="full-width-group hidden" id="brandInputArea">
+          <button class="upload-btn" id="logoUploadBtn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
+          <input accept="image/*" id="logoInput" style="display: none" type="file" />
+          <p style="margin: 6px 0;">
+            로고 이미지가 없으신가요? <a href="#" onclick="insertBrandTextInsteadOfLogo()">[임의로 넣기]</a>
+          </p>
+          <div id="brandTextAlt" style="display:none;">
+            <input id="brandName" placeholder="브랜드 명을 입력하세요" type="text" />
+          </div>
+          <input id="brandDesc" placeholder="브랜드 문구 / 슬로건" type="text" />
         </div>
       </div>
-    </div>
+    </aside>
 
-    <!-- 템플릿 카드 영역 -->
-    <section class="template-preview">
-      <div class="template-card visible" onclick="goToTemplate('template-001.html')">
-        <iframe data-template="/muscat/templates/templates-design/template-001.html"></iframe>
-      </div>
-      <div class="template-card visible" onclick="goToTemplate('template-002.html')">
-        <iframe data-template="/muscat/templates/templates-design/template-002.html"></iframe>
-      </div>
-      <div class="template-card visible" onclick="goToTemplate('template-003.html')">
-        <iframe data-template="/muscat/templates/templates-design/template-003.html"></iframe>
-      </div>
-      <div class="template-card visible" onclick="goToTemplate('template-004.html')">
-        <iframe data-template="/muscat/templates/templates-design/template-004.html"></iframe>
-      </div>
-      <div class="template-card visible" onclick="goToTemplate('template-005.html')">
-        <iframe data-template="/muscat/templates/templates-design/template-005.html"></iframe>
-      </div>
-      <div class="template-card visible" onclick="goToTemplate('template-006.html')">
-        <iframe data-template="/muscat/templates/templates-design/template-006.html"></iframe>
-      </div>
-      <div class="template-card visible" onclick="goToTemplate('template-007.html')">
-        <iframe data-template="/muscat/templates/templates-design/template-007.html"></iframe>
-      </div>
-      <div class="template-card visible" onclick="goToTemplate('template-008.html')">
-        <iframe data-template="/muscat/templates/templates-design/template-008.html"></iframe>
-      </div>
-      <div class="template-card visible" onclick="goToTemplate('template-009.html')">
-        <iframe data-template="/muscat/templates/templates-design/template-009.html"></iframe>
-      </div>
-      <div class="template-card visible" onclick="goToTemplate('template-010.html')">
-        <iframe data-template="/muscat/templates/templates-design/template-010.html"></iframe>
+    <!-- 우측 템플릿 영역 -->
+    <section class="content">
+      <div class="template-wrapper">
+        <div class="template-area">
+          <div id="templateInfoText" class="template-info-fixed">
+            <div class="inline-concept-filter">
+              <button type="button" onclick="selectStyle(this)">전체</button>
+              <button type="button" onclick="selectStyle(this)">모던,심플</button>
+              <button type="button" onclick="selectStyle(this)">에코,자연</button>
+              <button type="button" onclick="selectStyle(this)">전통</button>
+              <button type="button" onclick="selectStyle(this)">럭셔리</button>
+              <button type="button" onclick="selectStyle(this)">기타</button>
+            </div>
+          </div>
+
+          <div class="template-scroll">
+            <div class="template-preview">
+              <!-- 템플릿 카드 10개 -->
+              <div class="template-card visible" onclick="goToTemplate('template-001.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-001.html"></iframe>
+              </div>
+              <div class="template-card visible" onclick="goToTemplate('template-002.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-002.html"></iframe>
+              </div>
+              <div class="template-card visible" onclick="goToTemplate('template-003.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-003.html"></iframe>
+              </div>
+              <div class="template-card visible" onclick="goToTemplate('template-004.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-004.html"></iframe>
+              </div>
+              <div class="template-card visible" onclick="goToTemplate('template-005.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-005.html"></iframe>
+              </div>
+              <div class="template-card visible" onclick="goToTemplate('template-006.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-006.html"></iframe>
+              </div>
+              <div class="template-card visible" onclick="goToTemplate('template-007.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-007.html"></iframe>
+              </div>
+              <div class="template-card visible" onclick="goToTemplate('template-008.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-008.html"></iframe>
+              </div>
+              <div class="template-card visible" onclick="goToTemplate('template-009.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-009.html"></iframe>
+              </div>
+              <div class="template-card visible" onclick="goToTemplate('template-010.html')">
+                <iframe data-template="/muscat/templates/templates-design/template-010.html"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
-  <!-- 예시 모달 -->
-  <div id="exampleModal" class="modal-overlay">
+  <!-- 모달: 예시 보기 -->
+  <div class="modal-overlay" id="exampleModal">
     <div class="modal-content">
-      <button onclick="closeExampleModal()">닫기</button>
-      <p>AI가 추천하는 디자인 예시입니다.</p>
-      <img src="/muscat/common/sample-example.png" alt="예시 이미지" />
+      <button class="close-btn" onclick="closeExampleModal()">×</button>
+      <h3>디자인 예시 안내</h3>
+      <p>여기에 이미지나 설명 추가 예정</p>
     </div>
   </div>
 
-  <script type="module" src="/muscat/select-design/select-design.js"></script>
+  <!-- 헤더 포함 -->
   <script>
-    // 헤더 삽입 스크립트
     fetch("/muscat/components/header.html")
       .then(res => res.text())
       .then(html => {
@@ -118,5 +137,10 @@
         }
       });
   </script>
+
+  <!-- 스크립트들 -->
+  <script type="module" src="/muscat/select-design/select-design.js"></script>
+  <script type="module" src="/muscat/common/firebase-init.js"></script>
+  <script type="module" src="/muscat/common/utils-auth.js"></script>
 </body>
 </html>
