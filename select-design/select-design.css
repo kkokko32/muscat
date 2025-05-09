@@ -74,7 +74,7 @@ main {
   font-weight: bold;
   margin: 2px 2px;
   color: #ccc;
-  text-align: center; 
+  text-align: center;
   max-width: 100%;
 }
 
@@ -86,7 +86,7 @@ main {
 .button-grid button {
   font-size: 16px;
   background: none;
-  border: 1px solid #cccccc;
+  border: 1px solid #888;
   color: white;
   padding: 8px 12px;
   margin: 4px 2px 2px 0;
@@ -97,13 +97,13 @@ main {
   text-align: center;
   opacity: 1;
   transition: all 0.3s ease;
-  line-height: 1.4; /* 수직 균형 잡힘 */
+  line-height: 1.4;
 }
 
 .button-grid button.active {
   background-color: #c4ff63;
   color: #292929;
-  font-weight:normal;
+  font-weight: normal;
   border: none;
   opacity: 1;
 }
@@ -118,13 +118,18 @@ main {
   display: inline-block;
   font-size: 18px;
   font-weight: 400;
-  color: #eee;
+  color: #ccc;
   white-space: nowrap;
   overflow: hidden;
   width: 0;
   animation: typing 2s steps(30, end) forwards;
   margin-bottom: 20px;
   min-height: 24px;
+  transition: color 0.3s ease; 
+}
+
+.text-fade-out {
+  color: #666 !important; 
 }
 
 @keyframes typing {
@@ -145,11 +150,13 @@ main {
 }
 
 #typingText {
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
 }
 
 #brandTypingText {
   margin-top: 100px;
+  color: #ccc;
+  transition: color 0.3s ease; /* ✅ 전환 효과 */
 }
 
 /* 브랜드 입력 관련 */
@@ -202,6 +209,7 @@ input[disabled] {
   border-radius: 6px;
   border: none;
   cursor: pointer;
+  color: #888;
 }
 
 /* 업로드 비활성화 */
