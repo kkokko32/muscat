@@ -86,7 +86,7 @@ main {
 .button-grid button {
   font-size: 16px;
   background: none;
-  border: 1px solid #888;
+  border: 1px solid transparent;
   color: white;
   padding: 8px 12px;
   margin: 4px 2px 2px 0;
@@ -96,7 +96,7 @@ main {
   height: 38px;
   text-align: center;
   opacity: 1;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   line-height: 1.4;
   transform: scale(1);
 }
@@ -112,6 +112,7 @@ main {
 /* hover 시는 항상 opacity 1 */
 .button-grid button:hover {
   background-color: #c4ff63;
+  border-color: #c4ff63;
   color: #292929;
   font-weight: normal;
   border: none;
