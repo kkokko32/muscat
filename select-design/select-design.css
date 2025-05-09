@@ -190,7 +190,7 @@ main {
 /* 텍스트 인풋 */
 input[type="text"] {
   width: 100%;
-  height: 46px;
+  height: 50px;
   margin: 6px 0;
   border-radius: 6px;
   border: none;
@@ -206,14 +206,14 @@ input[disabled] {
 /* 업로드 버튼 */
 .upload-btn {
   width: 100%;
-  height: 46px;
+  height: 50px;
   padding: 10px;
   margin: 6px 0;
   background-color: white;
   border-radius: 6px;
   border: none;
   cursor: pointer;
-  color: #888;
+  color: #292929;
 }
 
 /* 업로드 비활성화 */
