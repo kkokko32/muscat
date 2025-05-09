@@ -81,8 +81,10 @@ window.selectConcept = (button) => {
   const buttons = document.querySelectorAll("#designTargetButtons button");
   buttons.forEach(btn => {
     btn.classList.remove("active");
-    btn.classList.remove("dimmed");
+    btn.classList.add("dimmed");
   });
+
+  button.classList.remove("dimmed");
   button.classList.add("active");
 
   const selectedConcept = button.innerText;
@@ -94,14 +96,6 @@ window.selectConcept = (button) => {
       card.classList.remove("visible");
     }
   });
-
-  // 비활성화 처리
-  buttons.forEach(btn => {
-    if (!btn.classList.contains("active")) {
-      btn.classList.add("dimmed");
-    }
-  });
-
   if (window.msnry) window.msnry.layout();
 
   const step2 = document.getElementById("step2");
@@ -119,10 +113,13 @@ window.selectConcept = (button) => {
 // ✅ 스타일 선택 필터링
 window.selectStyle = (button) => {
   const buttons = document.querySelectorAll(".inline-concept-filter button");
+
   buttons.forEach(btn => {
     btn.classList.remove("active");
-    btn.classList.remove("dimmed");
+    btn.classList.add("dimmed");
   });
+
+  button.classList.remove("dimmed");
   button.classList.add("active");
 
   const selectedStyle = button.innerText;
@@ -134,14 +131,6 @@ window.selectStyle = (button) => {
       card.classList.remove("visible");
     }
   });
-
-  // 비활성화 처리
-  buttons.forEach(btn => {
-    if (!btn.classList.contains("active")) {
-      btn.classList.add("dimmed");
-    }
-  });
-
   if (window.msnry) window.msnry.layout();
 };
 
@@ -258,7 +247,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const allButton = [...targetButtons.querySelectorAll("button")].find(btn => btn.innerText === "전체");
         if (allButton) {
           allButton.classList.add("active");
-          window.selectConcept(allButton); // 선택 시 바로 전체 필터링도 적용
+          allButton.classList.remove("dimmed");
+          window.selectConcept(allButton);
         }
       }, 500);
     }
