@@ -97,7 +97,7 @@ main {
   text-align: center;
   opacity: 1;
   transition: all 0.3s ease;
-  line-height: 1.5; /* 수직 균형 잡힘 */
+  line-height: 1.4; /* 수직 균형 잡힘 */
 }
 
 .button-grid button.active {
@@ -149,6 +149,13 @@ main {
   pointer-events: auto;
 }
 
+#typingText {
+  margin-bottom: 100px; /* 아래와 간격 확보 */
+}
+
+#brandTypingText {
+  margin-top: 100px; /* 위와 간격 확보 */
+}
 
 /* 브랜드 입력 관련 */
 .brand-guide,
