@@ -267,6 +267,24 @@ function resizeSingleIframe(iframe) {
 
 // ✅ 초기화
 document.addEventListener("DOMContentLoaded", () => {
+  // ✅ 상세페이지에서 복귀 시: 타자기 효과 생략하고 바로 step2 진입
+    const isReturn = sessionStorage.getItem("returnFromTemplate") === "true";
+    if (isReturn && sessionStorage.getItem("currentStep") === "brand") {
+      const typingText = document.getElementById("typingText");
+      const step1 = document.getElementById("designTargetButtons");
+      const helpText = document.getElementById("selectionHelpText");
+
+      typingText?.classList.add("hidden");
+      step1?.classList.remove("hidden", "text-fade-out");
+      step1?.classList.add("visible");
+      helpText?.classList.remove("hidden");
+      helpText?.classList.add("visible");
+
+      showBrandStep(); // step2 직접 진입
+      sessionStorage.removeItem("returnFromTemplate");
+      return; // ✅ 타자기 애니메이션 생략
+}
+
   setTimeout(() => {
     const modal = document.getElementById("exampleModal");
     if (modal) modal.classList.remove("active");
