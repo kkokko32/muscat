@@ -150,11 +150,11 @@ main {
 }
 
 #typingText {
-  margin-bottom: 100px; /* 아래와 간격 확보 */
+  margin-bottom: 20px; 
 }
 
 #brandTypingText {
-  margin-top: 100px; /* 위와 간격 확보 */
+  margin-top: 100px;
 }
 
 /* 브랜드 입력 관련 */
