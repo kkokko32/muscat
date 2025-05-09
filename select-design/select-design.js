@@ -107,11 +107,17 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
 
 // ✅ 로컬 저장
 function updateLocalStorage() {
-  const brand = document.getElementById("brandName")?.value || "";
   const slogan = document.getElementById("brandDesc")?.value || "";
-  const logoSession = sessionStorage.getItem("tempLogo");
-  const logo = logoSession ? logoSession : "";
-  const data = { brand, slogan, logo };
+
+  const logoSession = sessionStorage.getItem("tempLogo") || "";
+  let brand = "";
+
+  // 텍스트 로고가 아닐 때만 브랜드명 저장
+  if (!logoSession.startsWith("__TEXT__:")) {
+    brand = document.getElementById("brandName")?.value || "";
+  }
+
+  const data = { brand, slogan, logo: logoSession };
   localStorage.setItem("templateData", JSON.stringify(data));
 }
 
