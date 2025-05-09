@@ -98,22 +98,35 @@ window.selectConcept = (button) => {
   });
   if (window.msnry) window.msnry.layout();
 
-  const step2 = document.getElementById("step2");
-  const brandTyping = document.getElementById("brandTypingText");
-  const brandArea = document.getElementById("brandInputArea");
-  if (step2 && brandTyping && brandArea) {
-    step2.classList.remove("disabled");
-    typeEffect("브랜드 정보를 입력하세요", "brandTypingText", () => {
-      brandArea.classList.remove("hidden");
-      brandArea.classList.add("visible");
-    });
-  }
+  // 브랜드 입력 단계 등장
+  showBrandStep();
 };
+
+// ✅ 브랜드 입력 단계 등장 로직
+function showBrandStep() {
+  const step2 = document.getElementById("step2");
+  const typing = document.getElementById("brandTypingText");
+  const uploadGroup = document.getElementById("brandUploadGroup");
+  const textHelp = document.getElementById("brandTextHelp");
+
+  if (!step2 || !typing || !uploadGroup || !textHelp) return;
+
+  step2.classList.remove("disabled");
+
+  typeEffect("브랜드 로고를 넣어볼게요", "brandTypingText", () => {
+    uploadGroup.classList.remove("hidden");
+    uploadGroup.classList.add("fade-in");
+
+    setTimeout(() => {
+      textHelp.classList.remove("hidden");
+      textHelp.classList.add("fade-in");
+    }, 400);
+  });
+}
 
 // ✅ 스타일 선택 필터링
 window.selectStyle = (button) => {
   const buttons = document.querySelectorAll(".inline-concept-filter button");
-
   buttons.forEach(btn => {
     btn.classList.remove("active");
     btn.classList.add("dimmed");
@@ -191,11 +204,10 @@ function resizeSingleIframe(iframe) {
 
 // ✅ 초기화
 document.addEventListener("DOMContentLoaded", () => {
-  // ✅ 모달 비활성화를 약간 지연
   setTimeout(() => {
     const modal = document.getElementById("exampleModal");
     if (modal) modal.classList.remove("active");
-  }, 100); // 100ms 후 강제 비활성화
+  }, 100);
 
   document.querySelectorAll(".template-card").forEach(card => {
     card.classList.add("visible");
@@ -240,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ 타자기 → 0.5초 후 버튼 등장 → 전체 자동 선택 → 도움말 문구 0.4초 후 등장
+  // ✅ 진입 시 타자기 → 버튼 → 도움말 문구
   typeEffect("디자인 대상을 선택하세요", "typingText", () => {
     const targetButtons = document.getElementById("designTargetButtons");
     if (targetButtons) {
@@ -255,7 +267,6 @@ document.addEventListener("DOMContentLoaded", () => {
           window.selectConcept(allButton);
         }
 
-        // 도움말 문구 등장
         setTimeout(() => {
           const helpText = document.getElementById("selectionHelpText");
           if (helpText) {

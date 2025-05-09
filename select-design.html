@@ -46,18 +46,23 @@
       <!-- Step 2: 브랜드 정보 입력 -->
       <div class="step disabled" id="step2">
         <p id="brandTypingText" class="typing-text"></p>
-        <div class="full-width-group hidden" id="brandInputArea">
+
+        <div id="brandUploadGroup" class="hidden">
+          <p>로고 이미지 파일이 있으신가요?</p>
           <button class="upload-btn" id="logoUploadBtn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
           <input accept="image/*" id="logoInput" style="display: none" type="file" />
-          <p style="margin: 6px 0;">
-            로고 이미지가 없으신가요? <a href="#" onclick="insertBrandTextInsteadOfLogo()">[임의로 넣기]</a>
-          </p>
-          <div id="brandTextAlt" style="display:none;">
-            <input id="brandName" placeholder="브랜드 명을 입력하세요" type="text" />
-          </div>
-          <input id="brandDesc" placeholder="브랜드 문구 / 슬로건" type="text" />
         </div>
+
+        <p id="brandTextHelp" class="help-text hidden">
+          로고 이미지가 없으신가요? <button class="example-btn" onclick="insertBrandTextInsteadOfLogo()">임의로 넣기</button>
+        </p>
+
+        <div id="brandTextAlt" style="display:none;">
+          <input id="brandName" placeholder="브랜드 명을 입력하세요" type="text" />
+        </div>
+        <input id="brandDesc" placeholder="브랜드 문구 / 슬로건" type="text" />
       </div>
+
     </aside>
 
     <!-- 우측 템플릿 영역 -->
