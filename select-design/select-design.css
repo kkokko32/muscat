@@ -100,31 +100,26 @@ main {
   color: white;
   white-space: nowrap;
   overflow: hidden;
-  border-right: 2px solid #c4ff63;
   width: 0;
-  animation: typing 2s steps(30, end) forwards, blink 0.7s step-end infinite;
+  animation: typing 2s steps(30, end) forwards;
   margin-bottom: 20px;
 }
 
 @keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
+  from { width: 0 }
+  to { width: 100% }
 }
 
-@keyframes blink {
-  from, to { border-color: transparent; }
-  50% { border-color: #c4ff63; }
-}
-
-/* 버튼박스 등장 제어 */
+/* 버튼 박스 전환 효과 */
 .button-grid.hidden {
-  display: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
 }
 
 .button-grid.visible {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* 브랜드 입력 관련 */

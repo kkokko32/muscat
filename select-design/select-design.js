@@ -1,11 +1,11 @@
 import { storage } from "/muscat/common/firebase-init.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-// ✅ 타자기 효과 함수
+// ✅ 타자기 효과 함수 (중복 방지 및 깜빡임 제거)
 function typeEffect(text, targetId, callback) {
   const target = document.getElementById(targetId);
   if (!target) return;
-  target.textContent = "";
+  target.textContent = ""; // 중복 출력 방지
   let i = 0;
   const interval = setInterval(() => {
     if (i < text.length) {
@@ -125,6 +125,9 @@ window.selectStyle = (button) => {
 
 // ✅ 초기화
 document.addEventListener("DOMContentLoaded", () => {
+  // 모달 자동열림 방지
+  document.getElementById("exampleModal")?.classList.remove("active");
+
   // Masonry 템플릿 정렬
   const grid = document.querySelector('.template-preview');
   window.msnry = new Masonry(grid, {
@@ -178,10 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ 모달 초기화 방지
-  document.getElementById("exampleModal")?.classList.remove("active");
-
-  // ✅ 최초 타자기 효과 → 버튼 등장
+  // ✅ 타자기 문구 → 버튼 그룹 슬며시 등장
   typeEffect("디자인 대상을 선택하세요", "typingText", () => {
     const targetButtons = document.getElementById("designTargetButtons");
     if (targetButtons) {
