@@ -432,4 +432,5 @@ body.inside-preview .template-frame {
   display: block;
   opacity: 1;
   transition: opacity 0.6s ease;
+  color: #888 !important; 
 }
