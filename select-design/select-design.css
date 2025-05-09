@@ -189,6 +189,7 @@ input[type="text"] {
   border-radius: 6px;
   border: none;
   padding: 0 12px;
+  box-sizing: border-box;
 }
 
 input[disabled] {
