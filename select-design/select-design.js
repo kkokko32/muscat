@@ -1,4 +1,4 @@
-import { storage } from "/muscat/common/firebase-init.js";
+import { auth, storage } from "/muscat/common/firebase-init.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 // ✅ 타자기 효과
@@ -256,12 +256,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const logoInput = document.getElementById("logoInput");
   if (logoInput) {
-    logoInput.addEventListener("change", e => {
+    logoInput.addEventListener("change", async e => {
       const file = e.target.files[0];
-      if (file) {
-        const filename = `temp-logo-${Date.now()}`;
-        uploadToFirebaseAndPreview(file, "brandLogo", `previews/${filename}`, "tempLogo");
+      if (!file) return;
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert("로그인이 필요합니다.");
+        return;
       }
+
+      const filename = `temp-logo-${Date.now()}`;
+      const storagePath = `temp-uploads/${user.uid}/${filename}`;
+      await uploadToFirebaseAndPreview(file, "brandLogo", storagePath, "tempLogo");
     });
   }
 
@@ -275,7 +282,6 @@ document.addEventListener("DOMContentLoaded", () => {
         targetButtons.classList.remove("hidden");
         targetButtons.classList.add("visible");
 
-        // ✅ 색상 전환 시점: 버튼 등장 직후
         typingText.classList.add("text-fade-out");
 
         setTimeout(() => {
