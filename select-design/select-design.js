@@ -30,11 +30,15 @@ window.closeExampleModal = () => {
 // ✅ '임의로 넣기' 처리
 window.insertBrandTextInsteadOfLogo = () => {
   const logoBtn = document.getElementById("logoUploadBtn");
-  const brandInput = document.getElementById("brandTextAlt");
-  if (logoBtn && brandInput) {
+  const brandNameInput = document.getElementById("brandName");
+
+  if (logoBtn && brandNameInput) {
     logoBtn.classList.add("disabled");
     logoBtn.disabled = true;
-    brandInput.style.display = "block";
+
+    brandNameInput.classList.remove("hidden");
+    brandNameInput.classList.add("fade-in");
+    brandNameInput.focus();
   }
 };
 
@@ -109,9 +113,8 @@ function showBrandStep() {
   const typing = document.getElementById("brandTypingText");
   const uploadGroup = document.getElementById("brandUploadGroup");
   const textAlt = document.getElementById("brandTextAlt");
-  const brandDesc = document.getElementById("brandDesc");
 
-  if (!step2 || !typing || !uploadGroup || !textAlt || !brandDesc) return;
+  if (!step2 || !typing || !uploadGroup || !textAlt) return;
 
   step2.classList.remove("disabled");
   typing.classList.remove("hidden");
@@ -123,12 +126,10 @@ function showBrandStep() {
     setTimeout(() => {
       textAlt.classList.remove("hidden");
       textAlt.classList.add("fade-in");
-
-      brandDesc.classList.remove("hidden");
-      brandDesc.classList.add("fade-in");
     }, 400);
   });
 }
+
 
 // ✅ 스타일 선택 필터링
 window.selectStyle = (button) => {
