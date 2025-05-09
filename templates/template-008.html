@@ -58,7 +58,6 @@
       height: 3508px;
       background-color: #f3d9aa;
     }
-
   </style>
 </head>
 
@@ -77,19 +76,21 @@
 
     <div class="scale-container">
       <div class="template-frame" id="templateFrame">
-        <div class="brand-name" id="brandName" style="font-size: 48px; font-weight: bold; color: #333; margin-bottom: 20px;">브랜드명</div>
-        <div class="brand-slogan" id="brandDesc" style="font-size: 22px; color: #555; margin-bottom: 30px;">브랜드 슬로건</div>
+        <div class="brand-name" id="brandName" style="font-size: 300px; font-weight: bold; color: #333; margin-bottom: 20px;">문서제목</div>
+        <div class="brand-slogan" id="brandDesc" style="font-size: 100px; color: #555; margin-bottom: 40px;">문서 문구</div>
         <img alt="로고 이미지" class="logo-preview" id="brandLogo" src="" crossorigin="anonymous"
-             style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 40px;" />
+             style="width: 400px; height: 400px; object-fit: contain; margin-bottom: 40px;" />
+        <div id="brandLogoText" style="display:none; font-size:200px; font-weight:bold; color:#333; margin-bottom:40px; text-align:center;"></div>
 
-        <div class="image-container" style="position: absolute; top: 500px; left: 1000px; width: 400px; height: 500px; overflow: hidden; border: 1px dashed #aaa;">
+        <div class="image-container" style="position: absolute; top: 800px; left: 1000px; width: 400px; height: 500px; overflow: hidden; border: 1px dashed #aaa;">
           <img id="mainImage" class="main-preview" src="" crossorigin="anonymous"
                style="position: absolute; top: 0; left: 0; width: 100%; height: auto;" />
         </div>
       </div>
     </div>
 
-    <button class="template-close" onclick="window.history.back()">&times;</button>
+    <button class="template-close" onclick="sessionStorage.setItem('returnFromTemplate', 'true'); window.history.back();">&times;</button>
+
     <div class="template-buttons">
       <button id="saveTemplateBtn" class="save-btn">저장</button>
       <button id="deleteTemplateBtn" class="delete-btn" disabled>삭제</button>
@@ -97,7 +98,6 @@
     </div>
   </div>
 
-  <!-- ✅ 저장 완료 모달 -->
   <div class="save-modal" id="saveCompleteModal">
     <div class="modal-box">
       <p>저장 완료되었습니다!<br>작업실로 이동할까요?</p>
@@ -114,91 +114,125 @@
   <script type="module" src="/muscat/templates/templates-data/save-template-server.js"></script>
 
   <script>
-    function goToMypage() {
-      const current = new URLSearchParams(location.search);
-      const docId = current.get("docId");
-      if (docId) {
-        window.location.href = `/muscat/templates/template-001.html?docId=${docId}`;
+  function goToMypage() {
+    sessionStorage.setItem("returnFromTemplate", "true");
+    const current = new URLSearchParams(location.search);
+    const docId = current.get("docId");
+    if (docId) {
+      window.location.href = `/muscat/templates/template-001.html?docId=${docId}`;
+    } else {
+      window.location.href = "/muscat/mypage/mypage-index.html";
+    }
+  }
+
+  function closeSaveModal() {
+    document.getElementById("saveCompleteModal")?.classList.remove("active");
+  }
+</script>
+
+<script type="module">
+  import { db } from "/muscat/common/firebase-init.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+ async function loadTemplateFromFirestore(docId) {
+  try {
+    const ref = doc(db, "savedTemplates", docId);
+    const snapshot = await getDoc(ref);
+    if (!snapshot.exists()) {
+      console.warn("❌ 문서 없음:", docId);
+      return;
+    }
+
+    const data = snapshot.data();
+    if (!data.htmlUrl) {
+      console.warn("❌ htmlUrl 없음 → fetch 중단");
+      return;
+    }
+
+    const response = await fetch(data.htmlUrl);
+    const htmlText = await response.text();
+
+    const wrapper = document.getElementById("templateFrame");
+    const tempDom = document.createElement("div");
+    tempDom.innerHTML = htmlText;
+
+    const newFrame = tempDom.querySelector(".template-frame");
+    if (newFrame && wrapper) {
+      const cloned = newFrame.cloneNode(true);
+      cloned.id = "templateFrame";
+      wrapper.replaceWith(cloned);
+
+      const brandEl = cloned.querySelector(".brand-name");
+      const sloganEl = cloned.querySelector(".brand-slogan");
+      const logoEl = cloned.querySelector("#brandLogo");
+      const logoTextEl = cloned.querySelector("#brandLogoText");
+      const mainEl = cloned.querySelector("#mainImage");
+
+      if (brandEl && data.brand) brandEl.textContent = data.brand;
+      if (sloganEl && data.slogan) sloganEl.textContent = data.slogan;
+
+      // ✅ 로고 텍스트 vs 이미지 분기 처리
+      if (data.logoUrl?.startsWith("__TEXT__:")) {
+        const text = data.logoUrl.replace("__TEXT__:", "");
+        if (logoEl) logoEl.style.display = "none";
+        if (logoTextEl) {
+          logoTextEl.textContent = text;
+          logoTextEl.style.display = "block";
+        }
       } else {
-        window.location.href = "/muscat/mypage/mypage-index.html";
+        if (logoEl && data.logoUrl) {
+          logoEl.src = data.logoUrl;
+          logoEl.style.display = "block";
+        }
+        if (logoTextEl) logoTextEl.style.display = "none";
       }
+
+      if (mainEl && data.imageUrl) mainEl.src = data.imageUrl;
     }
+  } catch (e) {
+    console.error("❌ 템플릿 로드 실패:", e);
+  }
+}
 
-    function closeSaveModal() {
-      document.getElementById("saveCompleteModal")?.classList.remove("active");
-    }
-  </script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const docId = new URLSearchParams(location.search).get("docId");
+    console.log("📥 docId:", docId);
 
-  <script type="module">
-    import { db } from "/muscat/common/firebase-init.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    if (docId) {
+      loadTemplateFromFirestore(docId);
+    } else {
+      const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
+      const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
+      const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
+      const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
 
-    async function loadTemplateFromFirestore(docId) {
-      try {
-        const ref = doc(db, "savedTemplates", docId);
-        const snapshot = await getDoc(ref);
-        if (!snapshot.exists()) {
-          console.warn("❌ 문서 없음:", docId);
-          return;
+      const brandEl = document.querySelector(".brand-name");
+      const sloganEl = document.querySelector(".brand-slogan");
+      const logoEl = document.getElementById("brandLogo");
+      const logoTextEl = document.getElementById("brandLogoText");
+      const mainEl = document.getElementById("mainImage");
+
+      if (logoUrl?.startsWith("__TEXT__:")) {
+        const text = logoUrl.replace("__TEXT__:", "");
+        if (logoEl) logoEl.style.display = "none";
+        if (logoTextEl) {
+          logoTextEl.textContent = text;
+          logoTextEl.style.display = "block";
         }
-
-        const data = snapshot.data();
-        if (!data.htmlUrl) {
-          console.warn("❌ htmlUrl 없음 → fetch 중단");
-          return;
-        }
-
-        const response = await fetch(data.htmlUrl);
-        const htmlText = await response.text();
-
-        const wrapper = document.getElementById("templateFrame");
-        const tempDom = document.createElement("div");
-        tempDom.innerHTML = htmlText;
-
-        const newFrame = tempDom.querySelector(".template-frame");
-        if (newFrame && wrapper) {
-          const cloned = newFrame.cloneNode(true);
-          cloned.id = "templateFrame";
-          wrapper.replaceWith(cloned);
-
-          const brandEl = cloned.querySelector(".brand-name");
-          const sloganEl = cloned.querySelector(".brand-slogan");
-          const logoEl = cloned.querySelector("#brandLogo");
-          const mainEl = cloned.querySelector("#mainImage");
-
-          if (brandEl && data.brand) brandEl.textContent = data.brand;
-          if (sloganEl && data.slogan) sloganEl.textContent = data.slogan;
-          if (logoEl && data.logoUrl) logoEl.src = data.logoUrl;
-          if (mainEl && data.imageUrl) mainEl.src = data.imageUrl;
-        }
-      } catch (e) {
-        console.error("❌ 템플릿 로드 실패:", e);
-      }
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      const docId = new URLSearchParams(location.search).get("docId");
-      console.log("📥 docId:", docId);
-
-      if (docId) {
-        loadTemplateFromFirestore(docId);
       } else {
-        const brand = sessionStorage.getItem("tempBrand") || JSON.parse(localStorage.getItem("templateData") || "{}").brand;
-        const slogan = sessionStorage.getItem("tempSlogan") || JSON.parse(localStorage.getItem("templateData") || "{}").slogan;
-        const logoUrl = sessionStorage.getItem("tempLogo") || JSON.parse(localStorage.getItem("templateData") || "{}").logo;
-        const mainUrl = sessionStorage.getItem("tempMain") || JSON.parse(localStorage.getItem("templateData") || "{}").main;
-
-        const brandEl = document.querySelector(".brand-name");
-        const sloganEl = document.querySelector(".brand-slogan");
-        const logoEl = document.getElementById("brandLogo");
-        const mainEl = document.getElementById("mainImage");
-
-        if (brand && brandEl) brandEl.textContent = brand;
-        if (slogan && sloganEl) sloganEl.textContent = slogan;
-        if (logoUrl && logoEl) logoEl.src = logoUrl;
-        if (mainUrl && mainEl) mainEl.src = mainUrl;
+        if (logoEl && logoUrl) {
+          logoEl.src = logoUrl;
+          logoEl.style.display = "block";
+        }
+        if (logoTextEl) logoTextEl.style.display = "none";
       }
-    });
-  </script>
+
+      if (brand && brandEl) brandEl.textContent = brand;
+      if (slogan && sloganEl) sloganEl.textContent = slogan;
+      if (mainUrl && mainEl) mainEl.src = mainUrl;
+    }
+  });
+</script>
+
 </body>
 </html>
