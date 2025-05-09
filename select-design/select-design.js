@@ -167,6 +167,9 @@ function showBrandStep() {
     return;
   }
 
+  // ✅ 현재 스텝을 sessionStorage에 저장
+  sessionStorage.setItem("currentStep", "brand");
+
   step2.classList.remove("disabled");
   typing.classList.remove("hidden");
 
@@ -182,6 +185,7 @@ function showBrandStep() {
     }, 400);
   });
 }
+
 
 // ✅ 스타일 선택 필터링
 window.selectStyle = (button) => {
@@ -336,6 +340,13 @@ document.addEventListener("DOMContentLoaded", () => {
             helpText.classList.remove("hidden");
             helpText.classList.add("visible");
           }
+
+          // ✅ 저장된 스텝이 brand이면 step2 자동 실행
+          const savedStep = sessionStorage.getItem("currentStep");
+          if (savedStep === "brand") {
+            showBrandStep();
+          }
+
         }, 400);
       }, 500);
     }
