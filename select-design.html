@@ -24,7 +24,7 @@
 
         <div class="button-grid hidden" id="designTargetButtons">
           <button class="active" onclick="selectConcept(this)">전체</button>
-          <button class="dimmed" onclick="selectConcept(this)">이벤트 배너0</button>
+          <button class="dimmed" onclick="selectConcept(this)">이벤트 배너1</button>
           <button class="dimmed" onclick="selectConcept(this)">메뉴판</button>
           <button class="dimmed" onclick="selectConcept(this)">할인 전단지</button>
           <button class="dimmed" onclick="selectConcept(this)">홍보물</button>
@@ -124,23 +124,24 @@
     </div>
   </div>
 
-  <!-- 헤더 포함 -->
-  <script>
-    fetch("/muscat/components/header.html")
-      .then(res => res.text())
-      .then(html => {
-        const target = document.getElementById("header-placeholder");
-        if (target) target.innerHTML = html;
-        if (document.body.classList.contains("dark")) {
-          const logo = document.querySelector(".logo");
-          if (logo) logo.style.color = "#ffffff";
-        }
-      });
-  </script>
+<!--  헤더 포함 스크립트: 반드시 가장 먼저 -->
+<script>
+  fetch("/muscat/components/header.html")
+    .then(res => res.text())
+    .then(html => {
+      const target = document.getElementById("header-placeholder");
+      if (target) target.innerHTML = html;
+      if (document.body.classList.contains("dark")) {
+        const logo = document.querySelector(".logo");
+        if (logo) logo.style.color = "#ffffff";
+      }
+    });
+</script>
 
-  <!-- 스크립트들 -->
-  <script type="module" src="/muscat/select-design/select-design.js"></script>
-  <script type="module" src="/muscat/common/firebase-init.js"></script>
-  <script type="module" src="/muscat/common/utils-auth.js"></script>
+<!-- 모듈 스크립트: 반드시 헤더 삽입 후에 -->
+<script type="module" src="/muscat/common/firebase-init.js"></script>
+<script type="module" src="/muscat/common/utils-auth.js"></script>
+<script type="module" src="/muscat/select-design/select-design.js"></script>
+
 </body>
 </html>
