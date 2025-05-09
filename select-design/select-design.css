@@ -98,6 +98,7 @@ main {
   opacity: 1;
   transition: all 0.3s ease;
   line-height: 1.4;
+  transform: scale(1);
 }
 
 .button-grid button.active {
@@ -115,6 +116,7 @@ main {
   font-weight: normal;
   border: none;
   opacity: 1;
+  transform: scale(1.03);
 }
 
 /* 타자기 효과 텍스트 */
