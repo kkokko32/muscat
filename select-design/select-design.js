@@ -250,7 +250,16 @@ document.addEventListener("DOMContentLoaded", () => {
           allButton.classList.remove("dimmed");
           window.selectConcept(allButton);
         }
-      }, 500);
+
+        // ✅ 선택 버튼이 나타난 뒤 0.4초 후 → 도우미 문구 등장
+        setTimeout(() => {
+          const helpText = document.getElementById("selectionHelpText");
+          if (helpText) {
+            helpText.classList.remove("hidden");
+            helpText.classList.add("visible");
+          }
+        }, 400); // help 문구는 버튼 등장 후 0.4초 지연
+      }, 500); // 버튼 등장까지 0.5초 지연
     }
   });
 });
