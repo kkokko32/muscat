@@ -268,7 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ 진입 시 타자기 → 버튼 → 도움말 문구
+ // ✅ 진입 시 타자기 → 버튼 → 도움말 문구 → 색상 전환
   const typingText = document.getElementById("typingText");
   if (typingText) typingText.classList.remove("hidden");
 
@@ -278,6 +278,9 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         targetButtons.classList.remove("hidden");
         targetButtons.classList.add("visible");
+
+        // ✅ 타자기 문구 자동 색상 전환
+        typingText.classList.add("text-fade-out");
 
         setTimeout(() => {
           const helpText = document.getElementById("selectionHelpText");
@@ -289,4 +292,3 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 500);
     }
   });
-});
