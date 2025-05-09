@@ -5,11 +5,12 @@ import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/fireba
 function typeEffect(text, targetId, callback) {
   const target = document.getElementById(targetId);
   if (!target) return;
-  target.textContent = "";
+  target.innerHTML = "";
   let i = 0;
   const interval = setInterval(() => {
     if (i < text.length) {
-      target.textContent += text.charAt(i);
+      const char = text.charAt(i) === "\n" ? "<br>" : text.charAt(i);
+      target.innerHTML += char;
       i++;
     } else {
       clearInterval(interval);
@@ -112,21 +113,22 @@ function showBrandStep() {
   if (!step2 || !typing || !uploadGroup || !textHelp) return;
 
   step2.classList.remove("disabled");
+  typing.classList.remove("hidden");
 
-  typeEffect("브랜드 로고를 넣어볼게요", "brandTypingText", () => {
+  typeEffect("브랜드 로고를 넣어볼게요\n로고 이미지 파일이 있으신가요?", "brandTypingText", () => {
     uploadGroup.classList.remove("hidden");
     uploadGroup.classList.add("fade-in");
 
     setTimeout(() => {
-    textHelp.classList.remove("hidden");
-    textHelp.classList.add("fade-in");
+      textHelp.classList.remove("hidden");
+      textHelp.classList.add("fade-in");
 
-    const brandDesc = document.getElementById("brandDesc");
-    if (brandDesc) {
-      brandDesc.classList.remove("hidden");
-      brandDesc.classList.add("fade-in");
-    }
-   }, 400);
+      const brandDesc = document.getElementById("brandDesc");
+      if (brandDesc) {
+        brandDesc.classList.remove("hidden");
+        brandDesc.classList.add("fade-in");
+      }
+    }, 400);
   });
 }
 
