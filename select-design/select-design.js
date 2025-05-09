@@ -66,8 +66,7 @@ function updateLocalStorage() {
   const brand = document.getElementById("brandName")?.value || "";
   const slogan = document.getElementById("brandDesc")?.value || "";
   const logo = sessionStorage.getItem("tempLogo") || brand;
-  const main = sessionStorage.getItem("tempMain") || "";
-  const data = { brand, slogan, logo, main };
+  const data = { brand, slogan, logo };
   localStorage.setItem("templateData", JSON.stringify(data));
 }
 
@@ -129,7 +128,6 @@ function resizeSingleIframe(iframe) {
   const url = iframe.getAttribute("data-template");
 
   if (!frame) {
-    console.warn(`template-frame 없음: ${url}`);
     iframe.style.width = `440px`;
     iframe.style.height = `1200px`;
     iframe.style.border = "none";
@@ -221,29 +219,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const mainInput = document.getElementById("mainImageInput");
-  if (mainInput) {
-    mainInput.addEventListener("change", e => {
-      const file = e.target.files[0];
-      if (file) {
-        const filename = `temp-main-${Date.now()}`;
-        uploadToFirebaseAndPreview(file, "mainImage", `previews/${filename}`, "tempMain");
-      }
-    });
-  }
-
-  // ✅ 타자기 → 버튼 등장 → 전체 버튼 자동 선택
+  // ✅ 타자기 → 0.5초 후 버튼 등장 → 전체 버튼 자동 선택
   typeEffect("디자인 대상을 선택하세요", "typingText", () => {
     const targetButtons = document.getElementById("designTargetButtons");
     if (targetButtons) {
-      targetButtons.classList.remove("hidden");
-      targetButtons.classList.add("visible");
+      setTimeout(() => {
+        targetButtons.classList.remove("hidden");
+        targetButtons.classList.add("visible");
 
-      const allButton = [...targetButtons.querySelectorAll("button")].find(btn => btn.innerText === "전체");
-      if (allButton) {
-        allButton.classList.add("active");
-        window.selectStyle?.(allButton);
-      }
+        const allButton = [...targetButtons.querySelectorAll("button")].find(btn => btn.innerText === "전체");
+        if (allButton) {
+          allButton.classList.add("active");
+          window.selectStyle?.(allButton);
+        }
+      }, 500); // ✅ 0.5초 지연
     }
   });
 });
