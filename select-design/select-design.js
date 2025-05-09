@@ -114,7 +114,10 @@ function showBrandStep() {
   const uploadGroup = document.getElementById("brandUploadGroup");
   const textAlt = document.getElementById("brandTextAlt");
 
-  if (!step2 || !typing || !uploadGroup || !textAlt) return;
+  if (!step2 || !typing || !uploadGroup || !textAlt) {
+    console.warn("showBrandStep 실패: 요소 누락");
+    return;
+  }
 
   step2.classList.remove("disabled");
   typing.classList.remove("hidden");
@@ -129,6 +132,7 @@ function showBrandStep() {
     }, 400);
   });
 }
+
 
 
 // ✅ 스타일 선택 필터링
