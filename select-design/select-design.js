@@ -260,20 +260,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ 진입 시 타자기 → 버튼 → 도움말 문구
+  // ✅ 진입 시 타자기 → 버튼 → 도움말 문구 (전체 자동 선택 제거됨)
   typeEffect("디자인 대상을 선택하세요", "typingText", () => {
     const targetButtons = document.getElementById("designTargetButtons");
     if (targetButtons) {
       setTimeout(() => {
         targetButtons.classList.remove("hidden");
         targetButtons.classList.add("visible");
-
-        const allButton = [...targetButtons.querySelectorAll("button")].find(btn => btn.innerText === "전체");
-        if (allButton) {
-          allButton.classList.add("active");
-          allButton.classList.remove("dimmed");
-          window.selectConcept(allButton);
-        }
 
         setTimeout(() => {
           const helpText = document.getElementById("selectionHelpText");
