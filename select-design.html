@@ -23,7 +23,8 @@
       <div class="step active" id="step1">
         <p id="typingText" class="typing-text"></p>
         <div class="button-grid hidden" id="designTargetButtons">
-          <button onclick="selectConcept(this)">이벤트 배너1</button>
+          <button onclick="selectConcept(this)">전체</button>
+          <button onclick="selectConcept(this)">이벤트 배너</button>
           <button onclick="selectConcept(this)">메뉴판</button>
           <button onclick="selectConcept(this)">할인 전단지</button>
           <button onclick="selectConcept(this)">홍보물</button>
@@ -107,59 +108,5 @@
   <script type="module" src="/muscat/common/firebase-init.js"></script>
   <script type="module" src="/muscat/common/utils-auth.js"></script>
 
-  <script>
-    // 타자기 효과
-    function typeEffect(text, targetId, callback) {
-      const target = document.getElementById(targetId);
-      let i = 0;
-      const interval = setInterval(() => {
-        if (i < text.length) {
-          target.textContent += text.charAt(i);
-          i++;
-        } else {
-          clearInterval(interval);
-          callback?.();
-        }
-      }, 50);
-    }
-
-    function openExampleModal() {
-      document.getElementById("exampleModal")?.classList.add("active");
-    }
-
-    function closeExampleModal() {
-      document.getElementById("exampleModal")?.classList.remove("active");
-    }
-
-    function insertBrandTextInsteadOfLogo() {
-      const logoBtn = document.getElementById("logoUploadBtn");
-      const altInput = document.getElementById("brandTextAlt");
-      logoBtn.classList.add("disabled");
-      logoBtn.disabled = true;
-      altInput.style.display = "block";
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      typeEffect("디자인 대상을 선택하세요", "typingText", () => {
-        document.getElementById("designTargetButtons").classList.remove("hidden");
-        document.getElementById("designTargetButtons").classList.add("visible");
-      });
-    });
-
-    // 선택 후 브랜드 입력 단계로 이동
-    function selectConcept(button) {
-      document.querySelectorAll("#designTargetButtons button").forEach(btn => btn.classList.remove("active"));
-      button.classList.add("active");
-      const step2 = document.getElementById("step2");
-      const brandTyping = document.getElementById("brandTypingText");
-      const brandArea = document.getElementById("brandInputArea");
-      step2.classList.remove("disabled");
-      typeEffect("브랜드 정보를 입력하세요", "brandTypingText", () => {
-        brandArea.classList.remove("hidden");
-        brandArea.classList.add("visible");
-      });
-      // 필터링이나 로컬스토리지 저장은 JS에서 관리
-    }
-  </script>
 </body>
 </html>
