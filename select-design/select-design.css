@@ -120,7 +120,7 @@ main {
 
 /* 타자기 효과 텍스트 */
 .typing-text {
-   display: inline-block;     
+  display: inline-block;
   font-size: 18px;
   font-weight: 400;
   color: #eee;
@@ -130,9 +130,6 @@ main {
   animation: typing 2s steps(30, end) forwards;
   margin-bottom: 20px;
   min-height: 24px;
-  text-align: left;            
-  margin-left: 50%;             
-  transform: translateX(-50%);       
 }
 
 @keyframes typing {
