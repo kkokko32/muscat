@@ -114,7 +114,7 @@ function updateLocalStorage() {
 // ✅ 상세페이지 이동
 window.goToTemplate = (filename) => {
   updateLocalStorage();
-  window.location.href = `/muscat/templates-design/${filename}`;
+  window.location.href = `/muscat/${filename}`;
 };
 
 // ✅ 디자인 대상 선택 → 다음 단계
