@@ -30,23 +30,27 @@ window.closeExampleModal = () => {
 // ✅ '임의로 넣기' 처리
 window.insertBrandTextInsteadOfLogo = () => {
   const logoBtn = document.getElementById("logoUploadBtn");
-  const brandNameInput = document.getElementById("brandName");
+  const brandInput = document.getElementById("brandName");
 
-  if (logoBtn && brandNameInput) {
+  if (logoBtn && brandInput) {
     logoBtn.classList.add("disabled");
     logoBtn.disabled = true;
 
-    brandNameInput.classList.remove("hidden");
-    brandNameInput.classList.add("fade-in");
-    brandNameInput.focus();
+    brandInput.classList.remove("hidden");
+    brandInput.classList.add("fade-in");
+    brandInput.focus();
 
-    // 이미지 제거 (iframe 내 모든 brandLogo 숨기기)
     document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
       const doc = iframe.contentDocument || iframe.contentWindow?.document;
-      const logoImg = doc?.getElementById("brandLogo");
-      if (logoImg) logoImg.style.display = "none";
 
-      // 기존 텍스트 div가 없으면 새로 추가
+      // 기존 이미지 숨김
+      const logoImg = doc?.getElementById("brandLogo");
+      if (logoImg) {
+        logoImg.style.display = "none";
+        logoImg.src = ""; // 완전히 비움
+      }
+
+      // 텍스트 div 생성 또는 갱신
       let textDiv = doc?.getElementById("brandLogoText");
       if (!textDiv) {
         textDiv = doc.createElement("div");
@@ -57,26 +61,25 @@ window.insertBrandTextInsteadOfLogo = () => {
         textDiv.style.marginBottom = "40px";
         textDiv.style.textAlign = "center";
 
-        // 로고 이미지 바로 아래 위치에 삽입
-        const logoImgContainer = logoImg?.parentNode;
-        if (logoImgContainer) logoImgContainer.insertBefore(textDiv, logoImg.nextSibling);
+        logoImg?.parentNode?.insertBefore(textDiv, logoImg.nextSibling);
       }
 
-      // 초기 텍스트 설정
-      textDiv.textContent = brandNameInput.value || "브랜드명";
+      textDiv.textContent = brandInput.value || "브랜드명";
     });
 
-    // 입력 시 텍스트 반영
-    brandNameInput.addEventListener("input", () => {
+    // 입력 감지: 로고 텍스트만 반영 (브랜드명에는 반영 안 함)
+    brandInput.addEventListener("input", () => {
       document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
         const doc = iframe.contentDocument || iframe.contentWindow?.document;
         const textDiv = doc?.getElementById("brandLogoText");
-        if (textDiv) textDiv.textContent = brandNameInput.value || "브랜드명";
+        if (textDiv) textDiv.textContent = brandInput.value;
       });
-      updateLocalStorage();
+      // 저장 시 텍스트로 들어가게 세션에도 저장
+      sessionStorage.setItem("tempLogo", "__TEXT__:" + brandInput.value);
     });
   }
 };
+
 
 // ✅ 입력 실시간 반영
 function syncInputToIframe(id, value) {
