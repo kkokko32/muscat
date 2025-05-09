@@ -80,6 +80,7 @@ main {
 }
 
 .button-grid button {
+  font-size: 16px;
   background: none;
   border: 1px solid #cccccc;
   color: white;
@@ -142,16 +143,6 @@ main {
   pointer-events: auto;
 }
 
-#designTargetButtons button {
-  font-size: 16px; 
-  padding: 8px 12px;
-  margin: 6px;
-  border: none;
-  border-radius: 6px;
-  background-color: #333;
-  color: white;
-  cursor: pointer;
-}
 
 /* 브랜드 입력 관련 */
 .brand-guide,
