@@ -90,11 +90,11 @@ main {
   border: 1px solid #666;
   color: white;
   padding: 8px 20px;
-  margin: 4px 2px 2px 0;
+  margin: 4px;
   border-radius: 8px;
   cursor: pointer;
   min-width: 60px;
-  height: 38px;
+  height: 42px;
   text-align: center;
   opacity: 1;
   transition: all 0.2s ease;
