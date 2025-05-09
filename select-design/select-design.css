@@ -104,8 +104,9 @@ main {
 
 .button-grid button.active {
   background-color: #c4ff63;
+  border-color: #c4ff63;
   color: #292929;
-  border: none;
+  font-weight: bold;
   opacity: 1;
 }
 
@@ -114,8 +115,7 @@ main {
   background-color: #c4ff63;
   border-color: #c4ff63;
   color: #292929;
-  font-weight: normal;
-  border: none;
+  font-weight: bold;
   opacity: 1;
   transform: scale(1.03);
 }
