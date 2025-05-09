@@ -122,13 +122,18 @@ main {
 .typing-text {
   font-size: 16px;
   font-weight: 400;
-  color: eee;
+  color: #eee;
   white-space: nowrap;
   overflow: hidden;
   width: 0;
   animation: typing 2s steps(30, end) forwards;
   margin-bottom: 20px;
+  display: block;
+  width: 100%;             
+  text-align: center;    
+  min-height: 24px;    
 }
+
 
 @keyframes typing {
   from { width: 0 }
