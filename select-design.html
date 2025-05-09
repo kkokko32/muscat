@@ -28,7 +28,7 @@
 
       <div class="button-grid hidden" id="designTargetButtons">
         <!-- <button class="active" onclick="selectConcept(this)">전체</button> -->
-        <button class="dimmed" onclick="selectConcept(this)">이벤트 배너0</button>
+        <button class="dimmed" onclick="selectConcept(this)">이벤트 배너1</button>
         <button class="dimmed" onclick="selectConcept(this)">메뉴판</button>
         <button class="dimmed" onclick="selectConcept(this)">할인 전단지</button>
         <button class="dimmed" onclick="selectConcept(this)">홍보물</button>
@@ -41,9 +41,12 @@
         <button class="dimmed" onclick="selectConcept(this)">AI 추천</button>
       </div>
 
-      <!-- ✅ 도움말 문구: 초기 숨김 -->
-      <p id="brandTypingText" class="typing-text hidden"></p>
+      <!-- ✅ 도움말 문구 추가 -->
+      <p id="selectionHelpText" class="help-text hidden">
+        선택이 어려우신가요? <button class="example-btn" onclick="openExampleModal()">예시 보기</button>
+      </p>
     </div>
+
 
     <!-- Step 2: 브랜드 정보 입력 -->
     <div class="step disabled" id="step2">
