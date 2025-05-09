@@ -1,11 +1,11 @@
 import { storage } from "/muscat/common/firebase-init.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-// ✅ 타자기 효과 함수 (중복 방지 및 깜빡임 제거)
+// ✅ 타자기 효과
 function typeEffect(text, targetId, callback) {
   const target = document.getElementById(targetId);
   if (!target) return;
-  target.textContent = ""; // 중복 출력 방지
+  target.textContent = "";
   let i = 0;
   const interval = setInterval(() => {
     if (i < text.length) {
@@ -18,7 +18,7 @@ function typeEffect(text, targetId, callback) {
   }, 50);
 }
 
-// ✅ 예시 모달 열기/닫기
+// ✅ 모달 열기/닫기
 window.openExampleModal = () => {
   document.getElementById("exampleModal")?.classList.add("active");
 };
@@ -26,7 +26,7 @@ window.closeExampleModal = () => {
   document.getElementById("exampleModal")?.classList.remove("active");
 };
 
-// ✅ '임의로 넣기' 클릭 시 로고 대신 텍스트 입력
+// ✅ '임의로 넣기' 처리
 window.insertBrandTextInsteadOfLogo = () => {
   const logoBtn = document.getElementById("logoUploadBtn");
   const brandInput = document.getElementById("brandTextAlt");
@@ -37,7 +37,7 @@ window.insertBrandTextInsteadOfLogo = () => {
   }
 };
 
-// ✅ 텍스트 입력 시 iframe 내 실시간 반영
+// ✅ 입력 실시간 반영
 function syncInputToIframe(id, value) {
   document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -47,7 +47,7 @@ function syncInputToIframe(id, value) {
   updateLocalStorage();
 }
 
-// ✅ 이미지 업로드 후 Storage 저장 + iframe에 반영
+// ✅ 이미지 업로드 + 반영
 async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessionKey) {
   const storageRef = ref(storage, storagePath);
   const snapshot = await uploadBytes(storageRef, file);
@@ -71,13 +71,13 @@ function updateLocalStorage() {
   localStorage.setItem("templateData", JSON.stringify(data));
 }
 
-// ✅ 템플릿 클릭 시 상세페이지 이동
+// ✅ 상세페이지 이동
 window.goToTemplate = (filename) => {
   updateLocalStorage();
   window.location.href = `/muscat/templates/templates-design/${filename}`;
 };
 
-// ✅ 디자인 대상 선택 시 필터링 + 다음 단계로
+// ✅ 디자인 대상 선택 → 다음 단계
 window.selectConcept = (button) => {
   document.querySelectorAll("#designTargetButtons button").forEach(btn => btn.classList.remove("active"));
   button.classList.add("active");
@@ -93,7 +93,6 @@ window.selectConcept = (button) => {
   });
   if (window.msnry) window.msnry.layout();
 
-  // 다음 단계 등장
   const step2 = document.getElementById("step2");
   const brandTyping = document.getElementById("brandTypingText");
   const brandArea = document.getElementById("brandInputArea");
@@ -106,7 +105,7 @@ window.selectConcept = (button) => {
   }
 };
 
-// ✅ 스타일 필터링
+// ✅ 스타일 선택 필터링
 window.selectStyle = (button) => {
   document.querySelectorAll(".inline-concept-filter button").forEach(btn => btn.classList.remove("active"));
   button.classList.add("active");
@@ -123,12 +122,66 @@ window.selectStyle = (button) => {
   if (window.msnry) window.msnry.layout();
 };
 
+// ✅ iframe 축소 및 스타일 적용
+function resizeSingleIframe(iframe) {
+  const doc = iframe.contentDocument || iframe.contentWindow?.document;
+  const frame = doc?.querySelector('.template-frame');
+  const url = iframe.getAttribute("data-template");
+
+  if (!frame) {
+    console.warn(`template-frame 없음: ${url}`);
+    iframe.style.width = `440px`;
+    iframe.style.height = `1200px`;
+    iframe.style.border = "none";
+    const card = iframe.closest(".template-card");
+    if (card) {
+      card.style.width = `440px`;
+      card.style.height = `1200px`;
+    }
+    return;
+  }
+
+  const originalWidth = frame.offsetWidth || 2480;
+  const originalHeight = frame.offsetHeight || 3508;
+  const targetWidth = 440;
+  const ratio = targetWidth / originalWidth;
+  const targetHeight = originalHeight * ratio;
+
+  iframe.style.width = `${originalWidth}px`;
+  iframe.style.height = `${originalHeight}px`;
+  iframe.style.border = "none";
+  iframe.style.transform = `scale(${ratio})`;
+  iframe.style.transformOrigin = "top left";
+
+  const card = iframe.closest(".template-card");
+  if (card) {
+    card.style.width = `${targetWidth}px`;
+    card.style.height = `${targetHeight}px`;
+    card.style.overflow = "hidden";
+  }
+
+  doc.body.classList.add("inside-preview");
+  const style = doc.createElement("style");
+  style.textContent = `
+    #saveTemplateBtn,
+    #deleteTemplateBtn,
+    #downloadBtn,
+    .template-close {
+      display: none !important;
+    }
+    body.inside-preview .template-frame {
+      margin-top: 0 !important;
+    }
+  `;
+  doc.head.appendChild(style);
+
+  if (window.msnry) window.msnry.layout();
+}
+
 // ✅ 초기화
 document.addEventListener("DOMContentLoaded", () => {
-  // 모달 자동열림 방지
   document.getElementById("exampleModal")?.classList.remove("active");
 
-  // Masonry 템플릿 정렬
   const grid = document.querySelector('.template-preview');
   window.msnry = new Masonry(grid, {
     itemSelector: '.template-card',
@@ -140,11 +193,11 @@ document.addEventListener("DOMContentLoaded", () => {
   imagesLoaded(grid, () => {
     document.querySelectorAll(".template-card iframe").forEach(iframe => {
       iframe.src = iframe.dataset.template;
+      iframe.onload = () => resizeSingleIframe(iframe);
     });
     window.msnry.layout();
   });
 
-  // 브랜드명/슬로건 입력 실시간 반영
   const brandInput = document.getElementById("brandName");
   const descInput = document.getElementById("brandDesc");
   if (brandInput && descInput) {
@@ -157,7 +210,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 로고 업로드
   const logoInput = document.getElementById("logoInput");
   if (logoInput) {
     logoInput.addEventListener("change", e => {
@@ -169,7 +221,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 메인 이미지 업로드
   const mainInput = document.getElementById("mainImageInput");
   if (mainInput) {
     mainInput.addEventListener("change", e => {
@@ -181,12 +232,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ 타자기 문구 → 버튼 그룹 슬며시 등장
+  // 타자기 → 버튼 등장 → '전체' 자동 선택
   typeEffect("디자인 대상을 선택하세요", "typingText", () => {
     const targetButtons = document.getElementById("designTargetButtons");
     if (targetButtons) {
       targetButtons.classList.remove("hidden");
       targetButtons.classList.add("visible");
+
+      const allButton = [...targetButtons.querySelectorAll("button")].find(btn => btn.innerText === "전체");
+      if (allButton) {
+        allButton.classList.add("active");
+        window.selectStyle?.(allButton);
+      }
     }
   });
 });
