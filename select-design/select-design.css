@@ -110,6 +110,10 @@ main {
 
 /* hover 시는 항상 opacity 1 */
 .button-grid button:hover {
+  background-color: #c4ff63;
+  color: #292929;
+  font-weight: normal;
+  border: none;
   opacity: 1;
 }
 
