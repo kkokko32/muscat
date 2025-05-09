@@ -118,11 +118,17 @@ async function handleSaveTemplate() {
     const imageExt = getImageExtension(imageImg?.src || "");
 
     let logoUrl = "";
-    if (logoImg?.src) {
+    const logoImg = frame.querySelector(".logo-preview");
+    const logoText = frame.querySelector("#brandLogoText");
+
+    if (logoText?.style.display === "block") {
+      logoUrl = `__TEXT__:${logoText.textContent}`;
+    } else if (logoImg?.src) {
       logoUrl = isDataUrl(logoImg.src)
         ? await uploadImageToStorage(logoImg.src, `${basePath}_logo.${logoExt}`)
         : stripToken(logoImg.src);
     }
+
 
     let imageUrl = "";
     if (imageImg?.src) {

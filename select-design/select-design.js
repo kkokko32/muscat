@@ -109,7 +109,8 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
 function updateLocalStorage() {
   const brand = document.getElementById("brandName")?.value || "";
   const slogan = document.getElementById("brandDesc")?.value || "";
-  const logo = sessionStorage.getItem("tempLogo") || brand;
+  const logoSession = sessionStorage.getItem("tempLogo");
+  const logo = logoSession ? logoSession : "";
   const data = { brand, slogan, logo };
   localStorage.setItem("templateData", JSON.stringify(data));
 }
