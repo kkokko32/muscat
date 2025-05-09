@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!docId) return;
 
         // 기본 템플릿 상세 보기 페이지로 이동
-        window.open(`/muscat/templates/templates-design/template-001.html?docId=${docId}`, "_blank");
+        window.open(`/muscat/templates/template-001.html?docId=${docId}`, "_blank");
       });
     });
 
