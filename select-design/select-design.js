@@ -267,9 +267,11 @@ function resizeSingleIframe(iframe) {
 
 // ✅ 초기화
 document.addEventListener("DOMContentLoaded", () => {
-  // ✅ 새 진입이면 복귀 기록 초기화 (referrer가 상세페이지가 아님)
-  if (!document.referrer.includes("template-001.html")) {
+  // ✅ '디자인 시작하기'로 새 진입한 경우 복귀 기록 및 스텝 초기화
+  if (sessionStorage.getItem("entryType") === "new") {
     sessionStorage.removeItem("returnFromTemplate");
+    sessionStorage.removeItem("currentStep"); // step2 자동 진입 방지
+    sessionStorage.removeItem("entryType");   // 플래그 제거
   }
 
   // ✅ 상세페이지에서 복귀 시: 타자기 효과 생략하고 바로 step2 진입
@@ -375,4 +377,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
