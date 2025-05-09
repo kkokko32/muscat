@@ -51,16 +51,16 @@
     <div class="step disabled" id="step2">
       <p id="brandTypingText" class="typing-text"></p>
 
-      <div id="brandUploadGroup" class="hidden">
-        <p>로고 이미지 파일이 있으신가요?</p>
-        <button class="upload-btn" id="logoUploadBtn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
-        <input accept="image/*" id="logoInput" style="display: none" type="file" />
-      </div>
+     <p id="brandTypingText" class="typing-text">
+      브랜드 로고를 넣어볼게요<br>
+      로고 이미지 파일이 있으신가요?
+    </p>
 
-      <p id="brandTextHelp" class="help-text hidden">
-        로고 이미지가 없으신가요? <button class="example-btn" onclick="insertBrandTextInsteadOfLogo()">임의로 넣기</button>
-      </p>
-
+    <div id="brandUploadGroup" class="hidden">
+      <button class="upload-btn" id="logoUploadBtn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
+      <input accept="image/*" id="logoInput" style="display: none" type="file" />
+    </div>
+    
       <div id="brandTextAlt" style="display:none;">
         <input id="brandName" placeholder="브랜드 명을 입력하세요" type="text" />
       </div>
