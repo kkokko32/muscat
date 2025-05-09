@@ -352,13 +352,13 @@ body.inside-preview .template-frame {
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0, 0, 0, 0.7);
   z-index: 9999;
-  display: none;
+  display: none !important;
   justify-content: center;
   align-items: center;
 }
 
 .modal-overlay.active {
-  display: flex;
+  display: flex !important;
 }
 
 .modal-content {
@@ -380,6 +380,7 @@ body.inside-preview .template-frame {
   border: none;
   font-size: 24px;
   cursor: pointer;
+  color: 292929;
 }
 
 .help-text {
