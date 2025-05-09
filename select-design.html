@@ -4,10 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>디자인 시작</title>
-  
+
   <link rel="icon" href="/muscat/common/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/muscat/common/favicon.ico" type="image/x-icon">
-
   <link rel="stylesheet" href="/muscat/common/common.css" />
   <link rel="stylesheet" href="/muscat/select-design/select-design.css" />
   <link rel="stylesheet" href="/muscat/templates/templates-css/template.css" />
@@ -19,61 +18,50 @@
 
   <main>
     <aside class="sidebar">
+
+      <!-- Step 1: 디자인 대상 선택 -->
       <div class="step active" id="step1">
-        <p class="step-title">업종</p>
-        <div class="button-grid">
-          <button type="button" onclick="selectIndustry(this)">전체</button>
-          <button type="button" onclick="selectIndustry(this)">카페</button>
-          <button type="button" onclick="selectIndustry(this)">식당</button>
-          <button type="button" onclick="selectIndustry(this)">뷰티샵</button>
-          <button type="button" onclick="selectIndustry(this)">비즈니스</button>
-          <button type="button" onclick="selectIndustry(this)">기타</button>
+        <p id="typingText" class="typing-text"></p>
+        <div class="button-grid hidden" id="designTargetButtons">
+          <button onclick="selectConcept(this)">이벤트 배너</button>
+          <button onclick="selectConcept(this)">메뉴판</button>
+          <button onclick="selectConcept(this)">할인 전단지</button>
+          <button onclick="selectConcept(this)">홍보물</button>
+          <button onclick="selectConcept(this)">SNS 이미지</button>
+          <button onclick="selectConcept(this)">포스터</button>
+          <button onclick="selectConcept(this)">명함</button>
+          <button onclick="selectConcept(this)">디자인 제작하기</button>
+          <button onclick="selectConcept(this)">건너뛰기</button>
+          <button onclick="selectConcept(this)">스티커</button>
+          <button onclick="selectConcept(this)">AI 추천</button>
         </div>
+        <p style="margin-top: 10px;">
+          선택이 어려우신가요? <a href="#" onclick="openExampleModal()">[예시 보기]</a>
+        </p>
       </div>
 
+      <!-- Step 2: 브랜드 정보 입력 -->
       <div class="step disabled" id="step2">
-        <p class="step-title">디자인 대상</p>
-        <div class="button-grid">
-          <button type="button" onclick="selectConcept(this)">전체</button>
-          <button type="button" onclick="selectConcept(this)">메뉴판</button>
-          <button type="button" onclick="selectConcept(this)">명함</button>
-          <button type="button" onclick="selectConcept(this)">SNS 이미지</button>
-          <button type="button" onclick="selectConcept(this)">포장지</button>
-        </div>
-
-        <p class="step-title" style="margin-top: 30px;">디자인 사이즈</p>
-        <div class="button-grid">
-          <button type="button" onclick="selectSize(this)">전체</button>
-          <button type="button" onclick="selectSize(this)">A5</button>
-          <button type="button" onclick="selectSize(this)">A4</button>
-          <button type="button" onclick="selectSize(this)">A3</button>
-          <button type="button" onclick="selectSize(this)">태블릿</button>
-          <button type="button" onclick="selectSize(this)">모니터</button>
-          <button type="button" onclick="selectSize(this)">TV</button>
-        </div>
-      </div>
-
-      <div class="step disabled" id="step3">
-        <div class="selection-summary">
-          <span>업종 | <strong id="selectedIndustry">-</strong></span>
-          <span>디자인 대상 | <strong id="selectedConcept">-</strong></span>
-        </div>
-        <p class="brand-guide">브랜드 정보를 입력하세요</p>
-        <div class="full-width-group">
-          <input id="brandName" placeholder="브랜드 명을 입력하세요" type="text" />
-          <input id="brandDesc" placeholder="브랜드 문구 / 슬로건" type="text" />
-          <p class="upload-label">이미지를 업로드해주세요</p>
-          <button class="upload-btn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
+        <p id="brandTypingText" class="typing-text"></p>
+        <div class="full-width-group hidden" id="brandInputArea">
+          <button class="upload-btn" id="logoUploadBtn" type="button" onclick="document.getElementById('logoInput').click()">로고 이미지 업로드</button>
           <input accept="image/*" id="logoInput" style="display: none" type="file" />
-          <img id="logoPreview" style="display: none !important; width: 0; height: 0; position: absolute; visibility: hidden;" />
-
+          <p style="margin: 6px 0;">
+            로고 이미지가 없으신가요? <a href="#" onclick="insertBrandTextInsteadOfLogo()">[임의로 넣기]</a>
+          </p>
+          <div id="brandTextAlt" style="display:none;">
+            <input id="brandName" placeholder="브랜드 명을 입력하세요" type="text" />
+          </div>
+          <input id="brandDesc" placeholder="브랜드 문구 / 슬로건" type="text" />
+          <p class="upload-label">메인 이미지를 업로드해주세요</p>
           <button class="upload-btn" type="button" onclick="document.getElementById('mainImageInput').click()">메인 이미지 업로드</button>
           <input accept="image/*" id="mainImageInput" style="display: none" type="file" />
-          <img id="mainPreview" style="display: none !important; width: 0; height: 0; position: absolute; visibility: hidden;" />
         </div>
       </div>
+
     </aside>
 
+    <!-- 우측 템플릿 영역 -->
     <section class="content">
       <div class="template-wrapper">
         <div class="template-area">
@@ -90,36 +78,14 @@
 
           <div class="template-scroll">
             <div class="template-preview">
+              <!-- 템플릿 카드들 -->
               <div class="template-card visible" onclick="goToTemplate('template-001.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-001.html" title="템플릿 미리보기 1"></iframe>
+                <iframe data-template="/muscat/templates/templates-design/template-001.html"></iframe>
               </div>
               <div class="template-card visible" onclick="goToTemplate('template-002.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-002.html" title="템플릿 미리보기 2"></iframe>
+                <iframe data-template="/muscat/templates/templates-design/template-002.html"></iframe>
               </div>
-              <div class="template-card visible" onclick="goToTemplate('template-003.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-003.html" title="템플릿 미리보기 3"></iframe>
-              </div>
-              <div class="template-card visible" onclick="goToTemplate('template-004.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-004.html" title="템플릿 미리보기 4"></iframe>
-              </div>
-              <div class="template-card visible" onclick="goToTemplate('template-005.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-005.html" title="템플릿 미리보기 5"></iframe>
-              </div>
-              <div class="template-card visible" onclick="goToTemplate('template-006.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-006.html" title="템플릿 미리보기 6"></iframe>
-              </div>
-              <div class="template-card visible" onclick="goToTemplate('template-007.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-007.html" title="템플릿 미리보기 7"></iframe>
-              </div>
-              <div class="template-card visible" onclick="goToTemplate('template-008.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-008.html" title="템플릿 미리보기 8"></iframe>
-              </div>
-              <div class="template-card visible" onclick="goToTemplate('template-009.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-009.html" title="템플릿 미리보기 9"></iframe>
-              </div>
-              <div class="template-card visible" onclick="goToTemplate('template-010.html')">
-                <iframe data-template="/muscat/templates/templates-design/template-010.html" title="템플릿 미리보기 10"></iframe>
-              </div>
+              <!-- 생략 가능 -->
             </div>
           </div>
         </div>
@@ -127,172 +93,73 @@
     </section>
   </main>
 
-  <!-- ✅ sessionStorage 저장 및 템플릿 이동 -->
-  <script type="module">
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-    import { storage } from "/muscat/common/firebase-init.js";
-    import { resizeImage, handleImageLoading } from "/muscat/common/image-fit.js";
-  
-    async function uploadImageAndSetPreview(file, imgId, storagePath, storageKey) {
-      const img = document.getElementById(imgId);
-      
-      // 로컬 환경인지 확인 (localhost 또는 127.0.0.1)
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      
-      if (isLocalhost) {
-        // 로컬 환경에서는 FileReader 사용
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          if (img) {
-            img.src = e.target.result;
-            img.style.display = "none"; // 프리뷰는 숨김 처리
-          }
-          sessionStorage.setItem(storageKey, e.target.result);
-          
-          // 모든 템플릿 iframe에 이미지 업데이트 메시지 전송
-          updateTemplateFrames();
-        };
-        reader.readAsDataURL(file);
-        return;
-      }
-      
-      try {
-        // Firebase Storage 업로드 시도 (프로덕션 환경)
-        const storageRef = ref(storage, storagePath);
-        const snapshot = await uploadBytes(storageRef, file);
-        const downloadURL = await getDownloadURL(snapshot.ref);
-        
-        if (img) {
-          img.src = downloadURL;
-          img.style.display = "none"; // 프리뷰는 숨김 처리
-        }
-        sessionStorage.setItem(storageKey, downloadURL);
-        
-        // 모든 템플릿 iframe에 이미지 업데이트 메시지 전송
-        updateTemplateFrames();
-      } catch (error) {
-        console.warn('Firebase Storage 업로드 실패, 로컬 폴백 사용:', error);
-        
-        // 에러 발생 시 로컬 폴백
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          if (img) {
-            img.src = e.target.result;
-            img.style.display = "none"; // 프리뷰는 숨김 처리
-          }
-          sessionStorage.setItem(storageKey, e.target.result);
-          
-          // 모든 템플릿 iframe에 이미지 업데이트 메시지 전송
-          updateTemplateFrames();
-        };
-        reader.readAsDataURL(file);
-      }
-    }
+  <!-- 모달: 예시 보기 -->
+  <div class="modal-overlay" id="exampleModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeExampleModal()">×</button>
+      <h3>디자인 예시 안내</h3>
+      <p>여기에 이미지나 설명 추가 예정</p>
+    </div>
+  </div>
 
-    // iframe 업데이트 함수
-    function updateTemplateFrames() {
-      const iframes = document.querySelectorAll('.template-card iframe');
-      const brand = document.getElementById("brandName")?.value || "";
-      const slogan = document.getElementById("brandDesc")?.value || "";
-      const logoUrl = document.getElementById("logoPreview")?.src || "";
-      const mainUrl = document.getElementById("mainPreview")?.src || "";
-
-      iframes.forEach(iframe => {
-        if (iframe.contentWindow) {
-          iframe.contentWindow.postMessage({
-            type: 'updateTemplate',
-            brand,
-            slogan,
-            logoUrl,
-            mainUrl
-          }, '*');
-        }
-      });
-    }
-
-    // 텍스트 입력 시에도 실시간 업데이트
-    document.getElementById("brandName")?.addEventListener("input", updateTemplateFrames);
-    document.getElementById("brandDesc")?.addEventListener("input", updateTemplateFrames);
-  
-    function goToTemplate(path) {
-      const brand = document.getElementById("brandName")?.value || "";
-      const slogan = document.getElementById("brandDesc")?.value || "";
-      const logoUrl = document.getElementById("logoPreview")?.src || "";
-      const mainUrl = document.getElementById("mainPreview")?.src || "";
-  
-      sessionStorage.setItem("tempBrand", brand);
-      sessionStorage.setItem("tempSlogan", slogan);
-      sessionStorage.setItem("tempLogo", logoUrl);
-      sessionStorage.setItem("tempMain", mainUrl);
-  
-      window.location.href = `/muscat/templates/templates-design/${path}`;
-    }
-  
-    document.getElementById("logoInput")?.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const filename = `temp/logo_${Date.now()}`;
-        await uploadImageAndSetPreview(file, "logoPreview", filename, "tempLogo");
-      }
-    });
-  
-    document.getElementById("mainImageInput")?.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const filename = `temp/main_${Date.now()}`;
-        await uploadImageAndSetPreview(file, "mainPreview", filename, "tempMain");
-      }
-    });
-  
-    window.addEventListener("DOMContentLoaded", () => {
-      const brand = sessionStorage.getItem("tempBrand");
-      const slogan = sessionStorage.getItem("tempSlogan");
-      const logo = sessionStorage.getItem("tempLogo");
-      const main = sessionStorage.getItem("tempMain");
-  
-      const brandInput = document.getElementById("brandName");
-      const sloganInput = document.getElementById("brandDesc");
-      const logoImg = document.getElementById("logoPreview");
-      const mainImg = document.getElementById("mainPreview");
-  
-      if (brand && brandInput) brandInput.value = brand;
-      if (slogan && sloganInput) sloganInput.value = slogan;
-  
-      if (logo && logoImg) {
-        logoImg.src = logo;
-        logoImg.style.display = "block"; // 이미지를 보이게 설정
-      }
-  
-      if (main && mainImg) {
-        mainImg.src = main;
-        mainImg.style.display = "block"; // 이미지를 보이게 설정
-      }
-    });
-  </script>  
-
-  <script>
-    fetch("/muscat/components/header.html")
-      .then(res => res.text())
-      .then(html => {
-        const target = document.getElementById("header-placeholder");
-        if (target) target.innerHTML = html;
-        if (document.body.classList.contains("dark")) {
-          const logo = document.querySelector(".logo");
-          if (logo) logo.style.color = "#ffffff";
-        }
-      });
-  </script>
-
-  <script type="module" src="/muscat/select-design/select-design.js"></script> 
+  <!-- 스크립트들 -->
+  <script type="module" src="/muscat/select-design/select-design.js"></script>
   <script type="module" src="/muscat/common/firebase-init.js"></script>
   <script type="module" src="/muscat/common/utils-auth.js"></script>
 
-  <div id="modal-placeholder"></div>
-  <div id="login-required-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000099; z-index:9999; justify-content:center; align-items:center;">
-    <div style="background:white; padding:30px 40px; border-radius:10px; text-align:center;">
-      <p style="font-size:18px; margin-bottom:20px;">로그인이 필요한 서비스입니다.</p>
-      <button onclick="openLoginFromRedirect()" style="padding:10px 20px; background:#333; color:#fff; border:none; border-radius:5px;">로그인하기</button>
-    </div>
-  </div>
+  <script>
+    // 타자기 효과
+    function typeEffect(text, targetId, callback) {
+      const target = document.getElementById(targetId);
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          target.textContent += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(interval);
+          callback?.();
+        }
+      }, 50);
+    }
+
+    function openExampleModal() {
+      document.getElementById("exampleModal")?.classList.add("active");
+    }
+
+    function closeExampleModal() {
+      document.getElementById("exampleModal")?.classList.remove("active");
+    }
+
+    function insertBrandTextInsteadOfLogo() {
+      const logoBtn = document.getElementById("logoUploadBtn");
+      const altInput = document.getElementById("brandTextAlt");
+      logoBtn.classList.add("disabled");
+      logoBtn.disabled = true;
+      altInput.style.display = "block";
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      typeEffect("디자인 대상을 선택하세요", "typingText", () => {
+        document.getElementById("designTargetButtons").classList.remove("hidden");
+        document.getElementById("designTargetButtons").classList.add("visible");
+      });
+    });
+
+    // 선택 후 브랜드 입력 단계로 이동
+    function selectConcept(button) {
+      document.querySelectorAll("#designTargetButtons button").forEach(btn => btn.classList.remove("active"));
+      button.classList.add("active");
+      const step2 = document.getElementById("step2");
+      const brandTyping = document.getElementById("brandTypingText");
+      const brandArea = document.getElementById("brandInputArea");
+      step2.classList.remove("disabled");
+      typeEffect("브랜드 정보를 입력하세요", "brandTypingText", () => {
+        brandArea.classList.remove("hidden");
+        brandArea.classList.add("visible");
+      });
+      // 필터링이나 로컬스토리지 저장은 JS에서 관리
+    }
+  </script>
 </body>
 </html>
