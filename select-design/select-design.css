@@ -89,7 +89,7 @@ main {
   background: none;
   border: 1px solid #666;
   color: white;
-  padding: 8px 12px;
+  padding: 8px 20px;
   margin: 4px 2px 2px 0;
   border-radius: 8px;
   cursor: pointer;
@@ -217,7 +217,8 @@ input[disabled] {
   border: none;
   cursor: pointer;
   color: #292929;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 /* 업로드 비활성화 */
