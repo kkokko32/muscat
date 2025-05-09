@@ -89,9 +89,9 @@ main {
   background: none;
   border: 1px solid #666;
   color: white;
-  padding: 8px 20px;
+  padding: 8px 18px;
   margin: 4px;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   min-width: 60px;
   height: 42px;
