@@ -180,6 +180,11 @@ function resizeSingleIframe(iframe) {
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("exampleModal")?.classList.remove("active");
 
+  // 모든 템플릿 강제 visible
+  document.querySelectorAll(".template-card").forEach(card => {
+    card.classList.add("visible");
+  });
+
   const grid = document.querySelector('.template-preview');
   window.msnry = new Masonry(grid, {
     itemSelector: '.template-card',
@@ -232,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
           allButton.classList.add("active");
           window.selectStyle?.(allButton);
         }
-      }, 500); // ✅ 0.5초 지연
+      }, 500);
     }
   });
 });
