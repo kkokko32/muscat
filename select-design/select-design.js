@@ -232,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 타자기 → 버튼 등장 → '전체' 자동 선택
+  // ✅ 타자기 → 버튼 등장 → 전체 버튼 자동 선택
   typeEffect("디자인 대상을 선택하세요", "typingText", () => {
     const targetButtons = document.getElementById("designTargetButtons");
     if (targetButtons) {
