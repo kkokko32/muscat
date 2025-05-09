@@ -118,9 +118,15 @@ function showBrandStep() {
     uploadGroup.classList.add("fade-in");
 
     setTimeout(() => {
-      textHelp.classList.remove("hidden");
-      textHelp.classList.add("fade-in");
-    }, 400);
+    textHelp.classList.remove("hidden");
+    textHelp.classList.add("fade-in");
+
+    const brandDesc = document.getElementById("brandDesc");
+    if (brandDesc) {
+      brandDesc.classList.remove("hidden");
+      brandDesc.classList.add("fade-in");
+    }
+   }, 400);
   });
 }
 
