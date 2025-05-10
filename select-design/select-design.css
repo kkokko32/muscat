@@ -173,9 +173,9 @@ main {
   color: #ccc;
 }
 
-.upload-label {
+/* .upload-label {
   margin-top: 40px;
-}
+} */
 
 .full-width-group {
   width: 100%;
@@ -452,7 +452,7 @@ body.inside-preview .template-frame {
 }
 /* 완료 버튼 */
 .complete-btn {
-  width: 130px;
+  width: 180px;
   height: 50px;
   background-color: #c4ff63;
   color: #292929;
