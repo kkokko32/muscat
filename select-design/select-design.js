@@ -267,7 +267,7 @@ function resizeSingleIframe(iframe) {
 
 // ✅ 초기화
 document.addEventListener("DOMContentLoaded", () => {
-  // ✅ 템플릿 카드 표시 및 Masonry 초기화는 항상 실행되도록 최상단 배치
+  // ✅ 템플릿 카드 표시 및 Masonry 초기화 (항상 먼저 실행)
   document.querySelectorAll(".template-card").forEach(card => {
     card.classList.add("visible");
   });
@@ -288,76 +288,46 @@ document.addEventListener("DOMContentLoaded", () => {
     window.msnry.layout();
   });
 
-  // ✅ '디자인 시작하기'로 새 진입한 경우 복귀 기록 및 스텝 초기화
-  if (sessionStorage.getItem("entryType") === "new") {
+  const entryType = sessionStorage.getItem("entryType");
+
+  // ✅ '디자인 시작하기'로 새 진입 시 상태 초기화
+  if (entryType === "new") {
     sessionStorage.removeItem("returnFromTemplate");
-    sessionStorage.removeItem("currentStep"); // step2 자동 진입 방지
-    sessionStorage.removeItem("entryType");   // 플래그 제거
+    sessionStorage.removeItem("currentStep");
+    sessionStorage.removeItem("entryType");
   }
 
-  // ✅ 상세페이지에서 복귀 시: 타자기 효과 생략하고 바로 step2 진입
+  // ✅ 상세페이지 복귀 시: 애니메이션 없이 바로 step1 + step2 진입
   const isReturn = sessionStorage.getItem("returnFromTemplate") === "true";
   if (isReturn && sessionStorage.getItem("currentStep") === "brand") {
     const typingText = document.getElementById("typingText");
-    const step1 = document.getElementById("designTargetButtons");
+    const step1 = document.getElementById("step1");
+    const step2 = document.getElementById("step2");
     const helpText = document.getElementById("selectionHelpText");
 
-    // ✅ 문구 복원 + 색상 복원
+    // 문구 및 시각 상태 복원
     if (typingText) {
       typingText.innerText = "디자인 대상을 선택하세요";
       typingText.classList.remove("hidden");
-      typingText.classList.add("text-fade-out"); // 색상 복원
+      typingText.classList.add("text-fade-out");
     }
 
-    step1?.classList.remove("hidden", "text-fade-out");
-    step1?.classList.add("visible");
-    helpText?.classList.remove("hidden");
+    step1?.classList.add("active");
+    document.getElementById("designTargetButtons")?.classList.add("visible");
     helpText?.classList.add("visible");
 
-    showBrandStep(); // step2 직접 진입
+    showBrandStep(); // step2 진입
+
     sessionStorage.removeItem("returnFromTemplate");
-    return; // ✅ 타자기 애니메이션 생략
+    return; // ✅ 애니메이션 생략
   }
 
-  // ✅ 모달 초기 닫기
+  // ✅ 정상 타자기 애니메이션 흐름 (디자인 시작으로 진입한 경우)
   setTimeout(() => {
     const modal = document.getElementById("exampleModal");
     if (modal) modal.classList.remove("active");
   }, 100);
 
-  // ✅ 브랜드 입력 실시간 반영
-  const brandInput = document.getElementById("brandName");
-  const descInput = document.getElementById("brandDesc");
-  if (brandInput && descInput) {
-    brandInput.addEventListener("input", () => {
-      descInput.disabled = brandInput.value.trim() === "";
-      syncInputToIframe("brandName", brandInput.value);
-    });
-    descInput.addEventListener("input", () => {
-      syncInputToIframe("brandDesc", descInput.value);
-    });
-  }
-
-  // ✅ 로고 이미지 업로드
-  const logoInput = document.getElementById("logoInput");
-  if (logoInput) {
-    logoInput.addEventListener("change", async e => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const user = auth.currentUser;
-      if (!user) {
-        alert("로그인이 필요합니다.");
-        return;
-      }
-
-      const filename = `temp-logo-${Date.now()}`;
-      const storagePath = `temp-uploads/${user.uid}/${filename}`;
-      await uploadToFirebaseAndPreview(file, "brandLogo", storagePath, "tempLogo");
-    });
-  }
-
-  // ✅ 초기 타자기 효과 시작
   const typingText = document.getElementById("typingText");
   if (typingText) {
     typingText.classList.remove("hidden");
@@ -380,14 +350,43 @@ document.addEventListener("DOMContentLoaded", () => {
             helpText.classList.add("visible");
           }
 
-          // ✅ 저장된 스텝이 brand이면 step2 자동 실행
-          const savedStep = sessionStorage.getItem("currentStep");
-          if (savedStep === "brand") {
+          if (sessionStorage.getItem("currentStep") === "brand") {
             showBrandStep();
           }
-
         }, 400);
       }, 500);
     }
   });
+
+  // ✅ 브랜드 입력 실시간 반영
+  const brandInput = document.getElementById("brandName");
+  const descInput = document.getElementById("brandDesc");
+  if (brandInput && descInput) {
+    brandInput.addEventListener("input", () => {
+      descInput.disabled = brandInput.value.trim() === "";
+      syncInputToIframe("brandName", brandInput.value);
+    });
+    descInput.addEventListener("input", () => {
+      syncInputToIframe("brandDesc", descInput.value);
+    });
+  }
+
+  // ✅ 로고 이미지 업로드 반영
+  const logoInput = document.getElementById("logoInput");
+  if (logoInput) {
+    logoInput.addEventListener("change", async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      const filename = `temp-logo-${Date.now()}`;
+      const storagePath = `temp-uploads/${user.uid}/${filename}`;
+      await uploadToFirebaseAndPreview(file, "brandLogo", storagePath, "tempLogo");
+    });
+  }
 });
