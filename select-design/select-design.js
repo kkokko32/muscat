@@ -107,6 +107,7 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
 
   // ✅ 텍스트 모드가 남아있어도 강제로 이미지 모드로 전환
   sessionStorage.setItem(sessionKey, downloadURL);
+  sessionStorage.setItem("tempLogo", downloadURL); // ← 이 줄이 누락되면 텍스트 상태로 남아 오류 발생
 
   // ✅ 텍스트 입력창 숨김 (텍스트 모드에서 이미지로 전환 시)
   const brandInput = document.getElementById("brandName");
@@ -137,6 +138,11 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
         if (typeof existingOnload === "function") existingOnload();
         applyImage();
       };
+
+      // ✅ iframe이 src 초기화된 경우 강제 리로드 (복귀 직후 등)
+      if (!iframe.src || iframe.src !== iframe.dataset.template) {
+        iframe.src = iframe.dataset.template;
+      }
     }
   });
 }
