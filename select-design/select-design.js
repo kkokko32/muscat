@@ -1,29 +1,22 @@
 import { auth, storage } from "/muscat/common/firebase-init.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-// ✅ 타자기 효과
+// ✅ 타자기 효과 (복원본)
 function typeEffect(text, targetId, callback) {
   const target = document.getElementById(targetId);
   if (!target) return;
   target.innerHTML = "";
-  target.style.width = "0"; // 애니메이션 초기 상태 유지
   let i = 0;
 
   const interval = setInterval(() => {
     if (i < text.length) {
-      const char = text.charAt(i) === "\n" ? "<br>" : text.charAt(i);
-      target.innerHTML += char;
+      target.innerHTML += text.charAt(i); // 줄바꿈 없이 그대로 출력
       i++;
     } else {
       clearInterval(interval);
       callback?.();
     }
   }, 50);
-
-  // ✅ 애니메이션이 끝나면 width 자동 복원
-  target.addEventListener("animationend", () => {
-    target.style.width = "auto";
-  }, { once: true }); // 한 번만 실행되도록 설정
 }
 
 // ✅ 모달 열기/닫기

@@ -124,9 +124,9 @@ main {
   font-size: 26px;
   font-weight: 400;
   color: #ccc;
-  white-space: pre-line;
+  white-space: nowrap;
   overflow: hidden;
-  width: auto !important;
+  width: 0;
   animation: typing 2s steps(30, end) forwards;
   margin-bottom: 20px;
   min-height: 24px;
