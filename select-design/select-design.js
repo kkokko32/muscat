@@ -33,6 +33,12 @@ function syncInputToIframe(id, value) {
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
     const el = doc?.querySelector(`#${id}`);
     if (el) el.textContent = value;
+
+    // ✅ 로고 텍스트가 삽입된 경우, 해당 부분도 동기화
+    if (id === "brandName") {
+      const logoText = doc?.getElementById("brandLogoText");
+      if (logoText) logoText.textContent = value;
+    }
   });
   updateLocalStorage();
 }
@@ -265,7 +271,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const isReturn = sessionStorage.getItem("returnFromTemplate") === "true";
-  if (isReturn && sessionStorage.getItem("currentStep") === "brand") {
+  const currentStep = sessionStorage.getItem("currentStep");
+
+  if (isReturn) {
     const typingText = document.getElementById("typingText");
     const step1 = document.getElementById("designTargetButtons");
     const helpText = document.getElementById("selectionHelpText");
@@ -281,9 +289,11 @@ document.addEventListener("DOMContentLoaded", () => {
     helpText?.classList.remove("hidden");
     helpText?.classList.add("visible");
 
-    showBrandStep();
+    if (currentStep === "brand") {
+      showBrandStep();
+    }
+
     sessionStorage.removeItem("returnFromTemplate");
-    return;
   }
 
   setTimeout(() => {
@@ -339,3 +349,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
