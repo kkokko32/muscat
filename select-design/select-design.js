@@ -597,3 +597,13 @@ window.onLogoStepComplete = () => {
     });
   }
 };
+
+document.querySelectorAll('input[type="text"]').forEach(input => {
+  input.addEventListener('input', () => {
+    if (input.value.trim() !== "") {
+      input.style.color = "#292929";  // 입력값 있을 때 진한 텍스트 색
+    } else {
+      input.style.color = "#888";     // 비어 있을 때 연한 텍스트 색 (기본값)
+    }
+  });
+});
