@@ -364,14 +364,23 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modal) modal.classList.remove("active");
   }, 100);
 
-  // ✅ 브랜드 입력 실시간 반영
+   // ✅ 브랜드 입력 실시간 반영
   const brandInput = document.getElementById("brandName");
   const descInput = document.getElementById("brandDesc");
   if (brandInput && descInput) {
     brandInput.addEventListener("input", () => {
-      descInput.disabled = brandInput.value.trim() === "";
-      syncInputToIframe("brandName", brandInput.value);
+      const brandName = brandInput.value;
+      descInput.disabled = brandName.trim() === "";
+      syncInputToIframe("brandName", brandName);
+
+      // ✅ 텍스트형 로고도 함께 실시간 반영
+      document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        const textDiv = doc?.getElementById("brandLogoText");
+        if (textDiv) textDiv.textContent = brandName;
+      });
     });
+
     descInput.addEventListener("input", () => {
       syncInputToIframe("brandDesc", descInput.value);
     });
