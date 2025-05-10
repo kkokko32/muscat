@@ -139,7 +139,36 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
   });
 }
 
+// ✅ 상세페이지 복귀 후 iframe에 로고 상태 복원
+function restoreLogoStateToIframe(iframe) {
+  const doc = iframe.contentDocument || iframe.contentWindow?.document;
+  if (!doc) return;
 
+  const logoData = sessionStorage.getItem("tempLogo");
+  const brandText = sessionStorage.getItem("brandName") || "";
+
+  const logoImg = doc.getElementById("brandLogo");
+  const logoText = doc.getElementById("brandLogoText");
+
+  if (logoData?.startsWith("__TEXT__:")) {
+    // 텍스트 모드
+    if (logoImg) {
+      logoImg.src = "";
+      logoImg.style.display = "none";
+    }
+    if (logoText) {
+      logoText.textContent = brandText;
+      logoText.style.display = "block";
+    }
+  } else if (logoData) {
+    // 이미지 모드
+    if (logoText) logoText.style.display = "none";
+    if (logoImg) {
+      logoImg.src = logoData;
+      logoImg.style.display = "block";
+    }
+  }
+}
 
 // ✅ 로컬 저장
 function updateLocalStorage() {
@@ -319,6 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
   imagesLoaded(grid, () => {
   document.querySelectorAll(".template-card iframe").forEach(iframe => {
     iframe.src = iframe.dataset.template;
+
     iframe.onload = () => {
       resizeSingleIframe(iframe);
 
@@ -328,10 +358,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const logoImg = doc?.getElementById("brandLogo");
 
       const logoData = sessionStorage.getItem("tempLogo") || "";
+      const brandText = sessionStorage.getItem("brandName") || "";
+
       if (logoData.startsWith("__TEXT__:")) {
         // 텍스트만 보이게
         if (logoText) {
-          logoText.textContent = logoData.replace("__TEXT__:", "");
+          logoText.textContent = brandText || logoData.replace("__TEXT__:", "");
           logoText.style.display = "block";
         }
         if (logoImg) {
@@ -350,9 +382,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
   });
+
   window.msnry.layout();
 });
-
 
   // ✅ '디자인 시작하기'로 새 진입한 경우 복귀 기록 및 스텝 초기화
   if (sessionStorage.getItem("entryType") === "new") {
