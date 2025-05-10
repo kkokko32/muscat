@@ -565,7 +565,7 @@ function showStep3Inputs() {
   step3.classList.add("fade-in");
   typing.classList.remove("hidden");
 
-  typeEffect("디자인 완성을 위해 추가 정보가 필요해요", "infoTypingText", () => {
+  typeEffect("디자인 완성을 위해\n추가 정보가 필요해요", "infoTypingText", () => {
     inputGroup.classList.add("fade-in");
   });
 }
