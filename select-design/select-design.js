@@ -34,8 +34,6 @@ window.insertBrandTextInsteadOfLogo = () => {
   if (!logoBtn || !brandInput) return;
   
   // 업로드 버튼 비활성화, 텍스트 입력 필드 표시
-  logoBtn.classList.add("disabled");
-  logoBtn.disabled = true;
   brandInput.classList.remove("hidden");
   brandInput.classList.add("fade-in");
   brandInput.focus();
@@ -108,6 +106,12 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
   // ✅ 텍스트 모드가 남아있어도 강제로 이미지 모드로 전환
   sessionStorage.setItem(sessionKey, downloadURL);
 
+  // ✅ 텍스트 입력창 숨김 (텍스트 모드에서 이미지로 전환 시)
+  const brandInput = document.getElementById("brandName");
+  if (brandInput) {
+    brandInput.classList.add("hidden");
+  }
+
   document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
     const applyImage = () => {
       const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -125,13 +129,16 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
     if (iframe.contentDocument?.readyState === "complete") {
       applyImage();
     } else {
+      // ✅ 기존 onload 보존 + 이미지 반영 병행
+      const existingOnload = iframe.onload;
       iframe.onload = () => {
-        resizeSingleIframe(iframe); // 유지
+        if (typeof existingOnload === "function") existingOnload();
         applyImage();
       };
     }
   });
 }
+
 
 
 // ✅ 로컬 저장
