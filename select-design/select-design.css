@@ -173,17 +173,6 @@ main {
   color: #ccc;
 }
 
-input[type="text"] {
-  width: 100%;
-  height: 64px;
-  margin: 6px 0;
-  border-radius: 6px;
-  border: none;
-  padding: 0 12px;
-  box-sizing: border-box;
-  color: #888; /* 기본 상태: 연한 회색 */
-}
-
 .full-width-group {
   width: 100%;
   max-width: 100%;
@@ -198,11 +187,13 @@ input[type="text"] {
 /* 텍스트 인풋 */
 input[type="text"] {
   width: 100%;
-  height: 50px;
+  height: 64px;
+  margin: 6px 0;
   border-radius: 6px;
   border: none;
   padding: 0 12px;
   box-sizing: border-box;
+  color: #888; /* 기본 상태: 연한 회색 */
 }
 
 input[disabled] {
