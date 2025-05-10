@@ -107,16 +107,28 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
   sessionStorage.setItem(sessionKey, downloadURL);
 
   document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
-    const doc = iframe.contentDocument || iframe.contentWindow?.document;
-    const el = doc?.querySelector(`#${imgElementId}`);
-    if (el) {
-      el.src = downloadURL;
-      el.style.display = "block"; // ✅ 이미지가 안 보일 경우 보이도록 설정
-    }
+    const applyImage = () => {
+      const doc = iframe.contentDocument || iframe.contentWindow?.document;
+      const el = doc?.querySelector(`#${imgElementId}`);
+      if (el) {
+        el.src = downloadURL;
+        el.style.display = "block";
+      }
 
-    // ✅ 텍스트형 로고가 존재하면 제거
-    const textEl = doc?.getElementById("brandLogoText");
-    if (textEl) textEl.remove();
+      const textEl = doc?.getElementById("brandLogoText");
+      if (textEl) textEl.remove();
+    };
+
+    // ✅ iframe이 이미 로드된 상태면 바로 실행
+    if (iframe.contentDocument?.readyState === "complete") {
+      applyImage();
+    } else {
+      // ✅ 아니라면 iframe.onload 시점에 이미지 반영
+      iframe.onload = () => {
+        resizeSingleIframe(iframe); // 기존 로직 유지
+        applyImage();
+      };
+    }
   });
 }
 
