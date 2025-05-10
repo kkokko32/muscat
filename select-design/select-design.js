@@ -31,8 +31,10 @@ window.closeExampleModal = () => {
 window.insertBrandTextInsteadOfLogo = () => {
   const logoBtn = document.getElementById("logoUploadBtn");
   const brandInput = document.getElementById("brandName");
+  const completeBtn = document.getElementById("logoCompleteBtn"); // ✅ 완료 버튼 선택
+
   if (!logoBtn || !brandInput) return;
-  
+
   // 업로드 버튼 비활성화, 텍스트 입력 필드 표시
   logoBtn.classList.add("disabled");
   logoBtn.disabled = true;
@@ -40,50 +42,57 @@ window.insertBrandTextInsteadOfLogo = () => {
   brandInput.classList.add("fade-in");
   brandInput.focus();
 
+  // ✅ 완료 버튼 표시
+  if (completeBtn) {
+    completeBtn.classList.remove("hidden");
+    completeBtn.classList.add("visible");
+  }
+
   // 각 visible 템플릿 iframe에 대해 텍스트 요소 생성/갱신
   document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
     const doc = iframe.contentDocument || iframe.contentWindow.document;
     const logoImg = doc.getElementById("brandLogo");
+
     // 1. 기존 로고 이미지 숨기기
     if (logoImg) {
       logoImg.style.display = "none";
-      logoImg.src = "";  // 이미지 경로 제거
+      logoImg.src = "";
     }
+
     // 2. 텍스트 요소가 없으면 새로 생성
     let textDiv = doc.getElementById("brandLogoText");
     if (!textDiv) {
       textDiv = doc.createElement("div");
       textDiv.id = "brandLogoText";
-      // 필요한 스타일 적용 (폰트 크기, 굵기, 정렬 등)
       textDiv.style.fontSize = "28px";
       textDiv.style.fontWeight = "bold";
       textDiv.style.color = "#333";
       textDiv.style.marginBottom = "40px";
       textDiv.style.textAlign = "center";
-      // 새 요소를 이미지 요소 뒤에 추가
       logoImg?.parentNode.insertBefore(textDiv, logoImg.nextSibling);
     }
-    // 3. 텍스트 내용 설정 (입력 값이 있으면 사용, 없으면 플레이스홀더)
+
+    // 3. 텍스트 내용 설정
     textDiv.textContent = brandInput.value || "브랜드명";
     textDiv.style.display = "block";
   });
 
   // 텍스트 입력 이벤트: 입력 시 iframe 내 텍스트 업데이트
-brandInput.addEventListener("input", () => {
-  document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    const textDiv = doc.getElementById("brandLogoText");
-    if (textDiv) {
-      textDiv.textContent = brandInput.value;
-    }
+  brandInput.addEventListener("input", () => {
+    document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      const textDiv = doc.getElementById("brandLogoText");
+      if (textDiv) {
+        textDiv.textContent = brandInput.value;
+      }
+    });
+
+    // 세션 저장
+    sessionStorage.setItem("tempLogo", "__TEXT__:" + brandInput.value);
   });
 
-  // 텍스트 로고 모드 표시를 위해 세션 저장 (접두사로 텍스트 모드 표시)
-  sessionStorage.setItem("tempLogo", "__TEXT__:" + brandInput.value);
-});
-
-// ✅ 부제목 입력 스텝 호출
-showStep3Inputs(); // ← 여기 추가됨
+  // ✅ 부제목 입력 스텝 호출
+  showStep3Inputs(); // ← 여긴 추후 필요에 따라 제거 가능
 };
 
 
@@ -149,7 +158,15 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
       }
     }
   });
+
+  // ✅ 완료 버튼 표시
+  const completeBtn = document.getElementById("logoCompleteBtn");
+  if (completeBtn) {
+    completeBtn.classList.remove("hidden");
+    completeBtn.classList.add("visible");
+  }
 }
+
 
 // ✅ 상세페이지 복귀 후 iframe에 로고 상태 복원
 function restoreLogoStateToIframe(iframe) {
@@ -558,3 +575,26 @@ function showStep3Inputs() {
 function skipExtraInputs() {
   document.getElementById("step3").classList.add("hidden");
 }
+
+window.onLogoStepComplete = () => {
+  const step1 = document.getElementById("step1");
+  const step2 = document.getElementById("step2");
+  const step3 = document.getElementById("step3");
+
+  // ✅ 이전 스텝 숨기기
+  step1?.classList.add("slide-up");
+  step2?.classList.add("slide-up");
+
+  // ✅ 다음 스텝 보이기
+  step3?.classList.remove("hidden");
+  step3?.classList.add("fade-in");
+
+  // ✅ 타자기 효과 실행
+  const typing = document.getElementById("infoTypingText");
+  if (typing) {
+    typing.classList.remove("hidden");
+    typeEffect("디자인 완성을 위해 추가 정보가 필요해요", "infoTypingText", () => {
+      document.getElementById("extraInputGroup")?.classList.add("fade-in");
+    });
+  }
+};
