@@ -6,7 +6,9 @@ function typeEffect(text, targetId, callback) {
   const target = document.getElementById(targetId);
   if (!target) return;
   target.innerHTML = "";
+  target.style.width = "0"; // 애니메이션 초기 상태 유지
   let i = 0;
+
   const interval = setInterval(() => {
     if (i < text.length) {
       const char = text.charAt(i) === "\n" ? "<br>" : text.charAt(i);
@@ -17,6 +19,11 @@ function typeEffect(text, targetId, callback) {
       callback?.();
     }
   }, 50);
+
+  // ✅ 애니메이션이 끝나면 width 자동 복원
+  target.addEventListener("animationend", () => {
+    target.style.width = "auto";
+  }, { once: true }); // 한 번만 실행되도록 설정
 }
 
 // ✅ 모달 열기/닫기

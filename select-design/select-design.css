@@ -126,7 +126,7 @@ main {
   color: #ccc;
   white-space: pre-line;
   overflow: hidden;
-  width: 0;
+  width: auto !important;
   animation: typing 2s steps(30, end) forwards;
   margin-bottom: 20px;
   min-height: 24px;
