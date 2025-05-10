@@ -290,12 +290,42 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   imagesLoaded(grid, () => {
-    document.querySelectorAll(".template-card iframe").forEach(iframe => {
-      iframe.src = iframe.dataset.template;
-      iframe.onload = () => resizeSingleIframe(iframe);
-    });
-    window.msnry.layout();
+  document.querySelectorAll(".template-card iframe").forEach(iframe => {
+    iframe.src = iframe.dataset.template;
+    iframe.onload = () => {
+      resizeSingleIframe(iframe);
+
+      // ✅ 이미지 vs 텍스트 로고 상태 동기화
+      const doc = iframe.contentDocument || iframe.contentWindow?.document;
+      const logoText = doc?.getElementById("brandLogoText");
+      const logoImg = doc?.getElementById("brandLogo");
+
+      const logoData = sessionStorage.getItem("tempLogo") || "";
+      if (logoData.startsWith("__TEXT__:")) {
+        // 텍스트만 보이게
+        if (logoText) {
+          logoText.textContent = logoData.replace("__TEXT__:", "");
+          logoText.style.display = "block";
+        }
+        if (logoImg) {
+          logoImg.src = "";
+          logoImg.style.display = "none";
+        }
+      } else if (logoData) {
+        // 이미지만 보이게
+        if (logoImg) {
+          logoImg.src = logoData;
+          logoImg.style.display = "block";
+        }
+        if (logoText) {
+          logoText.style.display = "none";
+        }
+      }
+    };
   });
+  window.msnry.layout();
+});
+
 
   // ✅ '디자인 시작하기'로 새 진입한 경우 복귀 기록 및 스텝 초기화
   if (sessionStorage.getItem("entryType") === "new") {
