@@ -488,12 +488,20 @@ body.inside-preview .template-frame {
 .step.slide-up {
   animation: slideUpDisappear 0.5s forwards;
 }
-
+/* 
 .input-subtitle-group {
   margin-top: 0; 
   display: flex;
   flex-direction: column;
   gap: 16px;
+  align-items: center;
+} */
+
+.extra-input-group {
+  margin-top: 12px; /* 위 여백 줄이기 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;         /* 인풋 간 간격 줄이기 */
   align-items: center;
 }
 
