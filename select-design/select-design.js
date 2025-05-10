@@ -104,6 +104,8 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
   const storageRef = ref(storage, storagePath);
   const snapshot = await uploadBytes(storageRef, file);
   const downloadURL = await getDownloadURL(snapshot.ref);
+
+  // ✅ 텍스트 모드가 남아있어도 강제로 이미지 모드로 전환
   sessionStorage.setItem(sessionKey, downloadURL);
 
   document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
@@ -115,22 +117,22 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
         el.style.display = "block";
       }
 
+      // ✅ 기존 텍스트 로고 제거
       const textEl = doc?.getElementById("brandLogoText");
       if (textEl) textEl.remove();
     };
 
-    // ✅ iframe이 이미 로드된 상태면 바로 실행
     if (iframe.contentDocument?.readyState === "complete") {
       applyImage();
     } else {
-      // ✅ 아니라면 iframe.onload 시점에 이미지 반영
       iframe.onload = () => {
-        resizeSingleIframe(iframe); // 기존 로직 유지
+        resizeSingleIframe(iframe); // 유지
         applyImage();
       };
     }
   });
 }
+
 
 // ✅ 로컬 저장
 function updateLocalStorage() {
