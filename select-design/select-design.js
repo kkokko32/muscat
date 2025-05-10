@@ -98,21 +98,22 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
   const downloadURL = await getDownloadURL(snapshot.ref);
   sessionStorage.setItem(sessionKey, downloadURL);
 
+  // iframe이 로드 완료된 후에 이미지 반영
   document.querySelectorAll(".template-card iframe").forEach(iframe => {
-    const applyImage = () => {
+    const tryInject = () => {
       const doc = iframe.contentDocument || iframe.contentWindow?.document;
       const el = doc?.getElementById(imgElementId);
       if (el) el.src = downloadURL;
     };
 
-    // iframe이 이미 로드되었는지 확인 후 반영
     if (iframe.contentDocument?.readyState === "complete") {
-      applyImage();
+      tryInject();
     } else {
-      iframe.onload = applyImage;
+      iframe.onload = tryInject;
     }
   });
 }
+
 
 
 // ✅ 로컬 저장
