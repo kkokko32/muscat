@@ -10,7 +10,8 @@ function typeEffect(text, targetId, callback) {
 
   const interval = setInterval(() => {
     if (i < text.length) {
-      target.innerHTML += text.charAt(i); // 줄바꿈 없이 그대로 출력
+      const char = text.charAt(i) === "\n" ? "<br>" : text.charAt(i);
+      target.innerHTML += char;
       i++;
     } else {
       clearInterval(interval);
