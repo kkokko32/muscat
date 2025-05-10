@@ -364,7 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modal) modal.classList.remove("active");
   }, 100);
 
-   // ✅ 브랜드 입력 실시간 반영
+// ✅ 브랜드 입력 실시간 반영
 const brandInput = document.getElementById("brandName");
 const descInput = document.getElementById("brandDesc");
 if (brandInput && descInput) {
@@ -373,13 +373,39 @@ if (brandInput && descInput) {
     descInput.disabled = brandName.trim() === "";
     syncInputToIframe("brandName", brandName);
 
-    // ✅ 텍스트형 로고일 때만 반영 (이미지일 경우 무시)
+    // ✅ 텍스트형 로고일 때만 처리
     const logoData = sessionStorage.getItem("tempLogo") || "";
     if (logoData.startsWith("__TEXT__:")) {
       document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
         const doc = iframe.contentDocument || iframe.contentWindow?.document;
-        const textDiv = doc?.getElementById("brandLogoText");
-        if (textDiv) textDiv.textContent = brandName;
+        if (!doc) return;
+
+        let textDiv = doc.getElementById("brandLogoText");
+        const logoImg = doc.getElementById("brandLogo");
+
+        // ✅ 없으면 새로 생성
+        if (!textDiv && logoImg) {
+          textDiv = doc.createElement("div");
+          textDiv.id = "brandLogoText";
+          textDiv.style.fontSize = "28px";
+          textDiv.style.fontWeight = "bold";
+          textDiv.style.color = "#333";
+          textDiv.style.marginBottom = "40px";
+          textDiv.style.textAlign = "center";
+          logoImg.parentNode?.insertBefore(textDiv, logoImg.nextSibling);
+        }
+
+        // ✅ 텍스트 반영
+        if (textDiv) {
+          textDiv.textContent = brandName;
+          textDiv.style.display = "block";
+        }
+
+        // ✅ 이미지 숨김
+        if (logoImg) {
+          logoImg.src = "";
+          logoImg.style.display = "none";
+        }
       });
     }
   });
