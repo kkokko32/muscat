@@ -34,6 +34,8 @@ window.insertBrandTextInsteadOfLogo = () => {
   if (!logoBtn || !brandInput) return;
   
   // 업로드 버튼 비활성화, 텍스트 입력 필드 표시
+  logoBtn.classList.add("disabled");
+  logoBtn.disabled = true;
   brandInput.classList.remove("hidden");
   brandInput.classList.add("fade-in");
   brandInput.focus();
