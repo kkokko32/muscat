@@ -365,26 +365,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 100);
 
    // ✅ 브랜드 입력 실시간 반영
-  const brandInput = document.getElementById("brandName");
-  const descInput = document.getElementById("brandDesc");
-  if (brandInput && descInput) {
-    brandInput.addEventListener("input", () => {
-      const brandName = brandInput.value;
-      descInput.disabled = brandName.trim() === "";
-      syncInputToIframe("brandName", brandName);
+const brandInput = document.getElementById("brandName");
+const descInput = document.getElementById("brandDesc");
+if (brandInput && descInput) {
+  brandInput.addEventListener("input", () => {
+    const brandName = brandInput.value;
+    descInput.disabled = brandName.trim() === "";
+    syncInputToIframe("brandName", brandName);
 
-      // ✅ 텍스트형 로고도 함께 실시간 반영
+    // ✅ 텍스트형 로고일 때만 반영 (이미지일 경우 무시)
+    const logoData = sessionStorage.getItem("tempLogo") || "";
+    if (logoData.startsWith("__TEXT__:")) {
       document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
         const doc = iframe.contentDocument || iframe.contentWindow?.document;
         const textDiv = doc?.getElementById("brandLogoText");
         if (textDiv) textDiv.textContent = brandName;
       });
-    });
+    }
+  });
 
-    descInput.addEventListener("input", () => {
-      syncInputToIframe("brandDesc", descInput.value);
-    });
-  }
+  descInput.addEventListener("input", () => {
+    syncInputToIframe("brandDesc", descInput.value);
+  });
+}
+
 
   // ✅ 로고 이미지 업로드
   const logoInput = document.getElementById("logoInput");
