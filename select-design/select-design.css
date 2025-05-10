@@ -184,6 +184,15 @@ input[type="text"] {
   color: #888; /* 기본 상태: 연한 회색 */
 }
 
+.input-group {
+  margin-top: 12px;  /* ← 더 촘촘하게 변경 */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+
 /* .upload-label {
   margin-top: 40px;
 } */
