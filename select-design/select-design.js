@@ -91,8 +91,6 @@ window.insertBrandTextInsteadOfLogo = () => {
     sessionStorage.setItem("tempLogo", "__TEXT__:" + brandInput.value);
   });
 
-  // ✅ 부제목 입력 스텝 호출
-  showStep3Inputs(); // ← 여긴 추후 필요에 따라 제거 가능
 };
 
 
