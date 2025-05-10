@@ -87,6 +87,12 @@ function syncInputToIframe(id, value) {
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
     const el = doc?.querySelector(`#${id}`);
     if (el) el.textContent = value;
+
+    // ✅ brandName 입력 시 텍스트형 로고에도 반영
+    if (id === "brandName") {
+      const logoText = doc?.getElementById("brandLogoText");
+      if (logoText) logoText.textContent = value;
+    }
   });
   updateLocalStorage();
 }
@@ -101,7 +107,10 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
   document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
     const el = doc?.querySelector(`#${imgElementId}`);
-    if (el) el.src = downloadURL;
+    if (el) {
+      el.src = downloadURL;
+      el.style.display = "block"; // ✅ 이미지가 안 보일 경우 보이도록 설정
+    }
   });
 }
 
