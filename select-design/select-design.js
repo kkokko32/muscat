@@ -91,19 +91,29 @@ function syncInputToIframe(id, value) {
   updateLocalStorage();
 }
 
-// ✅ 이미지 업로드 + 반영
+// ✅ 이미지 업로드 + 반영 (iframe 로드 보장)
 async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessionKey) {
   const storageRef = ref(storage, storagePath);
   const snapshot = await uploadBytes(storageRef, file);
   const downloadURL = await getDownloadURL(snapshot.ref);
   sessionStorage.setItem(sessionKey, downloadURL);
 
-  document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
-    const doc = iframe.contentDocument || iframe.contentWindow?.document;
-    const el = doc?.querySelector(`#${imgElementId}`);
-    if (el) el.src = downloadURL;
+  document.querySelectorAll(".template-card iframe").forEach(iframe => {
+    const applyImage = () => {
+      const doc = iframe.contentDocument || iframe.contentWindow?.document;
+      const el = doc?.getElementById(imgElementId);
+      if (el) el.src = downloadURL;
+    };
+
+    // iframe이 이미 로드되었는지 확인 후 반영
+    if (iframe.contentDocument?.readyState === "complete") {
+      applyImage();
+    } else {
+      iframe.onload = applyImage;
+    }
   });
 }
+
 
 // ✅ 로컬 저장
 function updateLocalStorage() {
