@@ -489,7 +489,7 @@ body.inside-preview .template-frame {
   animation: slideUpDisappear 0.5s forwards;
 }
 
-.input-group {
+.input-subtitle-group {
   margin-top: 0; 
   display: flex;
   flex-direction: column;
