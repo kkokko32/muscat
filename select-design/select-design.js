@@ -348,5 +348,22 @@ document.addEventListener("DOMContentLoaded", () => {
       await uploadToFirebaseAndPreview(file, "brandLogo", storagePath, "tempLogo");
     });
   }
+
+  // ✅ fallback - 아무 조건에도 해당되지 않는 경우 기본 스텝 출력
+  if (!isReturn && entryType !== "new") {
+    const typingText = document.getElementById("typingText");
+    const step1 = document.getElementById("designTargetButtons");
+    const helpText = document.getElementById("selectionHelpText");
+
+    typingText?.classList.remove("hidden");
+    typingText?.classList.add("text-fade-out");
+
+    step1?.classList.remove("hidden", "text-fade-out");
+    step1?.classList.add("visible");
+
+    helpText?.classList.remove("hidden");
+    helpText?.classList.add("visible");
+  }
 });
+
 
