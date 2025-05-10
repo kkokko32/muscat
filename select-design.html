@@ -28,7 +28,7 @@
 
       <div class="button-grid hidden" id="designTargetButtons">
         <!-- <button class="active" onclick="selectConcept(this)">전체</button> -->
-        <button onclick="selectConcept(this)">이벤트 배너2</button>
+        <button onclick="selectConcept(this)">이벤트 배너0</button>
         <button onclick="selectConcept(this)">메뉴판</button>
         <button onclick="selectConcept(this)">할인 전단지</button>
         <button onclick="selectConcept(this)">홍보물</button>
@@ -65,6 +65,17 @@
       </div>
 
       <input id="brandName" class="hidden" placeholder="브랜드 명을 입력하세요" type="text" />
+    </div>
+
+    <!-- Step 3: 추가 정보 입력 -->
+    <div class="step hidden" id="step3">
+      <p id="infoTypingText" class="typing-text hidden"></p>
+      <div class="input-group fade-slide" id="extraInputGroup">
+        <input class="extra-input" type="text" placeholder="부제목 1을 입력하세요">
+        <input class="extra-input" type="text" placeholder="부제목 2를 입력하세요">
+        <input class="extra-input" type="text" placeholder="부제목 3을 입력하세요">
+        <p class="skip-btn" onclick="skipExtraInputs()">건너뛰기</p>
+      </div>
     </div>
 
   </div> <!-- /.sidebar-inner -->

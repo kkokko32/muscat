@@ -69,17 +69,21 @@ window.insertBrandTextInsteadOfLogo = () => {
   });
 
   // 텍스트 입력 이벤트: 입력 시 iframe 내 텍스트 업데이트
-  brandInput.addEventListener("input", () => {
-    document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      const textDiv = doc.getElementById("brandLogoText");
-      if (textDiv) {
-        textDiv.textContent = brandInput.value;
-      }
-    });
-    // 텍스트 로고 모드 표시를 위해 세션 저장 (접두사로 텍스트 모드 표시)
-    sessionStorage.setItem("tempLogo", "__TEXT__:" + brandInput.value);
+brandInput.addEventListener("input", () => {
+  document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const textDiv = doc.getElementById("brandLogoText");
+    if (textDiv) {
+      textDiv.textContent = brandInput.value;
+    }
   });
+
+  // 텍스트 로고 모드 표시를 위해 세션 저장 (접두사로 텍스트 모드 표시)
+  sessionStorage.setItem("tempLogo", "__TEXT__:" + brandInput.value);
+});
+
+// ✅ 부제목 입력 스텝 호출
+showStep3Inputs(); // ← 여기 추가됨
 };
 
 
@@ -536,3 +540,21 @@ if (brandInput && descInput) {
     }
   });
 });
+
+function showStep3Inputs() {
+  const step3 = document.getElementById("step3");
+  const typing = document.getElementById("infoTypingText");
+  const inputGroup = document.getElementById("extraInputGroup");
+
+  step3.classList.remove("hidden");
+  step3.classList.add("fade-in");
+  typing.classList.remove("hidden");
+
+  typeEffect("디자인 완성을 위해 추가 정보가 필요해요", "infoTypingText", () => {
+    inputGroup.classList.add("fade-in");
+  });
+}
+
+function skipExtraInputs() {
+  document.getElementById("step3").classList.add("hidden");
+}
