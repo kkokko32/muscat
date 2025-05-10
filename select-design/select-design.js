@@ -27,57 +27,59 @@ window.closeExampleModal = () => {
   document.getElementById("exampleModal")?.classList.remove("active");
 };
 
-// ✅ '임의로 넣기' 처리
+// "임의로 입력" 버튼 클릭 시 호출되는 함수
 window.insertBrandTextInsteadOfLogo = () => {
   const logoBtn = document.getElementById("logoUploadBtn");
   const brandInput = document.getElementById("brandName");
+  if (!logoBtn || !brandInput) return;
+  
+  // 업로드 버튼 비활성화, 텍스트 입력 필드 표시
+  logoBtn.classList.add("disabled");
+  logoBtn.disabled = true;
+  brandInput.classList.remove("hidden");
+  brandInput.classList.add("fade-in");
+  brandInput.focus();
 
-  if (logoBtn && brandInput) {
-    logoBtn.classList.add("disabled");
-    logoBtn.disabled = true;
+  // 각 visible 템플릿 iframe에 대해 텍스트 요소 생성/갱신
+  document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const logoImg = doc.getElementById("brandLogo");
+    // 1. 기존 로고 이미지 숨기기
+    if (logoImg) {
+      logoImg.style.display = "none";
+      logoImg.src = "";  // 이미지 경로 제거
+    }
+    // 2. 텍스트 요소가 없으면 새로 생성
+    let textDiv = doc.getElementById("brandLogoText");
+    if (!textDiv) {
+      textDiv = doc.createElement("div");
+      textDiv.id = "brandLogoText";
+      // 필요한 스타일 적용 (폰트 크기, 굵기, 정렬 등)
+      textDiv.style.fontSize = "28px";
+      textDiv.style.fontWeight = "bold";
+      textDiv.style.color = "#333";
+      textDiv.style.marginBottom = "40px";
+      textDiv.style.textAlign = "center";
+      // 새 요소를 이미지 요소 뒤에 추가
+      logoImg?.parentNode.insertBefore(textDiv, logoImg.nextSibling);
+    }
+    // 3. 텍스트 내용 설정 (입력 값이 있으면 사용, 없으면 플레이스홀더)
+    textDiv.textContent = brandInput.value || "브랜드명";
+    textDiv.style.display = "block";
+  });
 
-    brandInput.classList.remove("hidden");
-    brandInput.classList.add("fade-in");
-    brandInput.focus();
-
+  // 텍스트 입력 이벤트: 입력 시 iframe 내 텍스트 업데이트
+  brandInput.addEventListener("input", () => {
     document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
-      const doc = iframe.contentDocument || iframe.contentWindow?.document;
-
-      // 기존 이미지 숨김
-      const logoImg = doc?.getElementById("brandLogo");
-      if (logoImg) {
-        logoImg.style.display = "none";
-        logoImg.src = ""; // 완전히 비움
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      const textDiv = doc.getElementById("brandLogoText");
+      if (textDiv) {
+        textDiv.textContent = brandInput.value;
       }
-
-      // 텍스트 div 생성 또는 갱신
-      let textDiv = doc?.getElementById("brandLogoText");
-      if (!textDiv) {
-        textDiv = doc.createElement("div");
-        textDiv.id = "brandLogoText";
-        textDiv.style.fontSize = "28px";
-        textDiv.style.fontWeight = "bold";
-        textDiv.style.color = "#333";
-        textDiv.style.marginBottom = "40px";
-        textDiv.style.textAlign = "center";
-
-        logoImg?.parentNode?.insertBefore(textDiv, logoImg.nextSibling);
-      }
-
-      textDiv.textContent = brandInput.value || "브랜드명";
     });
-
-    // 입력 감지: 로고 텍스트만 반영 (브랜드명에는 반영 안 함)
-    brandInput.addEventListener("input", () => {
-      document.querySelectorAll(".template-card.visible iframe").forEach(iframe => {
-        const doc = iframe.contentDocument || iframe.contentWindow?.document;
-        const textDiv = doc?.getElementById("brandLogoText");
-        if (textDiv) textDiv.textContent = brandInput.value;
-      });
-      // 저장 시 텍스트로 들어가게 세션에도 저장
-      sessionStorage.setItem("tempLogo", "__TEXT__:" + brandInput.value);
-    });
-  }
+    // 텍스트 로고 모드 표시를 위해 세션 저장 (접두사로 텍스트 모드 표시)
+    sessionStorage.setItem("tempLogo", "__TEXT__:" + brandInput.value);
+  });
 };
 
 
@@ -111,6 +113,10 @@ async function uploadToFirebaseAndPreview(file, imgElementId, storagePath, sessi
       el.src = downloadURL;
       el.style.display = "block"; // ✅ 이미지가 안 보일 경우 보이도록 설정
     }
+
+    // ✅ 텍스트형 로고가 존재하면 제거
+    const textEl = doc?.getElementById("brandLogoText");
+    if (textEl) textEl.remove();
   });
 }
 
