@@ -470,6 +470,21 @@ body.inside-preview .template-frame {
   animation: fadeInUp 0.4s ease-out;
 }
 
+.skip-btn {
+  margin-top: 24px;
+  font-size: 16px;
+  padding: 10px 20px;
+  color: #ccc;
+  text-decoration: underline;
+  cursor: pointer;
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+
+.skip-btn:hover {
+  color: #c4ff63;
+}
+
 /* 슬라이드 아웃 */
 .step.slide-up {
   animation: slideUpDisappear 0.5s forwards;
