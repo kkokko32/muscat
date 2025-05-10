@@ -464,9 +464,14 @@ body.inside-preview .template-frame {
 }
 
 .complete-btn.visible {
+  pointer-events: none;  /* 기본 상태: 클릭 막음 */
   display: block;
   opacity: 0;
   animation: fadeInButton 0.4s ease-out forwards;
+}
+
+.complete-btn.visible.show {
+  pointer-events: auto; 
 }
 
 .skip-btn {

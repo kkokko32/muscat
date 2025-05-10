@@ -32,8 +32,11 @@ window.closeExampleModal = () => {
 window.insertBrandTextInsteadOfLogo = () => {
   const logoBtn = document.getElementById("logoUploadBtn");
   const brandInput = document.getElementById("brandName");
-  const completeBtn = document.getElementById("logoCompleteBtn"); // ✅ 완료 버튼 선택
-
+  const completeBtn = document.getElementById("logoCompleteBtn");
+  if (completeBtn) {
+    completeBtn.classList.remove("hidden");
+    completeBtn.classList.add("visible", "show"); // show 클래스 추가
+  }
   if (!logoBtn || !brandInput) return;
 
   // 업로드 버튼 비활성화, 텍스트 입력 필드 표시
